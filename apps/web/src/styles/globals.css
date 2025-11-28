@@ -1,0 +1,65 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inconsolata", monospace;
+  font-size: 14px;
+  
+  --text-color: black;
+  --secondary-text-color: #555;
+}
+
+.root {
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+nav {
+  min-width: 200px;
+  border-right: 1px solid rgb(197, 197, 197);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+main {
+  flex: 1;
+  padding: 10px;
+}
+
+.app-title {
+  display: flex;
+  padding: 10px;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0 20px;
+}
+
+a.nav {
+  color: var(--secondary-text-color);
+  text-decoration: none;
+}
+
+a.nav.active {
+  color: var(--text-color);
+}

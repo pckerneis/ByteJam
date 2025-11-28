@@ -23,13 +23,24 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 
 export default function Home({ greeting }: HomeProps) {
   return (
-    <>
-      <Head>
-        <title>Bitebeats POC</title>
-      </Head>
-      <main style={{ padding: '2rem', fontFamily: 'system-ui' }}>
-        <h1>Bitebeats POC</h1>
-        <p>Next.js frontend is up and running.</p>
+    <div className='root'>
+      <nav>
+        <div className='app-title'>
+            <h1>Bitebeats</h1>
+        </div>
+        <ul>
+          <li>
+            <a className='nav' href="/create">Create</a>
+          </li>
+          <li>
+            <a className='nav' href="/explore">Explore</a>
+          </li>
+          <li>
+            <a className='nav' href="/profile">Profile</a>
+          </li>
+        </ul>
+      </nav>
+      <main>
         <section style={{ marginTop: '1rem' }}>
           <h2>API status</h2>
           {greeting ? (
@@ -42,6 +53,6 @@ export default function Home({ greeting }: HomeProps) {
           )}
         </section>
       </main>
-    </>
+    </div>
   );
 }
