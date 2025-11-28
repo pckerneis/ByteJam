@@ -7,12 +7,14 @@ Create and share musical expressions.
 ## Tech stack
 
 Frontend:
+
 - Vite
 - React
 - Expo
 - Web Audio API
 
 Backend:
+
 - Node.js
 - Supabase
 
@@ -42,4 +44,3 @@ Backend:
 - Feed
 - Search expressions by name and tags
 - Follow users and see their expressions
-
