@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
@@ -19,7 +19,7 @@ export default function CreatePage() {
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
   const [sampleRate, setSampleRate] = useState<SampleRateOption>(SampleRateOption._44_1k);
-  const { isPlaying, toggle, lastError } = useBytebeatPlayer();
+  const { isPlaying, toggle, lastError, stop } = useBytebeatPlayer();
   const sr = getSampleRateValue(sampleRate);
 
   const { user } = useSupabaseAuth();
@@ -137,6 +137,12 @@ export default function CreatePage() {
         break;
     }
   };
+
+  useEffect(() => {
+    return () => {
+      void stop();
+    };
+  }, [stop]);
 
   return (
     <section>

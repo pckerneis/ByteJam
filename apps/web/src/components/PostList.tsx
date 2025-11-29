@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { ModeOption } from 'shared';
 
@@ -22,6 +22,12 @@ interface PostListProps {
 export function PostList({ posts }: PostListProps) {
   const { toggle, stop, isPlaying } = useBytebeatPlayer();
   const [activePostId, setActivePostId] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      void stop();
+    };
+  }, [stop]);
 
   const handleExpressionClick = async (post: PostRow) => {
     // Clicking the active post stops playback
