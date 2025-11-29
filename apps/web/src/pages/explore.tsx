@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { ModeOption } from 'shared';
@@ -25,6 +25,10 @@ export default function ExplorePage() {
   const [posts, setPosts] = useState<PostRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const loadingMoreRef = useRef(false);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const { toggle, stop, isPlaying } = useBytebeatPlayer();
   const [activePostId, setActivePostId] = useState<string | null>(null);
@@ -37,9 +41,15 @@ export default function ExplorePage() {
     }
 
     let cancelled = false;
+    const pageSize = 20;
+    const from = page * pageSize;
+    const to = from + pageSize - 1;
 
-    const load = async () => {
-      setLoading(true);
+    const loadPage = async () => {
+      loadingMoreRef.current = true;
+      if (page === 0) {
+        setLoading(true);
+      }
       setError('');
 
       const { data, error } = await supabase
@@ -47,26 +57,56 @@ export default function ExplorePage() {
         .select('id,title,expression,sample_rate,mode,created_at,profiles(username)')
         .eq('is_draft', false)
         .order('created_at', { ascending: false })
-        .limit(20);
+        .range(from, to);
 
       if (cancelled) return;
 
       if (error) {
         setError(error.message);
-        setPosts([]);
+        if (page === 0) {
+          setPosts([]);
+        }
+        setHasMore(false);
       } else {
-        setPosts(data ?? []);
+        const rows = data ?? [];
+        setPosts((prev) => (page === 0 ? rows : [...prev, ...rows]));
+        if (rows.length < pageSize) {
+          setHasMore(false);
+        }
       }
 
+      loadingMoreRef.current = false;
       setLoading(false);
     };
 
-    void load();
+    void loadPage();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [page]);
+
+  useEffect(() => {
+    if (!hasMore) return;
+
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !loadingMoreRef.current && hasMore) {
+          loadingMoreRef.current = true;
+          setPage((p) => p + 1);
+        }
+      });
+    });
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore]);
 
   useEffect(() => {
     return () => {
@@ -136,6 +176,14 @@ export default function ExplorePage() {
           })}
         </ul>
       )}
+      <div ref={sentinelRef} style={{ height: 1 }} />
+      {hasMore && !loading && posts.length > 0 && (
+        <p className="counter">Loading more…</p>
+      )}
+
+      {!hasMore &&
+        <p>You reached the end!</p>
+      }
     </section>
   );
 }
