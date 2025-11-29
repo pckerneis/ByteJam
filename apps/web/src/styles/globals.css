@@ -29,6 +29,10 @@ body {
   right: 0;
 }
 
+.text-centered {
+  text-align: center;
+}
+
 nav {
   min-width: 200px;
   border-right: 1px solid rgb(197, 197, 197);
@@ -173,6 +177,19 @@ main > section {
   color: white;
 }
 
+.button.ghost {
+  background: transparent;
+  border-color: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.button.danger {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
 .button:disabled {
   opacity: 0.5;
   cursor: default;
@@ -198,6 +215,12 @@ main > section {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.form-actions-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .checkbox {
@@ -294,4 +317,50 @@ main > section {
 
 .post-item.playing .post-expression {
   background-color: var(--post-expression-playing-background-color);
+}
+
+/* Modal */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 6px;
+  padding: 16px 18px;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin: 0 0 8px 0;
+}
+
+.modal p {
+  margin: 0 0 16px 0;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.post-actions {
+  display: flex;
+}
+
+.edit-link {
+  color: var(--secondary-text-color);
+  text-decoration: none;
+  font-size: 12px;
+  margin-left: auto;
 }

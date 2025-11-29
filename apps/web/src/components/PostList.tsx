@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { ModeOption } from 'shared';
@@ -17,9 +18,10 @@ export interface PostRow {
 
 interface PostListProps {
   posts: PostRow[];
+  showEditLinks?: boolean;
 }
 
-export function PostList({ posts }: PostListProps) {
+export function PostList({ posts, showEditLinks }: PostListProps) {
   const { toggle, stop, isPlaying } = useBytebeatPlayer();
   const [activePostId, setActivePostId] = useState<string | null>(null);
 
@@ -81,6 +83,13 @@ export function PostList({ posts }: PostListProps) {
             >
               <code>{minimize(post.expression)}</code>
             </pre>
+            {showEditLinks && (
+              <div className="post-actions">
+                <Link href={`/edit/${post.id}`} className="edit-link">
+                  Edit
+                </Link>
+              </div>
+            )}
           </li>
         );
       })}

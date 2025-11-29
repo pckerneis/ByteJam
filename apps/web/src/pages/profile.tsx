@@ -84,21 +84,10 @@ export default function ProfilePage() {
 
   return (
     <section>
-      <h2>Profile</h2>
       {!user && <p>You are not logged in. Use the login page to sign in.</p>}
       {user && loadingProfile && <p>Loading profile…</p>}
       {user && !loadingProfile && username && (
-        <p>
-          Your username is <strong>{username}</strong>.
-        </p>
-      )}
-      {user && !loadingProfile && !username && (
-        <p>You are logged in but do not have a username yet.</p>
-      )}
-      {user && !loadingProfile && !username && (
-        <>
-          <p><a href="/onboarding">Pick a username.</a></p>
-        </>
+        <h2><strong>@{username}</strong></h2>
       )}
 
       {user && (
@@ -108,7 +97,7 @@ export default function ProfilePage() {
           {!loadingPosts && posts.length === 0 && (
             <p>You have not created any posts yet.</p>
           )}
-          {!loadingPosts && posts.length > 0 && <PostList posts={posts} />}
+          {!loadingPosts && posts.length > 0 && <PostList posts={posts} showEditLinks />}
         </>
       )}
     </section>

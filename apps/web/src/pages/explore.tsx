@@ -99,11 +99,11 @@ export default function ExplorePage() {
       {!loading && !error && posts.length > 0 && <PostList posts={posts} />}
       <div ref={sentinelRef} style={{ height: 1 }} />
       {hasMore && !loading && posts.length > 0 && (
-        <p className="counter">Loading more…</p>
+        <p className="text-centered">Loading more…</p>
       )}
 
       {!hasMore &&
-        <p>You reached the end!</p>
+        <p className='text-centered'>You reached the end!</p>
       }
     </section>
   );
