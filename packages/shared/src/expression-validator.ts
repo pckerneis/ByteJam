@@ -1,20 +1,20 @@
 import * as acorn from 'acorn';
 
 const allowedGlobals = new Set([
-  't',
-  'Math',
-  'sin',
-  'cos',
-  'tan',
-  'abs',
-  'floor',
-  'ceil',
-  'sqrt',
-  'pow',
-  'min',
-  'max',
-  'round',
-  'random',
+    't',
+    'Math',
+    'sin',
+    'cos',
+    'tan',
+    'abs',
+    'floor',
+    'ceil',
+    'sqrt',
+    'pow',
+    'min',
+    'max',
+    'round',
+    'random',
 ]);
 
 const disallowedNodes = new Set<string>([
@@ -45,36 +45,36 @@ export interface ValidationResult {
 class BytebeatValidator {
     validate(expr: string): ValidationResult {
         try {
-          // Parse the code into an AST
-          const ast = acorn.parseExpressionAt(expr, 0, {
-            ecmaVersion: 2020,
-            sourceType: 'script',
-          });
+            // Parse the code into an AST
+            const ast = acorn.parseExpressionAt(expr, 0, {
+                ecmaVersion: 2020,
+                sourceType: 'script',
+            });
 
-          // Walk the AST and validate
-          const errors: string[] = [];
-          const warnings: string[] = [];
-          const declaredVars = new Set<string>();
+            // Walk the AST and validate
+            const errors: string[] = [];
+            const warnings: string[] = [];
+            const declaredVars = new Set<string>();
 
-          this.walkNode(ast as unknown as AcornNode, {
-            errors,
-            warnings,
-            declaredVars,
-            scope: [new Set(allowedGlobals)],
-          });
+            this.walkNode(ast as unknown as AcornNode, {
+                errors,
+                warnings,
+                declaredVars,
+                scope: [new Set(allowedGlobals)],
+            });
 
-          return {
-            valid: errors.length === 0,
-            errors,
-            warnings,
-          };
+            return {
+                valid: errors.length === 0,
+                errors,
+                warnings,
+            };
         } catch (e: unknown) {
-          const message = e instanceof Error ? e.message : String(e);
-          return {
-            valid: false,
-            errors: [`Parse error: ${message}`],
-            warnings: [],
-          };
+            const message = e instanceof Error ? e.message : String(e);
+            return {
+                valid: false,
+                errors: [`Parse error: ${message}`],
+                warnings: [],
+            };
         }
     }
 
@@ -84,6 +84,17 @@ class BytebeatValidator {
         // Check for disallowed node types
         if (disallowedNodes.has(node.type)) {
             context.errors.push(`${node.type} is not allowed in bytebeat expressions`);
+        }
+
+        // Treat assignment to an identifier as an implicit declaration in this scope
+        if (node.type === 'AssignmentExpression') {
+            const left = (node as any).left;
+            if (left?.type === 'Identifier') {
+                const name = left.name as string;
+                const currentScope = context.scope[context.scope.length - 1];
+                currentScope.add(name);
+                context.declaredVars.add(name);
+            }
         }
 
         // Track variable declarations
