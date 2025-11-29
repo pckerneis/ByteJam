@@ -77,7 +77,11 @@ importers:
         specifier: 5.4.5
         version: 5.4.5
 
-  packages/shared: {}
+  packages/shared:
+    dependencies:
+      acorn:
+        specifier: ^8.15.0
+        version: 8.15.0
 
 packages:
 

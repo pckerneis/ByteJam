@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
-import { getSampleRateValue, ModeOption, SampleRateOption } from 'shared';
+import { getSampleRateValue, ModeOption, SampleRateOption, validateExpression } from 'shared';
 
 const TITLE_MAX = 64;
 const EXPRESSION_MAX = 1024;
@@ -14,9 +14,21 @@ export default function CreatePage() {
   const { isPlaying, toggle, lastError } = useBytebeatPlayer();
   const sr = getSampleRateValue(sampleRate);
 
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   const expressionLength = expression.length;
 
   const handlePlayClick = () => {
+    const result = validateExpression(expression);
+
+    console.log(result);
+
+    if (!result.valid) {
+      setValidationError(result.errors[0] ?? 'Expression is not valid');
+      return;
+    }
+
+    setValidationError(null);
     void toggle(expression, mode, sr, true);
   };
 
@@ -103,6 +115,7 @@ export default function CreatePage() {
             </span>
           </div>
           {lastError ? <p className="error-message">{lastError}</p> : null}
+          {validationError ? <p className="error-message">{validationError}</p> : null}
         </label>
 
         <div className="form-actions">

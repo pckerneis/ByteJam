@@ -9,10 +9,11 @@ export enum SampleRateOption {
   _44_1k = "44.1kHz"
 }
 
-export function getSampleRateValue(sampleRate: SampleRateOption) {
+export function getSampleRateValue(sampleRate: SampleRateOption): number {
   switch (sampleRate) {
     case SampleRateOption._8k: return 8000;
     case SampleRateOption._16k: return 16000;
     case SampleRateOption._44_1k: return 44100;
   }
 }
+
