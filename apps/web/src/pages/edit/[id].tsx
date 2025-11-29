@@ -8,6 +8,7 @@ import {
   ModeOption,
   SampleRateOption,
   validateExpression,
+  minimizeExpression,
   type ValidationIssue,
 } from 'shared';
 

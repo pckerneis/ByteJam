@@ -17,3 +17,13 @@ export function getSampleRateValue(sampleRate: SampleRateOption): number {
   }
 }
 
+export function minimizeExpression(expr: string): string {
+  try {
+    // Remove spaces around common operators and punctuation, then collapse leftovers.
+    const tightened = expr.replace(/\s*([+\-*/%&|^!<>=?:,;(){}\[\]])\s*/g, '$1');
+    return tightened.replace(/\s+/g, ' ').trim();
+  } catch {
+    return expr;
+  }
+}
+

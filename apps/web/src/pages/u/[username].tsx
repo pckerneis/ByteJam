@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { useSupabaseAuth } from '../../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from '../../components/PostList';
 
 export default function UserPage() {
   const router = useRouter();
   const { username } = router.query;
+  const { user } = useSupabaseAuth();
 
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [profileId, setProfileId] = useState<string | null>(null);
@@ -87,7 +89,7 @@ export default function UserPage() {
 
       const { data, error } = await supabase
         .from('posts')
-        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profiles(username)')
+        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username)')
         .eq('profile_id', profileId)
         .eq('is_draft', false)
         .order('created_at', { ascending: false })
@@ -152,11 +154,16 @@ export default function UserPage() {
       {loading && <p>Loading…</p>}
       {!loading && error && <p className="error-message">{error}</p>}
 
-      {!loading && !error && posts.length === 0 && (
+      {!loading && !error && !hasMore && posts.length === 0 && (
         <p>This user has no public posts yet.</p>
       )}
 
-      {!loading && !error && posts.length > 0 && <PostList posts={posts} />}
+      {!loading && !error && posts.length > 0 && (
+        <PostList
+          posts={posts}
+          currentUserId={user ? (user as any).id : undefined}
+        />
+      )}
 
       <div ref={sentinelRef} style={{ height: 1 }} />
       {hasMore && !loading && posts.length > 0 && (

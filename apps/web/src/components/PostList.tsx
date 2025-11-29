@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
-import { ModeOption } from 'shared';
+import { ModeOption, minimizeExpression } from 'shared';
 
 export interface PostRow {
   id: string;
@@ -11,6 +11,7 @@ export interface PostRow {
   sample_rate: string;
   mode: string;
   created_at: string;
+  profile_id?: string;
   profiles?: {
     username: string | null;
   } | null;
@@ -18,10 +19,10 @@ export interface PostRow {
 
 interface PostListProps {
   posts: PostRow[];
-  showEditLinks?: boolean;
+  currentUserId?: string;
 }
 
-export function PostList({ posts, showEditLinks }: PostListProps) {
+export function PostList({ posts, currentUserId }: PostListProps) {
   const { toggle, stop, isPlaying } = useBytebeatPlayer();
   const [activePostId, setActivePostId] = useState<string | null>(null);
 
@@ -51,8 +52,6 @@ export function PostList({ posts, showEditLinks }: PostListProps) {
     setActivePostId(post.id);
   };
 
-  const minimize = (expr: string): string => expr.replace(/\s+/g, ' ');
-
   return (
     <ul className="post-list">
       {posts.map((post) => {
@@ -60,6 +59,7 @@ export function PostList({ posts, showEditLinks }: PostListProps) {
         const created = new Date(post.created_at).toLocaleDateString();
         const createdTitle = new Date(post.created_at).toLocaleString();
         const isActive = isPlaying && activePostId === post.id;
+        const canEdit = Boolean(currentUserId && post.profile_id && post.profile_id === currentUserId);
 
         return (
           <li key={post.id} className={`post-item ${isActive ? 'playing' : ''}`}>
@@ -87,9 +87,9 @@ export function PostList({ posts, showEditLinks }: PostListProps) {
               className="post-expression"
               onClick={() => void handleExpressionClick(post)}
             >
-              <code>{minimize(post.expression)}</code>
+              <code>{minimizeExpression(post.expression)}</code>
             </pre>
-            {showEditLinks && (
+            {canEdit && (
               <div className="post-actions">
                 <Link href={`/edit/${post.id}`} className="edit-link">
                   Edit

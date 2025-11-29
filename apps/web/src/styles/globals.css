@@ -82,6 +82,7 @@ a.nav {
 
 a.nav.active {
   color: var(--text-color);
+  font-weight: bold;
 }
 
 button.nav {
@@ -317,7 +318,8 @@ main > section {
 }
 
 .post-expression code {
-  white-space: break-spaces;
+  word-break: break-all;
+  white-space: pre-wrap;
 }
 
 .post-item.playing .post-expression {

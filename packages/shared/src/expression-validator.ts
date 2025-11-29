@@ -16,7 +16,9 @@ const allowedGlobals = new Set([
     'round',
     'random',
     'TAU',
-    'PI'
+    'PI',
+    'tanh',
+    'exp'
 ]);
 
 const disallowedNodes = new Set<string>([

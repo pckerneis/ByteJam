@@ -13,7 +13,8 @@
     "next": "14.2.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "shared": "workspace:*"
+    "shared": "workspace:*",
+    "terser": "^5.44.1"
   },
   "devDependencies": {
     "@types/node": "20.11.30",

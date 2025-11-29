@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useRouter } from 'next/router';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
@@ -7,6 +8,7 @@ import {
   ModeOption,
   SampleRateOption,
   validateExpression,
+  minimizeExpression,
   type ValidationIssue,
 } from 'shared';
 
@@ -14,6 +16,7 @@ const TITLE_MAX = 64;
 const EXPRESSION_MAX = 1024;
 
 export default function CreatePage() {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [expression, setExpression] = useState('');
   const [isDraft, setIsDraft] = useState(false);
@@ -96,22 +99,26 @@ export default function CreatePage() {
 
     const modeValue = mode === ModeOption.Float ? 'float' : 'int';
 
-    const { error } = await supabase.from('posts').insert({
-      profile_id: (user as any).id,
-      title: trimmedTitle,
-      expression: trimmedExpr,
-      is_draft: isDraft,
-      sample_rate: sampleRateValue,
-      mode: modeValue,
-    });
+    const { data, error } = await supabase
+      .from('posts')
+      .insert({
+        profile_id: (user as any).id,
+        title: trimmedTitle,
+        expression: trimmedExpr,
+        is_draft: isDraft,
+        sample_rate: sampleRateValue,
+        mode: modeValue,
+      })
+      .select('id')
+      .single();
 
-    if (error) {
-      setSaveError(error.message);
+    if (error || !data) {
+      setSaveError(error ? error.message : 'Unknown error while saving post.');
       setSaveStatus('idle');
       return;
     }
 
-    setSaveStatus('success');
+    await router.push(`/post/${data.id}`);
   };
 
   const isExpressionTooLong = expressionLength > EXPRESSION_MAX;

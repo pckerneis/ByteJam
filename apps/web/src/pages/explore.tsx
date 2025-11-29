@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from '../components/PostList';
 
 export default function ExplorePage() {
+  const { user } = useSupabaseAuth();
   const [posts, setPosts] = useState<PostRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,7 +36,7 @@ export default function ExplorePage() {
 
       const { data, error } = await supabase
         .from('posts')
-        .select('id,title,expression,sample_rate,mode,created_at,profiles(username)')
+        .select('id,title,expression,sample_rate,mode,created_at,profile_id,profiles(username)')
         .eq('is_draft', false)
         .order('created_at', { ascending: false })
         .range(from, to);
@@ -96,7 +98,12 @@ export default function ExplorePage() {
       {!loading && !error && posts.length === 0 && (
         <p>No posts yet. Create something on the Create page!</p>
       )}
-      {!loading && !error && posts.length > 0 && <PostList posts={posts} />}
+      {!loading && !error && posts.length > 0 && (
+        <PostList
+          posts={posts}
+          currentUserId={user ? (user as any).id : undefined}
+        />
+      )}
       <div ref={sentinelRef} style={{ height: 1 }} />
       {hasMore && !loading && posts.length > 0 && (
         <p className="text-centered">Loading more…</p>

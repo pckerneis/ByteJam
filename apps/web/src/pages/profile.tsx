@@ -58,7 +58,7 @@ export default function ProfilePage() {
     const loadPosts = async () => {
       const { data, error } = await supabase
         .from('posts')
-        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profiles(username)')
+        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username)')
         .eq('profile_id', (user as any).id)
         .order('created_at', { ascending: false });
 
@@ -97,7 +97,9 @@ export default function ProfilePage() {
           {!loadingPosts && posts.length === 0 && (
             <p>You have not created any posts yet.</p>
           )}
-          {!loadingPosts && posts.length > 0 && <PostList posts={posts} showEditLinks />}
+          {!loadingPosts && posts.length > 0 && (
+            <PostList posts={posts} currentUserId={(user as any).id} />
+          )}
         </>
       )}
     </section>
