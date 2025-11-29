@@ -32,14 +32,20 @@ type AcornNode = acorn.Node & {
 interface ValidationContext {
     errors: string[];
     warnings: string[];
+    issues: ValidationIssue[];
     declaredVars: Set<string>;
     scope: Array<Set<string>>;
 }
 
+export interface ValidationIssue {
+    message: string;
+    start: number;
+    end: number;
+}
+
 export interface ValidationResult {
     valid: boolean;
-    errors: string[];
-    warnings: string[];
+    issues: ValidationIssue[];
 }
 
 class BytebeatValidator {
@@ -54,26 +60,39 @@ class BytebeatValidator {
             // Walk the AST and validate
             const errors: string[] = [];
             const warnings: string[] = [];
+            const issues: ValidationIssue[] = [];
             const declaredVars = new Set<string>();
 
             this.walkNode(ast as unknown as AcornNode, {
                 errors,
                 warnings,
+                issues,
                 declaredVars,
                 scope: [new Set(allowedGlobals)],
             });
 
             return {
                 valid: errors.length === 0,
-                errors,
-                warnings,
+                issues,
             };
         } catch (e: unknown) {
             const message = e instanceof Error ? e.message : String(e);
+            let issues: ValidationIssue[] = [];
+            if (e && typeof e === 'object' && 'pos' in e) {
+                const err = e as { pos?: number };
+                const pos = typeof err.pos === 'number' ? err.pos : 0;
+                issues = [
+                    {
+                        message: `Parse error: ${message}`,
+                        start: pos,
+                        end: pos + 1,
+                    },
+                ];
+            }
+
             return {
                 valid: false,
-                errors: [`Parse error: ${message}`],
-                warnings: [],
+                issues,
             };
         }
     }
@@ -83,7 +102,13 @@ class BytebeatValidator {
 
         // Check for disallowed node types
         if (disallowedNodes.has(node.type)) {
-            context.errors.push(`${node.type} is not allowed in bytebeat expressions`);
+            const message = `${node.type} is not allowed in bytebeat expressions`;
+            context.errors.push(message);
+            context.issues.push({
+                message,
+                start: (node as any).start ?? 0,
+                end: (node as any).end ?? (node as any).start ?? 0,
+            });
         }
 
         // Treat assignment to an identifier as an implicit declaration in this scope
@@ -138,7 +163,13 @@ class BytebeatValidator {
             const isDeclared = context.scope.some((scope) => scope.has((node as any).name));
 
             if (!isDeclared) {
-                context.errors.push(`Undefined variable: '${(node as any).name}'`);
+                const message = `Undefined variable: '${(node as any).name}'`;
+                context.errors.push(message);
+                context.issues.push({
+                    message,
+                    start: (node as any).start ?? 0,
+                    end: (node as any).end ?? (node as any).start ?? 0,
+                });
             }
         }
 

@@ -1,6 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
-import { getSampleRateValue, ModeOption, SampleRateOption, validateExpression } from 'shared';
+import {
+  getSampleRateValue,
+  ModeOption,
+  SampleRateOption,
+  validateExpression,
+  type ValidationIssue,
+} from 'shared';
 
 const TITLE_MAX = 64;
 const EXPRESSION_MAX = 1024;
@@ -14,7 +20,7 @@ export default function CreatePage() {
   const { isPlaying, toggle, lastError } = useBytebeatPlayer();
   const sr = getSampleRateValue(sampleRate);
 
-  const [validationError, setValidationError] = useState<string | null>(null);
+  const [validationIssue, setValidationIssue] = useState<ValidationIssue | null>(null);
 
   const expressionLength = expression.length;
 
@@ -24,11 +30,11 @@ export default function CreatePage() {
     console.log(result);
 
     if (!result.valid) {
-      setValidationError(result.errors[0] ?? 'Expression is not valid');
+      setValidationIssue(result.issues[0] ?? null);
       return;
     }
 
-    setValidationError(null);
+    setValidationIssue(null);
     void toggle(expression, mode, sr, true);
   };
 
@@ -99,9 +105,6 @@ export default function CreatePage() {
             rows={8}
             placeholder="Type your bytebeat expression here"
           />
-          <div>
-
-          </div>
           <div className="field-footer">
             <button
               type="button"
@@ -114,8 +117,22 @@ export default function CreatePage() {
               {expressionLength} / {EXPRESSION_MAX}
             </span>
           </div>
+
+          {validationIssue && (
+            <div className="expression-preview">
+              {validationIssue.message}
+              <pre>
+              <code>
+                {expression.slice(0, validationIssue.start)}
+                <span className="expr-highlight">
+                  {expression.slice(validationIssue.start, validationIssue.end)}
+                </span>
+                {expression.slice(validationIssue.end)}
+              </code>
+            </pre>
+            </div>
+          )}
           {lastError ? <p className="error-message">{lastError}</p> : null}
-          {validationError ? <p className="error-message">{validationError}</p> : null}
         </label>
 
         <div className="form-actions">
