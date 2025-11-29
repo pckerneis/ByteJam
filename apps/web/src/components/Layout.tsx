@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { PropsWithChildren } from 'react';
+import { useEffect, useState } from 'react';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
 
@@ -20,6 +21,46 @@ function NavLink({ href, children }: PropsWithChildren<{ href: string }>) {
 export function Layout({ children }: PropsWithChildren) {
   const { user } = useSupabaseAuth();
   const router = useRouter();
+  const [checkedProfile, setCheckedProfile] = useState(false);
+
+  useEffect(() => {
+    const devFakeAuth = process.env.NEXT_PUBLIC_DEV_FAKE_AUTH === '1';
+
+    if (!user || devFakeAuth || checkedProfile) return;
+
+    let cancelled = false;
+
+    const checkProfile = async () => {
+      if (!supabase) return;
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', (user as any).id)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.warn('Error checking profile', error.message);
+        setCheckedProfile(true);
+        return;
+      }
+
+      if (!data?.username && router.pathname !== '/onboarding') {
+        void router.push('/onboarding');
+      } else {
+        setCheckedProfile(true);
+      }
+    };
+
+    void checkProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, checkedProfile, router]);
 
   const handleSignOut = async () => {
     if (!supabase) return;
