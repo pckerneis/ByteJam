@@ -45,7 +45,7 @@ export default function UserPage() {
 
       const { data, error } = await supabase
         .from('posts')
-        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username)')
+        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)')
         .eq('profiles.username', username)
         .eq('is_draft', false)
         .order('created_at', { ascending: false })
@@ -63,7 +63,28 @@ export default function UserPage() {
         }
         setHasMore(false);
       } else {
-        const rows = data ?? [];
+        let rows = (data ?? []).map((row: any) => ({
+          ...row,
+          favorites_count: row.favorites?.[0]?.count ?? 0,
+        }));
+
+        if (user && rows.length > 0) {
+          const postIds = rows.map((r: any) => r.id);
+          const { data: favs, error: favError } = await supabase
+            .from('favorites')
+            .select('post_id')
+            .eq('profile_id', (user as any).id)
+            .in('post_id', postIds);
+
+          if (!favError && favs) {
+            const favoritedSet = new Set((favs as any[]).map((f) => f.post_id as string));
+            rows = rows.map((r: any) => ({
+              ...r,
+              favorited_by_current_user: favoritedSet.has(r.id),
+            }));
+          }
+        }
+
         setPosts((prev) => (page === 0 ? rows : [...prev, ...rows]));
         if (page === 0) {
           setHasLoadedFirstPage(true);

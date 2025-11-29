@@ -58,6 +58,7 @@ main {
 .app-title {
   display: flex;
   padding: 10px;
+  justify-content: center;
 }
 
 h1 {
@@ -247,6 +248,44 @@ main > section {
   margin-left: auto;
 }
 
+.post-actions {
+  display: flex;
+  gap: 8px;
+}
+
+
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--chip-border-color);
+  background: var(--chip-background-color);
+  font-size: 12px;
+  cursor: default;
+  font-family: inherit;
+}
+
+.favorite-button.favorited {
+  background: #f3513f;
+  color: white;
+  font-weight: bold;
+}
+
+.favorite-button .heart {
+  color: #c0392b;
+  font-weight: bold;
+}
+
+.favorite-button.favorited .heart {
+  color: #fac4be;
+}
+
+.favorite-count {
+  min-width: 1ch;
+}
+
 .option-chip {
   font-family: inherit;
   font-size: 12px;
@@ -365,10 +404,6 @@ main > section {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-}
-
-.post-actions {
-  display: flex;
 }
 
 .edit-link {

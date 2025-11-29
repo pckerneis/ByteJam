@@ -27,7 +27,7 @@ export default function PostDetailPage() {
 
       const { data, error } = await supabase
         .from('posts')
-        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username)')
+        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)')
         .eq('id', id)
         .maybeSingle();
 
@@ -47,7 +47,27 @@ export default function PostDetailPage() {
         return;
       }
 
-      setPosts([data as unknown as PostRow]);
+      let rowWithCount = {
+        ...(data as any),
+        favorites_count: (data as any).favorites?.[0]?.count ?? 0,
+      } as PostRow;
+
+      if (user) {
+        const { data: favs, error: favError } = await supabase
+          .from('favorites')
+          .select('post_id')
+          .eq('profile_id', (user as any).id)
+          .eq('post_id', rowWithCount.id);
+
+        if (!favError && favs && favs.length > 0) {
+          rowWithCount = {
+            ...rowWithCount,
+            favorited_by_current_user: true,
+          };
+        }
+      }
+
+      setPosts([rowWithCount]);
       setLoading(false);
     };
 

@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
+import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
+import { supabase } from '../lib/supabaseClient';
 import { ModeOption, minimizeExpression } from 'shared';
 
 export interface PostRow {
@@ -15,6 +18,8 @@ export interface PostRow {
   profiles?: {
     username: string | null;
   } | null;
+  favorites_count?: number;
+  favorited_by_current_user?: boolean;
 }
 
 interface PostListProps {
@@ -25,6 +30,11 @@ interface PostListProps {
 export function PostList({ posts, currentUserId }: PostListProps) {
   const { toggle, stop, isPlaying } = useBytebeatPlayer();
   const [activePostId, setActivePostId] = useState<string | null>(null);
+  const [favoriteState, setFavoriteState] = useState<
+    Record<string, { count: number; favorited: boolean }>
+  >({});
+  const { user } = useSupabaseAuth();
+  const router = useRouter();
 
   useEffect(() => {
     return () => {
@@ -52,6 +62,60 @@ export function PostList({ posts, currentUserId }: PostListProps) {
     setActivePostId(post.id);
   };
 
+  const handleFavoriteClick = async (post: PostRow) => {
+    if (!supabase) return;
+
+    if (!user) {
+      await router.push('/login');
+      return;
+    }
+
+    const userId = (user as any).id as string;
+    const current = favoriteState[post.id];
+    const baseCount = post.favorites_count ?? 0;
+    const currentCount = current ? current.count : baseCount;
+
+    // Try to insert; if unique violation, delete instead.
+    const { error } = await supabase
+      .from('favorites')
+      .insert({ profile_id: userId, post_id: post.id });
+
+    if (!error) {
+      // Favorited successfully.
+      setFavoriteState((prev) => ({
+        ...prev,
+        [post.id]: { count: currentCount + 1, favorited: true },
+      }));
+      return;
+    }
+
+    const code = (error as any).code as string | undefined;
+    if (code !== '23505') {
+      // Non-unique violation error; do not attempt delete.
+      // eslint-disable-next-line no-console
+      console.warn('Error favoriting post', error.message);
+      return;
+    }
+
+    // Already favorited -> remove favorite.
+    const { error: deleteError } = await supabase
+      .from('favorites')
+      .delete()
+      .eq('profile_id', userId)
+      .eq('post_id', post.id);
+
+    if (deleteError) {
+      // eslint-disable-next-line no-console
+      console.warn('Error removing favorite', deleteError.message);
+      return;
+    }
+
+    setFavoriteState((prev) => ({
+      ...prev,
+      [post.id]: { count: Math.max(0, currentCount - 1), favorited: false },
+    }));
+  };
+
   return (
     <ul className="post-list">
       {posts.map((post) => {
@@ -60,6 +124,12 @@ export function PostList({ posts, currentUserId }: PostListProps) {
         const createdTitle = new Date(post.created_at).toLocaleString();
         const isActive = isPlaying && activePostId === post.id;
         const canEdit = Boolean(currentUserId && post.profile_id && post.profile_id === currentUserId);
+        const favorite = favoriteState[post.id];
+        const favoriteCount = favorite ? favorite.count : post.favorites_count ?? 0;
+        const isFavorited =
+          favorite?.favorited !== undefined
+            ? favorite.favorited
+            : !!post.favorited_by_current_user;
 
         return (
           <li key={post.id} className={`post-item ${isActive ? 'playing' : ''}`}>
@@ -89,13 +159,22 @@ export function PostList({ posts, currentUserId }: PostListProps) {
             >
               <code>{minimizeExpression(post.expression)}</code>
             </pre>
-            {canEdit && (
-              <div className="post-actions">
+            <div className="post-actions">
+              <button
+                type="button"
+                className={`favorite-button ${isFavorited ? ' favorited' : ''}`}
+                onClick={() => void handleFavoriteClick(post)}
+                aria-label="Favorite"
+              >
+                <span className="heart">&lt;3</span>
+                <span className="favorite-count">{favoriteCount}</span>
+              </button>
+              {canEdit && (
                 <Link href={`/edit/${post.id}`} className="edit-link">
                   Edit
                 </Link>
-              </div>
-            )}
+              )}
+            </div>
           </li>
         );
       })}

@@ -97,7 +97,9 @@ export function Layout({ children }: PropsWithChildren) {
     <div className="root">
       <nav>
         <div className="app-title">
-          <h1>Bitebeats</h1>
+          <Link href="/explore">
+            <h1>Bitebeats</h1>
+          </Link>
         </div>
         <ul>
           <NavLink href="/create">Create</NavLink>
