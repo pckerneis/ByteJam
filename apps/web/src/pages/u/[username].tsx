@@ -362,7 +362,7 @@ export default function UserPage() {
           {!loading && error && <p className="error-message">{error}</p>}
 
           {hasLoadedFirstPage && !loading && !error && page === 0 && !hasMore && posts.length === 0 && (
-            <p>This user has no public posts yet.</p>
+            <p className="text-centered">This user has no public posts yet.</p>
           )}
 
           {!loading && !error && posts.length > 0 && (

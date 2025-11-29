@@ -13,6 +13,8 @@ export default function ExplorePage() {
   const loadingMoreRef = useRef(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
+  const [activeTab, setActiveTab] = useState<'recent' | 'popular'>('recent');
+
   const [activePostId] = useState<string | null>(null); // kept for potential future use
 
   useEffect(() => {
@@ -34,12 +36,21 @@ export default function ExplorePage() {
       }
       setError('');
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('posts')
         .select('id,title,expression,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)')
-        .eq('is_draft', false)
-        .order('created_at', { ascending: false })
-        .range(from, to);
+        .eq('is_draft', false);
+
+      if (activeTab === 'recent') {
+        query = query.order('created_at', { ascending: false });
+      } else {
+        // Order by favorites count first, then recency as a tiebreaker.
+        query = query
+          .order('count', { foreignTable: 'favorites', ascending: false })
+          .order('created_at', { ascending: false });
+      }
+
+      const { data, error } = await query.range(from, to);
 
       if (cancelled) return;
 
@@ -73,7 +84,25 @@ export default function ExplorePage() {
           }
         }
 
-        setPosts((prev) => (page === 0 ? rows : [...prev, ...rows]));
+        setPosts((prev) => {
+          const combined = page === 0 ? rows : [...prev, ...rows];
+
+          if (activeTab !== 'popular') {
+            return combined;
+          }
+
+          const sorted = [...combined].sort((a, b) => {
+            const fa = a.favorites_count ?? 0;
+            const fb = b.favorites_count ?? 0;
+            if (fb !== fa) return fb - fa;
+
+            const da = new Date(a.created_at).getTime();
+            const db = new Date(b.created_at).getTime();
+            return db - da;
+          });
+
+          return sorted;
+        });
         if (rows.length < pageSize) {
           setHasMore(false);
         }
@@ -88,7 +117,7 @@ export default function ExplorePage() {
     return () => {
       cancelled = true;
     };
-  }, [page, user]);
+  }, [page, user, activeTab]);
 
   useEffect(() => {
     if (!hasMore) return;
@@ -112,13 +141,37 @@ export default function ExplorePage() {
     };
   }, [hasMore]);
 
+  const handleTabClick = (tab: 'recent' | 'popular') => {
+    if (tab === activeTab) return;
+    setActiveTab(tab);
+    setPage(0);
+    setPosts([]);
+    setHasMore(true);
+    setError('');
+    loadingMoreRef.current = false;
+  };
+
   return (
     <section>
       <h2>Explore</h2>
-      {loading && <p>Loading posts…</p>}
+      <div className="tab-header">
+        <span
+          className={`tab-button ${activeTab === 'recent' ? 'active' : ''}`}
+          onClick={() => handleTabClick('recent')}
+        >
+          Recent
+        </span>
+        <span
+          className={`tab-button ${activeTab === 'popular' ? 'active' : ''}`}
+          onClick={() => handleTabClick('popular')}
+        >
+          Popular
+        </span>
+      </div>
+      {loading && <p className="text-centered">Loading posts…</p>}
       {error && !loading && <p className="error-message">{error}</p>}
       {!loading && !error && posts.length === 0 && (
-        <p>No posts yet. Create something on the Create page!</p>
+        <p className="text-centered">No posts yet. Create something on the Create page!</p>
       )}
       {!loading && !error && posts.length > 0 && (
         <PostList
