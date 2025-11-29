@@ -241,6 +241,12 @@ main > section {
   gap: 6px;
 }
 
+.chips .created {
+  font-size: 12px;
+  color: var(--secondary-text-color);
+  margin-left: auto;
+}
+
 .option-chip {
   font-family: inherit;
   font-size: 12px;

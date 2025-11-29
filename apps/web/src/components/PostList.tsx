@@ -72,7 +72,6 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                 ) : (
                   <span className="username">@unknown</span>
                 )}
-                <span className="created" title={createdTitle}>{created}</span>
               </div>
               <h3>{post.title}</h3>
               <div className="chips">
@@ -81,6 +80,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                 )}
                 <span className="chip mode">{post.mode}</span>
                 <span className="chip sample-rate">{post.sample_rate}</span>
+                <span className="created" title={createdTitle}>{created}</span>
               </div>
             </div>
             <pre
