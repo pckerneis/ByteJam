@@ -240,10 +240,20 @@ main > section {
 .chips {
   display: flex;
   gap: 6px;
+  align-items: flex-end;
+}
+
+.chips .chip {
+  font-family: inherit;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--chip-border-color);
+  background: var(--chip-background-color);
 }
 
 .chips .created {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--secondary-text-color);
   margin-left: auto;
 }
@@ -307,9 +317,9 @@ main > section {
 .post-item {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   list-style: none;
-  padding: 10px;
+  padding: 4px;
   border: 2px solid transparent;
 }
 
@@ -327,6 +337,9 @@ main > section {
 .post-header h3 {
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }
 
 .post-item .post-meta {
@@ -338,26 +351,12 @@ main > section {
   flex: 1;
 }
 
-.post-item .chips {
-  display: flex;
-  gap: 6px;
-}
-
-.post-item .chips .chip {
-  font-family: inherit;
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--chip-border-color);
-  background: var(--chip-background-color);
-}
-
 .post-expression {
   background: var(--post-expression-background-color);
-  padding: 8px 12px;
   font-size: 12px;
   margin: 0;
   min-height: 50px;
+  display: flex;
   cursor: pointer;
   user-select: none;
 }
@@ -365,6 +364,7 @@ main > section {
 .post-expression code {
   word-break: break-all;
   white-space: pre-wrap;
+  flex: 1;
 }
 
 .post-item.playing .post-expression {

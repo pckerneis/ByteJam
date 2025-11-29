@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
@@ -25,6 +27,18 @@ export interface PostRow {
 interface PostListProps {
   posts: PostRow[];
   currentUserId?: string;
+}
+
+// Register JavaScript language once for highlight.js
+hljs.registerLanguage('javascript', javascript);
+
+function highlightExpression(expr: string): string {
+  const minimized = minimizeExpression(expr);
+  try {
+    return hljs.highlight(minimized, { language: 'javascript' }).value;
+  } catch {
+    return minimized;
+  }
 }
 
 export function PostList({ posts, currentUserId }: PostListProps) {
@@ -126,10 +140,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
         const canEdit = Boolean(currentUserId && post.profile_id && post.profile_id === currentUserId);
         const favorite = favoriteState[post.id];
         const favoriteCount = favorite ? favorite.count : post.favorites_count ?? 0;
-        const isFavorited =
-          favorite?.favorited !== undefined
-            ? favorite.favorited
-            : !!post.favorited_by_current_user;
+        const isFavorited = !!favorite?.favorited;
 
         return (
           <li key={post.id} className={`post-item ${isActive ? 'playing' : ''}`}>
@@ -157,7 +168,14 @@ export function PostList({ posts, currentUserId }: PostListProps) {
               className="post-expression"
               onClick={() => void handleExpressionClick(post)}
             >
-              <code>{minimizeExpression(post.expression)}</code>
+              <code
+                className="hljs"
+                // highlight.js returns HTML for tokens; highlightExpression wraps
+                // the call in a try/catch and falls back to plain text.
+                dangerouslySetInnerHTML={{
+                  __html: highlightExpression(post.expression),
+                }}
+              />
             </pre>
             <div className="post-actions">
               <button
