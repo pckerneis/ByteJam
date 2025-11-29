@@ -3,12 +3,12 @@ import { useRouter } from 'next/router';
 import { useBytebeatPlayer } from '../../hooks/useBytebeatPlayer';
 import { useSupabaseAuth } from '../../hooks/useSupabaseAuth';
 import { supabase } from '../../lib/supabaseClient';
+import { ExpressionEditor } from '../../components/ExpressionEditor';
 import {
   getSampleRateValue,
   ModeOption,
   SampleRateOption,
   validateExpression,
-  minimizeExpression,
   type ValidationIssue,
 } from 'shared';
 
@@ -88,8 +88,8 @@ export default function EditPostPage() {
         data.sample_rate === '8k'
           ? SampleRateOption._8k
           : data.sample_rate === '16k'
-          ? SampleRateOption._16k
-          : SampleRateOption._44_1k,
+            ? SampleRateOption._16k
+            : SampleRateOption._44_1k,
       );
 
       setLoading(false);
@@ -160,8 +160,8 @@ export default function EditPostPage() {
       sampleRate === SampleRateOption._8k
         ? '8k'
         : sampleRate === SampleRateOption._16k
-        ? '16k'
-        : '44.1k';
+          ? '16k'
+          : '44.1k';
 
     const modeValue = mode === ModeOption.Float ? 'float' : 'int';
 
@@ -291,44 +291,41 @@ export default function EditPostPage() {
           </button>
         </div>
 
-        <label className="field">
-          <textarea
-            className="expression-input"
+        <div className="expression-input">
+          <ExpressionEditor
             value={expression}
-            onChange={(e) => handleExpressionChange(e.target.value)}
-            rows={8}
-            placeholder="Type your bytebeat expression here"
+            onChange={handleExpressionChange}
           />
-          <div className="field-footer">
-            <button
-              type="button"
-              className="button secondary"
-              disabled={!expression.trim() || !!validationIssue}
-              onClick={handlePlayClick}
-            >
-              {isPlaying ? 'Stop' : 'Play'}
-            </button>
-            <span className={isExpressionTooLong ? 'counter error' : 'counter'}>
-              {expressionLength} / {EXPRESSION_MAX}
-            </span>
-          </div>
+        </div>
+        <div className="field-footer">
+          <button
+            type="button"
+            className="button secondary"
+            disabled={!expression.trim() || !!validationIssue}
+            onClick={handlePlayClick}
+          >
+            {isPlaying ? 'Stop' : 'Play'}
+          </button>
+          <span className={isExpressionTooLong ? 'counter error' : 'counter'}>
+            {expressionLength} / {EXPRESSION_MAX}
+          </span>
+        </div>
 
-          {validationIssue && (
-            <div className="expression-preview">
-              {validationIssue.message}
-              <pre>
-                <code>
-                  {expression.slice(0, validationIssue.start)}
-                  <span className="expr-highlight">
-                    {expression.slice(validationIssue.start, validationIssue.end)}
-                  </span>
-                  {expression.slice(validationIssue.end)}
-                </code>
-              </pre>
-            </div>
-          )}
-          {lastError ? <p className="error-message">{lastError}</p> : null}
-        </label>
+        {validationIssue && (
+          <div className="expression-preview">
+            {validationIssue.message}
+            <pre>
+              <code>
+                {expression.slice(0, validationIssue.start)}
+                <span className="expr-highlight">
+                  {expression.slice(validationIssue.start, validationIssue.end)}
+                </span>
+                {expression.slice(validationIssue.end)}
+              </code>
+            </pre>
+          </div>
+        )}
+        {lastError ? <p className="error-message">{lastError}</p> : null}
 
         <div className="form-actions">
           <label className="checkbox">

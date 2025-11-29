@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
-import { javascript } from '@codemirror/lang-javascript';
-import CodeMirror from '@uiw/react-codemirror';
-import { tomorrowNightBlue } from '@uiw/codemirror-theme-tomorrow-night-blue';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
+import { ExpressionEditor } from '../components/ExpressionEditor';
 import {
   getSampleRateValue,
   ModeOption,
@@ -17,11 +14,6 @@ import {
 
 const TITLE_MAX = 64;
 const EXPRESSION_MAX = 1024;
-
-// const CodeMirror = dynamic<any>(
-//   () => import('@uiw/react-codemirror').then((mod) => mod.default),
-//   { ssr: false },
-// );
 
 export default function CreatePage() {
   const router = useRouter();
@@ -192,17 +184,9 @@ export default function CreatePage() {
         </div>
 
           <div className="expression-input">
-            <CodeMirror
+            <ExpressionEditor
               value={expression}
-              height="200px"
-              extensions={[javascript()]}
-              basicSetup={{
-                lineNumbers: false,
-                foldGutter: false,
-                highlightActiveLine: false
-              }}
-              theme={tomorrowNightBlue}
-              onChange={(value: string) => handleExpressionChange(value)}
+              onChange={handleExpressionChange}
             />
           </div>
           <div className="field-footer">

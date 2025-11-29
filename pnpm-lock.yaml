@@ -48,6 +48,9 @@ importers:
       '@codemirror/lang-javascript':
         specifier: ^6.2.1
         version: 6.2.4
+      '@codemirror/view':
+        specifier: ^6.34.1
+        version: 6.38.8
       '@supabase/supabase-js':
         specifier: 2.48.0
         version: 2.48.0
