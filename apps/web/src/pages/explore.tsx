@@ -1,25 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
-import { ModeOption } from 'shared';
-
-interface PostRow {
-  id: string;
-  title: string;
-  expression: string;
-  is_draft: boolean;
-  sample_rate: string;
-  mode: string;
-  created_at: string;
-  profiles?: {
-    username: string | null;
-  } | null;
-}
-
-function minimize(expr: string): string {
-    // remove extraneous whitespaces
-    return expr.replace(/\s+/g, ' ');
-}
+import { PostList, type PostRow } from '../components/PostList';
 
 export default function ExplorePage() {
   const [posts, setPosts] = useState<PostRow[]>([]);
@@ -30,8 +11,7 @@ export default function ExplorePage() {
   const loadingMoreRef = useRef(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  const { toggle, stop, isPlaying } = useBytebeatPlayer();
-  const [activePostId, setActivePostId] = useState<string | null>(null);
+  const [activePostId] = useState<string | null>(null); // kept for potential future use
 
   useEffect(() => {
     if (!supabase) {
@@ -108,32 +88,6 @@ export default function ExplorePage() {
     };
   }, [hasMore]);
 
-  useEffect(() => {
-    return () => {
-      void stop();
-    };
-  }, [stop]);
-
-  const handleExpressionClick = async (post: PostRow) => {
-    // Clicking the active post stops playback
-    if (isPlaying && activePostId === post.id) {
-      await stop();
-      setActivePostId(null);
-      return;
-    }
-
-    // Ensure any existing playback is fully stopped before starting a new one
-    await stop();
-
-    const sr =
-      post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
-
-    const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
-
-    await toggle(post.expression, mode, sr, true);
-    setActivePostId(post.id);
-  };
-
   return (
     <section>
       <h2>Explore</h2>
@@ -142,40 +96,7 @@ export default function ExplorePage() {
       {!loading && !error && posts.length === 0 && (
         <p>No posts yet. Create something on the Create page!</p>
       )}
-      {!loading && !error && posts.length > 0 && (
-        <ul className="post-list">
-          {posts.map((post) => {
-            const username = post.profiles?.username ?? 'unknown';
-            const created = new Date(post.created_at).toLocaleDateString();
-            const createdTitle = new Date(post.created_at).toLocaleString();
-            const isActive = isPlaying && activePostId === post.id;
-
-            return (
-              <li key={post.id} className={`post-item ${isActive ? 'playing' : ''}`}>
-                <div className="post-header">
-                  <div className="post-meta">
-                    <span className="username">@{username}</span>
-                    <span className="created" title={createdTitle}>{created}</span>
-                  </div>
-                  <h3>
-                    {post.title}
-                  </h3>
-                  <div className="chips">
-                    <span className="chip mode">{post.mode}</span>
-                    <span className="chip sample-rate">{post.sample_rate}</span>
-                  </div>
-                </div>
-                <pre
-                  className="post-expression"
-                  onClick={() => void handleExpressionClick(post)}
-                >
-                  <code>{minimize(post.expression)}</code>
-                </pre>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      {!loading && !error && posts.length > 0 && <PostList posts={posts} />}
       <div ref={sentinelRef} style={{ height: 1 }} />
       {hasMore && !loading && posts.length > 0 && (
         <p className="counter">Loading more…</p>

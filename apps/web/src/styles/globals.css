@@ -266,7 +266,7 @@ main > section {
 
 .post-item .chips {
   display: flex;
-  gap: 10px;
+  gap: 6px;
 }
 
 .post-item .chips .chip {

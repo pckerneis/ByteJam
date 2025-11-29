@@ -25,7 +25,7 @@ export function useBytebeatPlayer(): BytebeatPlayer {
 
     if (!audioContextRef.current) {
       const ctx = new AudioContext();
-      await ctx.audioWorklet.addModule(new URL('../bytebeat-worklet.js', import.meta.url));
+      await ctx.audioWorklet.addModule('/bytebeat-worklet.js');
       audioContextRef.current = ctx;
     }
 
