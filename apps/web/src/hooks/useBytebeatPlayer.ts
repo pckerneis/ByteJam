@@ -16,33 +16,53 @@ interface BytebeatPlayer {
 // Module-level singletons so the audio engine is shared across the whole app.
 let audioContext: AudioContext | null = null;
 let workletNode: AudioWorkletNode | null = null;
+let workletConnected = false;
+
+// Internal helper to lazily create the AudioContext and worklet node.
+async function ensureContextAndNodeBase() {
+  if (typeof window === 'undefined') return null;
+
+  if (!audioContext) {
+    const ctx = new AudioContext();
+    await ctx.audioWorklet.addModule('/bytebeat-worklet.js');
+    audioContext = ctx;
+  }
+
+  if (!workletNode && audioContext) {
+    const node = new AudioWorkletNode(audioContext, 'bytebeat-processor');
+    // Do NOT connect to destination here; this is used by warm-up as well.
+    // We will connect the node only when starting actual playback to avoid
+    // any audible clicks during initialization.
+    workletNode = node;
+  }
+
+  return { ctx: audioContext!, node: workletNode! };
+}
+
+// Public warm-up function: can be called on first user gesture to hide
+// the cost of creating the AudioContext and loading the worklet.
+export async function warmUpBytebeatEngine(): Promise<void> {
+  await ensureContextAndNodeBase();
+}
 
 export function useBytebeatPlayer(): BytebeatPlayer {
   const [isPlaying, setIsPlaying] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
 
   const ensureContextAndNode = useCallback(async () => {
-    if (typeof window === 'undefined') return null;
+    const res = await ensureContextAndNodeBase();
+    if (!res) return null;
 
-    if (!audioContext) {
-      const ctx = new AudioContext();
-      await ctx.audioWorklet.addModule('/bytebeat-worklet.js');
-      audioContext = ctx;
-    }
+    const { node } = res;
+    // Attach error forwarding once per hook usage.
+    node.port.onmessage = (event) => {
+      const { type, message } = event.data || {};
+      if (type === 'compileError' || type === 'runtimeError') {
+        setLastError(String(message || 'Unknown error'));
+      }
+    };
 
-    if (!workletNode && audioContext) {
-      const node = new AudioWorkletNode(audioContext, 'bytebeat-processor');
-      node.port.onmessage = (event) => {
-        const { type, message } = event.data || {};
-        if (type === 'compileError' || type === 'runtimeError') {
-          setLastError(String(message || 'Unknown error'));
-        }
-      };
-      node.connect(audioContext.destination);
-      workletNode = node;
-    }
-
-    return { ctx: audioContext!, node: workletNode! };
+    return res;
   }, []);
 
   const toggle = useCallback(
@@ -57,6 +77,10 @@ export function useBytebeatPlayer(): BytebeatPlayer {
       const isContextRunning = ctx.state === 'running';
 
       if (!isContextRunning) {
+        if (!workletConnected) {
+          node.connect(ctx.destination);
+          workletConnected = true;
+        }
         // Pre-validate expression by attempting to construct a Function on the main thread.
         // This prevents starting playback when there is a compile error.
         try {
