@@ -11,6 +11,9 @@ body {
   
   --text-color: black;
   --secondary-text-color: #555;
+
+  --chip-border-color: #bbb;
+  --chip-background-color: #f5f5f5;
 }
 
 .root {
@@ -75,7 +78,7 @@ main > section {
 .create-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 6px;
 }
 
 .field {
@@ -87,9 +90,14 @@ main > section {
 .post-title-input {
   font-family: inherit;
   font-size: 16px;
-  padding: 2px;
-  border-radius: 4px;
+  padding: 4px 0;
   border: none;
+}
+
+.post-title-input:focus {
+  outline: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--secondary-text-color);
 }
 
 .expression-input {
@@ -141,6 +149,12 @@ main > section {
   color: #b91c1c;
 }
 
+.error-message {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #b91c1c;
+}
+
 .form-actions {
   margin-top: 8px;
   display: flex;
@@ -153,4 +167,19 @@ main > section {
   align-items: center;
   gap: 6px;
   font-size: 13px;
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+}
+
+.option-chip {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--chip-border-color);
+  background: var(--chip-background-color);
+  cursor: pointer;
 }

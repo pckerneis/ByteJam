@@ -13,11 +13,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "types": ["node"],
-    "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "shared": ["../../packages/shared/src"]
-    }
+    "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
