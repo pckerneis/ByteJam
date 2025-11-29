@@ -228,7 +228,7 @@ export default function CreatePage() {
           <button
             type="submit"
             className="button primary"
-            disabled={!expression.trim() || saveStatus === 'saving'}
+            disabled={!expression.trim() || !!validationIssue || saveStatus === 'saving'}
           >
             {saveStatus === 'saving' ? 'Saving…' : 'Save'}
           </button>
