@@ -39,7 +39,6 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
 
   // Paginated load of this user's public posts by username
   useEffect(() => {
-    if (!supabase) return;
     if (!username) return;
 
     let cancelled = false;
@@ -133,7 +132,6 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
   // Load favorites for this user (by username) when the Favorites tab is first activated.
   useEffect(() => {
     if (activeTab !== 'favorites') return;
-    if (!supabase) return;
     if (!username) return;
 
     let cancelled = false;
@@ -223,7 +221,6 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
   // Load drafts for this user when the Drafts tab is activated, only on own profile.
   useEffect(() => {
     if (activeTab !== 'drafts') return;
-    if (!supabase) return;
     if (!username) return;
     if (!user) return;
 

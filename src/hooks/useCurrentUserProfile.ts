@@ -14,8 +14,6 @@ export function useCurrentUserProfile() {
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!supabase) return;
-
     // Wait for auth to finish loading before deciding where to redirect.
     if (loading) {
       return;

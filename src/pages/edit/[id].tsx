@@ -56,7 +56,6 @@ export default function EditPostPage() {
   }, [stop]);
 
   useEffect(() => {
-    if (!supabase) return;
     if (!id || typeof id !== 'string') return;
 
     let cancelled = false;
@@ -112,7 +111,6 @@ export default function EditPostPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (!supabase) return;
     if (!id || typeof id !== 'string') return;
 
     const trimmedTitle = title.trim();
@@ -157,7 +155,6 @@ export default function EditPostPage() {
   };
 
   const handleDelete = async () => {
-    if (!supabase) return;
     if (!id || typeof id !== 'string') return;
 
     if (!user) {

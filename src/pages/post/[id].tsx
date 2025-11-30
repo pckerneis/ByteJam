@@ -17,7 +17,6 @@ export default function PostDetailPage() {
   const { user } = useSupabaseAuth();
 
   useEffect(() => {
-    if (!supabase) return;
     if (!id || typeof id !== 'string') return;
 
     let cancelled = false;

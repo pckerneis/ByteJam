@@ -146,8 +146,6 @@ export default function CreatePage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (!supabase) return;
-
     const trimmedTitle = title.trim();
     const trimmedExpr = expression.trim();
 

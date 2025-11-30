@@ -44,8 +44,6 @@ export function Layout({ children }: PropsWithChildren) {
     let cancelled = false;
 
     const checkProfile = async () => {
-      if (!supabase) return;
-
       const { data, error } = await supabase
         .from('profiles')
         .select('username, tos_version')
@@ -113,7 +111,6 @@ export function Layout({ children }: PropsWithChildren) {
   }, []);
 
   const handleSignOut = async () => {
-    if (!supabase) return;
     await supabase.auth.signOut();
     await router.push('/');
   };
@@ -237,7 +234,6 @@ export function Layout({ children }: PropsWithChildren) {
   };
 
   const handleFooterFavoriteClick = async () => {
-    if (!supabase) return;
     if (!currentPost) return;
 
     if (!user) {

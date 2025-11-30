@@ -69,8 +69,6 @@ export function PostList({ posts, currentUserId }: PostListProps) {
   };
 
   const handleFavoriteClick = async (post: PostRow) => {
-    if (!supabase) return;
-
     if (!user) {
       await router.push('/login');
       return;
