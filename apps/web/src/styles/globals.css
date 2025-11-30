@@ -116,8 +116,8 @@ body {
   }
 }
 
-.visualizer {
-  background: #eee;
+.visualizer canvas {
+  image-rendering: pixelated;
 }
 
 .text-centered {
@@ -352,6 +352,7 @@ main > section {
   font-size: 12px;
   cursor: default;
   font-family: inherit;
+  cursor: pointer;
 }
 
 .favorite-button.favorited {

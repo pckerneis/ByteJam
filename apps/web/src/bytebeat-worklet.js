@@ -37,6 +37,10 @@ class BytebeatProcessor extends AudioWorkletProcessor {
     this._phase = 0;
     this._lastRaw = 0;
     this._gain = 0.5;
+    // For lightweight RMS metering
+    this._levelSumSquares = 0;
+    this._levelSampleCount = 0;
+    this._levelTargetSamples = 2048;
     this.port.onmessage = (event) => {
       const {
         type,
@@ -64,6 +68,12 @@ return Number((${expression})) || 0;
           if (hasTarget) {
             this._targetRate = targetSampleRate;
           }
+      if (this._levelSampleCount >= this._levelTargetSamples) {
+        const rms = Math.sqrt(this._levelSumSquares / this._levelSampleCount) || 0;
+        this.port.postMessage({ type: "level", rms });
+        this._levelSumSquares = 0;
+        this._levelSampleCount = 0;
+      }
 
           this._classic = !!classic;
           this._float = !!float;
@@ -123,7 +133,10 @@ return Number((${expression})) || 0;
               lastRaw = Math.max(-1, Math.min(1, v));
             }
 
-            channel[i] = lastRaw * gain;
+            const sample = lastRaw * gain;
+            channel[i] = sample;
+            this._levelSumSquares += sample * sample;
+            this._levelSampleCount += 1;
           }
         } else {
           for (let i = 0; i < channel.length; i += 1) {
@@ -136,7 +149,10 @@ return Number((${expression})) || 0;
             }
 
             const byteValue = lastRaw & 0xff;
-            channel[i] = ((byteValue - 128) / 128) * gain;
+            const sample = ((byteValue - 128) / 128) * gain;
+            channel[i] = sample;
+            this._levelSumSquares += sample * sample;
+            this._levelSampleCount += 1;
           }
         }
 
@@ -153,14 +169,20 @@ return Number((${expression})) || 0;
             const tSeconds = t / this._targetRate;
             const v = Number(fn(tSeconds)) || 0;
             const sample = Math.max(-1, Math.min(1, v));
-            channel[i] = sample * gain;
+            const out = sample * gain;
+            channel[i] = out;
+            this._levelSumSquares += out * out;
+            this._levelSampleCount += 1;
             t += step;
           }
         } else {
           for (let i = 0; i < channel.length; i += 1) {
             const raw = fn(t) | 0; // integer sample
             const byteValue = raw & 0xff;
-            channel[i] = ((byteValue - 128) / 128) * gain;
+            const sample = ((byteValue - 128) / 128) * gain;
+            channel[i] = sample;
+            this._levelSumSquares += sample * sample;
+            this._levelSampleCount += 1;
             t += step;
           }
         }

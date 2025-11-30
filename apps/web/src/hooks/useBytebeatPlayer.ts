@@ -11,12 +11,19 @@ interface BytebeatPlayer {
     aliased: boolean,
   ) => Promise<void>;
   stop: () => Promise<void>;
+  level: number;
+  waveform: Float32Array | null;
 }
 
 // Module-level singletons so the audio engine is shared across the whole app.
 let audioContext: AudioContext | null = null;
 let workletNode: AudioWorkletNode | null = null;
 let workletConnected = false;
+let analyserNode: AnalyserNode | null = null;
+let analyserData: Float32Array | null = null;
+let analyserTimerId: number | null = null;
+
+const ANALYSER_INTERVAL = 80;
 
 // Global playback state so multiple hook instances stay in sync.
 let globalIsPlaying = false;
@@ -25,6 +32,24 @@ const isPlayingListeners = new Set<(value: boolean) => void>();
 function setGlobalIsPlaying(value: boolean) {
   globalIsPlaying = value;
   isPlayingListeners.forEach((listener) => listener(value));
+}
+
+// Global RMS level for visualizers.
+let globalLevel = 0;
+const levelListeners = new Set<(value: number) => void>();
+
+function setGlobalLevel(value: number) {
+  globalLevel = value;
+  levelListeners.forEach((listener) => listener(value));
+}
+
+// Global waveform snapshot for visualizers (from AnalyserNode).
+let globalWaveform: Float32Array | null = null;
+const waveformListeners = new Set<(value: Float32Array | null) => void>();
+
+function setGlobalWaveform(value: Float32Array | null) {
+  globalWaveform = value;
+  waveformListeners.forEach((listener) => listener(value));
 }
 
 // Internal helper to lazily create the AudioContext and worklet node.
@@ -45,6 +70,29 @@ async function ensureContextAndNodeBase() {
     workletNode = node;
   }
 
+  if (!analyserNode && audioContext && workletNode) {
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+    analyserNode = analyser;
+    analyserData = new Float32Array(analyser.fftSize);
+    // Tap the worklet output; keep primary audio routing as-is.
+    workletNode.connect(analyserNode);
+
+    const updateWaveform = () => {
+      if (!analyserNode || !analyserData) {
+        setGlobalWaveform(null);
+      } else {
+        analyserNode.getFloatTimeDomainData(analyserData as any);
+        setGlobalWaveform(new Float32Array(analyserData));
+      }
+      analyserTimerId = window.setTimeout(updateWaveform, ANALYSER_INTERVAL);
+    };
+
+    if (analyserTimerId == null) {
+      analyserTimerId = window.setTimeout(updateWaveform, ANALYSER_INTERVAL);
+    }
+  }
+
   return { ctx: audioContext!, node: workletNode! };
 }
 
@@ -57,6 +105,8 @@ export async function warmUpBytebeatEngine(): Promise<void> {
 export function useBytebeatPlayer(): BytebeatPlayer {
   const [isPlaying, setIsPlaying] = useState(globalIsPlaying);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [level, setLevel] = useState(globalLevel);
+  const [waveform, setWaveform] = useState<Float32Array | null>(globalWaveform);
 
   useEffect(() => {
     const listener = (value: boolean) => {
@@ -68,16 +118,39 @@ export function useBytebeatPlayer(): BytebeatPlayer {
     };
   }, []);
 
+  useEffect(() => {
+    const listener = (value: number) => {
+      setLevel(value);
+    };
+    levelListeners.add(listener);
+    return () => {
+      levelListeners.delete(listener);
+    };
+  }, []);
+
+  useEffect(() => {
+    const listener = (value: Float32Array | null) => {
+      setWaveform(value);
+    };
+    waveformListeners.add(listener);
+    return () => {
+      waveformListeners.delete(listener);
+    };
+  }, []);
+
   const ensureContextAndNode = useCallback(async () => {
     const res = await ensureContextAndNodeBase();
     if (!res) return null;
 
     const { node } = res;
-    // Attach error forwarding once per hook usage.
+    // Attach error forwarding and level updates once per hook usage.
     node.port.onmessage = (event) => {
-      const { type, message } = event.data || {};
+      const { type, message, rms } = event.data || {};
       if (type === 'compileError' || type === 'runtimeError') {
         setLastError(String(message || 'Unknown error'));
+      } else if (type === 'level') {
+        const v = typeof rms === 'number' && Number.isFinite(rms) ? rms : 0;
+        setGlobalLevel(v);
       }
     };
 
@@ -151,7 +224,9 @@ export function useBytebeatPlayer(): BytebeatPlayer {
       lastError,
       toggle,
       stop,
+      level,
+      waveform,
     }),
-    [isPlaying, lastError, toggle, stop],
+    [isPlaying, lastError, toggle, stop, level, waveform],
   );
 }

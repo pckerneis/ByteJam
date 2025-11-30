@@ -25,9 +25,12 @@ export function Layout({ children }: PropsWithChildren) {
   const { user } = useSupabaseAuth();
   const router = useRouter();
   const [checkedProfile, setCheckedProfile] = useState(false);
-  const { isPlaying, toggle, stop } = useBytebeatPlayer();
+  const { isPlaying, toggle, stop, level, waveform } = useBytebeatPlayer();
   const { currentPost, next, prev, updateFavoriteStateForPost } = usePlayerStore();
   const titleRef = useRef<HTMLDivElement | null>(null);
+  const visualizerRef = useRef<HTMLCanvasElement | null>(null);
+  const visualizerAnimationRef = useRef<number | null>(null);
+  const visualizerPhaseRef = useRef(0);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
 
   useEffect(() => {
@@ -136,6 +139,57 @@ export function Layout({ children }: PropsWithChildren) {
       window.removeEventListener('resize', update);
     };
   }, [currentPost?.title]);
+
+  useEffect(() => {
+    const canvas = visualizerRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const render = () => {
+      ctx.fillStyle = '#eee';
+      ctx.fillRect(0, 0, width, height);
+
+      if (isPlaying && waveform && waveform.length > 0) {
+        const len = waveform.length;
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+
+        for (let x = 0; x < width; x += 1) {
+          const idx = Math.min(len - 1, Math.floor((x / width) * len));
+          const sample = waveform[idx]; // [-1, 1]
+          const y = height * 0.5 - sample * (height * 0.45);
+
+          if (x === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+
+        ctx.stroke();
+      }
+
+      visualizerAnimationRef.current = window.requestAnimationFrame(render);
+    };
+
+    if (visualizerAnimationRef.current != null) {
+      window.cancelAnimationFrame(visualizerAnimationRef.current);
+    }
+    visualizerAnimationRef.current = window.requestAnimationFrame(render);
+
+    return () => {
+      if (visualizerAnimationRef.current != null) {
+        window.cancelAnimationFrame(visualizerAnimationRef.current);
+        visualizerAnimationRef.current = null;
+      }
+    };
+  }, [isPlaying, currentPost?.id, waveform]);
 
   const handleFooterPlayPause = async () => {
     if (!currentPost) return;
@@ -291,7 +345,7 @@ export function Layout({ children }: PropsWithChildren) {
           </button>
         </div>
         <div className="vizualizer">
-          <canvas width={150} height={26}></canvas>
+          <canvas ref={visualizerRef} width={150} height={26}></canvas>
         </div>
         <div className="played-post-info">
           <div className="played-post-author">
