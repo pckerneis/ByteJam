@@ -8,7 +8,6 @@ interface BytebeatPlayer {
     expression: string,
     mode: ModeOption,
     sampleRate: number,
-    aliased: boolean,
   ) => Promise<void>;
   stop: () => Promise<void>;
   level: number;
@@ -158,7 +157,7 @@ export function useBytebeatPlayer(): BytebeatPlayer {
   }, []);
 
   const toggle = useCallback(
-    async (expression: string, mode: ModeOption, sampleRate: number, aliased: boolean) => {
+    async (expression: string, mode: ModeOption, sampleRate: number) => {
       if (!expression.trim()) return;
 
       const res = await ensureContextAndNode();
@@ -191,7 +190,6 @@ export function useBytebeatPlayer(): BytebeatPlayer {
           type: 'setExpression',
           expression,
           sampleRate: sr,
-          classic: aliased,
           float: isFloatMode,
         });
         node.port.postMessage({ type: 'reset' });

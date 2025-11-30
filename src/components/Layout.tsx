@@ -28,7 +28,7 @@ export function Layout({ children }: PropsWithChildren) {
   const { user } = useSupabaseAuth();
   const router = useRouter();
   const [checkedProfile, setCheckedProfile] = useState(false);
-  const { isPlaying, toggle, stop, level, waveform } = useBytebeatPlayer();
+  const { isPlaying, toggle, stop, waveform } = useBytebeatPlayer();
   const { currentPost, next, prev, updateFavoriteStateForPost } = usePlayerStore();
   const titleRef = useRef<HTMLDivElement | null>(null);
   const visualizerRef = useRef<HTMLCanvasElement | null>(null);
