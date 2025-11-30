@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { warmUpBytebeatEngine, useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { usePlayerStore } from '../hooks/usePlayerStore';
-import { ModeOption } from 'shared';
 import { supabase } from '../lib/supabaseClient';
 import { APP_NAME } from '../constants';
+import { ModeOption } from '../model/expression';
 
 const CURRENT_TOS_VERSION = '2025-11-30-v1';
 
@@ -33,7 +33,6 @@ export function Layout({ children }: PropsWithChildren) {
   const titleRef = useRef<HTMLDivElement | null>(null);
   const visualizerRef = useRef<HTMLCanvasElement | null>(null);
   const visualizerAnimationRef = useRef<number | null>(null);
-  const visualizerPhaseRef = useRef(0);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
 
   useEffect(() => {

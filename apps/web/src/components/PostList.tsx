@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
-import { ModeOption } from 'shared';
 import { ReadonlyExpression } from './ExpressionEditor';
 import { usePlayerStore } from '../hooks/usePlayerStore';
+import { ModeOption } from '../model/expression';
 
 export interface PostRow {
   id: string;
@@ -60,7 +60,6 @@ export function PostList({ posts, currentUserId }: PostListProps) {
     await stop();
 
     const sr = post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
-
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
     await toggle(post.expression, mode, sr, true);

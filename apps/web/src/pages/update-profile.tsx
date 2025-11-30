@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
 import { validateUsername } from '../lib/validateUsername';
+import Head from 'next/head';
+import { APP_NAME } from '../constants';
 
 export default function UpdateProfilePage() {
   const router = useRouter();

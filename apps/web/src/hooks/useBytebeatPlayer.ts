@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ModeOption } from 'shared';
+import { ModeOption } from '../model/expression';
 
 interface BytebeatPlayer {
   isPlaying: boolean;

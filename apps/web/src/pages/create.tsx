@@ -5,15 +5,10 @@ import { usePlayerStore } from '../hooks/usePlayerStore';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { supabase } from '../lib/supabaseClient';
 import { PostEditorFormFields } from '../components/PostEditorFormFields';
-import {
-  getSampleRateValue,
-  ModeOption,
-  SampleRateOption,
-  validateExpression,
-  type ValidationIssue,
-} from 'shared';
 import Head from 'next/head';
 import { APP_NAME } from '../constants';
+import { getSampleRateValue, ModeOption, SampleRateOption } from '../model/expression';
+import { validateExpression, ValidationIssue } from '../model/expression-validator';
 
 const EXPRESSION_MAX = 1024;
 const CREATE_DRAFT_STORAGE_KEY = 'bitejam-create-draft-v1';

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ExpressionEditor, ExpressionErrorSnippet } from './ExpressionEditor';
-import { ModeOption, SampleRateOption, ValidationIssue } from 'shared';
+import { ModeOption, SampleRateOption } from '../model/expression';
+import { ValidationIssue } from '../model/expression-validator';
 
 interface PostEditorFormFieldsProps {
   title: string;
