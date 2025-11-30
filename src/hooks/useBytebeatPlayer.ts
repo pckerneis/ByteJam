@@ -152,7 +152,11 @@ export function useBytebeatPlayer(): BytebeatPlayer {
       const res = await ensureContextAndNode();
       if (!res) return;
 
-      const { ctx, node } = res;
+      const { node } = res;
+      // Always derive the context from the node itself to avoid accidentally
+      // mixing AudioNodes from different AudioContext instances (which can
+      // happen across hot reloads or if a context is recreated).
+      const ctx = (node.context as AudioContext) ?? audioContext!;
 
       const isContextRunning = ctx.state === 'running';
 
