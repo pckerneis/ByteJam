@@ -306,6 +306,11 @@ export function Layout({ children }: PropsWithChildren) {
     ? !!currentPost.favorited_by_current_user
     : false;
 
+  const handlePlayedPostInfoClick = () => {
+    if (!currentPost) return;
+    void router.push(`/post/${currentPost.id}`);
+  };
+
   return (
     <div className="root">
       <div className="top-content">
@@ -362,7 +367,7 @@ export function Layout({ children }: PropsWithChildren) {
         <div className="vizualizer">
           <canvas ref={visualizerRef} width={150} height={26}></canvas>
         </div>
-        <div className="played-post-info">
+        <div className="played-post-info" onClick={handlePlayedPostInfoClick}>
           <div className="played-post-author">
             {currentPost
               ? currentPost.profiles?.username

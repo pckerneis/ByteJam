@@ -81,6 +81,8 @@ body {
   flex-direction: column;
   gap: 2px;
   width: 120px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .played-post-author {
@@ -108,7 +110,10 @@ body {
   0% {
     transform: translateX(0);
   }
-  70% {
+  20% {
+    transform: translateX(0);
+  }
+  80% {
     transform: translateX(var(--marquee-offset, 0px));
   }
   100% {
