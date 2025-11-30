@@ -3,6 +3,11 @@ import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from './PostList';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import {
+  attachFavoritesCount,
+  attachFavoritedByCurrentUser,
+  enrichWithViewerFavorites,
+} from '../utils/favorites';
 
 interface UserProfileContentProps {
   username: string | null;
@@ -99,26 +104,10 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
         }
         setHasMore(false);
       } else {
-        let rows = (data ?? []).map((row: any) => ({
-          ...row,
-          favorites_count: row.favorites?.[0]?.count ?? 0,
-        }));
+        let rows = attachFavoritesCount(data ?? []);
 
         if (user && rows.length > 0) {
-          const postIds = rows.map((r: any) => r.id);
-          const { data: favs, error: favError } = await supabase
-            .from('favorites')
-            .select('post_id')
-            .eq('profile_id', (user as any).id)
-            .in('post_id', postIds);
-
-          if (!favError && favs) {
-            const favoritedSet = new Set((favs as any[]).map((f) => f.post_id as string));
-            rows = rows.map((r: any) => ({
-              ...r,
-              favorited_by_current_user: favoritedSet.has(r.id),
-            }));
-          }
+          rows = await enrichWithViewerFavorites(supabase, (user as any).id as string, rows);
         }
 
         setPosts((prev) => (page === 0 ? rows : [...prev, ...rows]));
@@ -215,28 +204,11 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
         setFavoritesError('Unable to load favorites.');
         setFavoritePosts([]);
       } else {
-        let rows = (postsData ?? []).map((row: any) => ({
-          ...row,
-          favorites_count: row.favorites?.[0]?.count ?? 0,
-        }));
+        let rows = attachFavoritesCount(postsData ?? []);
 
         // Mark which of these posts the CURRENT viewer has favorited.
         if (user && rows.length > 0) {
-          const viewerId = (user as any).id as string;
-          const favPostIds = rows.map((r: any) => r.id);
-          const { data: viewerFavs, error: viewerFavError } = await supabase
-            .from('favorites')
-            .select('post_id')
-            .eq('profile_id', viewerId)
-            .in('post_id', favPostIds);
-
-          if (!viewerFavError && viewerFavs) {
-            const favoritedSet = new Set((viewerFavs as any[]).map((f) => f.post_id as string));
-            rows = rows.map((r: any) => ({
-              ...r,
-              favorited_by_current_user: favoritedSet.has(r.id),
-            }));
-          }
+          rows = await enrichWithViewerFavorites(supabase, (user as any).id as string, rows);
         }
 
         setFavoritePosts(rows as PostRow[]);
@@ -300,34 +272,17 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
         setDraftPosts([]);
         setLoadingDrafts(false);
         return;
-      }
+      } else {
+        let rows = attachFavoritesCount(draftData ?? []);
 
-      let rows = (draftData ?? []).map((row: any) => ({
-        ...row,
-        favorites_count: row.favorites?.[0]?.count ?? 0,
-      }));
-
-      // Mark which of these drafts the CURRENT viewer has favorited.
-      if (user && rows.length > 0) {
-        const viewerId = (user as any).id as string;
-        const draftIds = rows.map((r: any) => r.id);
-        const { data: viewerFavs, error: viewerFavError } = await supabase
-          .from('favorites')
-          .select('post_id')
-          .eq('profile_id', viewerId)
-          .in('post_id', draftIds);
-
-        if (!viewerFavError && viewerFavs) {
-          const favoritedSet = new Set((viewerFavs as any[]).map((f) => f.post_id as string));
-          rows = rows.map((r: any) => ({
-            ...r,
-            favorited_by_current_user: favoritedSet.has(r.id),
-          }));
+        // Mark which of these drafts the CURRENT viewer has favorited.
+        if (user && rows.length > 0) {
+          rows = await enrichWithViewerFavorites(supabase, (user as any).id as string, rows);
         }
-      }
 
-      setDraftPosts(rows as PostRow[]);
-      setLoadingDrafts(false);
+        setDraftPosts(rows as PostRow[]);
+        setLoadingDrafts(false);
+      }
     };
 
     void loadDrafts();

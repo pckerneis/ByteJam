@@ -5,6 +5,7 @@ import { PostList, type PostRow } from '../components/PostList';
 import Head from 'next/head';
 import { APP_NAME } from '../constants';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { attachFavoritesCount, enrichWithViewerFavorites } from '../utils/favorites';
 
 export default function ExplorePage() {
   const { user } = useSupabaseAuth();
@@ -64,27 +65,10 @@ export default function ExplorePage() {
         }
         setHasMore(false);
       } else {
-        let rows = (data ?? []).map((row: any) => ({
-          ...row,
-          favorites_count: row.favorites?.[0]?.count ?? 0,
-        }));
+        let rows = attachFavoritesCount(data ?? []);
 
-        // If a user is logged in, mark which of these posts they have favorited.
         if (user && rows.length > 0) {
-          const postIds = rows.map((r: any) => r.id);
-          const { data: favs, error: favError } = await supabase
-            .from('favorites')
-            .select('post_id')
-            .eq('profile_id', (user as any).id)
-            .in('post_id', postIds);
-
-          if (!favError && favs) {
-            const favoritedSet = new Set((favs as any[]).map((f) => f.post_id as string));
-            rows = rows.map((r: any) => ({
-              ...r,
-              favorited_by_current_user: favoritedSet.has(r.id),
-            }));
-          }
+          rows = await enrichWithViewerFavorites(supabase, (user as any).id as string, rows);
         }
 
         setPosts((prev) => {
