@@ -24,9 +24,7 @@ export default function EditPostPage() {
   const [expression, setExpression] = useState('');
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
-  const [sampleRate, setSampleRate] = useState<SampleRateOption>(
-    SampleRateOption._44_1k,
-  );
+  const [sampleRate, setSampleRate] = useState<SampleRateOption>(SampleRateOption._44_1k);
 
   const { isPlaying, toggle, lastError, stop } = useBytebeatPlayer();
   const { setCurrentPostById } = usePlayerStore();
@@ -48,7 +46,6 @@ export default function EditPostPage() {
       void stop();
     };
   }, [stop]);
-
 
   useEffect(() => {
     if (!supabase) return;
@@ -264,11 +261,7 @@ export default function EditPostPage() {
 
   return (
     <section>
-      <button
-        type="button"
-        className="button ghost"
-        onClick={() => router.back()}
-      >
+      <button type="button" className="button ghost" onClick={() => router.back()}>
         ← Back
       </button>
       <h2>Edit post</h2>

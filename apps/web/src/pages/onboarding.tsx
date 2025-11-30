@@ -64,17 +64,15 @@ export default function OnboardingPage() {
     setStatus('saving');
     setError('');
 
-    const { error: upsertError } = await supabase
-      .from('profiles')
-      .upsert(
-        {
-          id: (user as any).id,
-          username: username.trim(),
-          tos_version: CURRENT_TOS_VERSION,
-          tos_accepted_at: new Date().toISOString(),
-        },
-        { onConflict: 'id' },
-      );
+    const { error: upsertError } = await supabase.from('profiles').upsert(
+      {
+        id: (user as any).id,
+        username: username.trim(),
+        tos_version: CURRENT_TOS_VERSION,
+        tos_accepted_at: new Date().toISOString(),
+      },
+      { onConflict: 'id' },
+    );
 
     if (upsertError) {
       if ((upsertError as any).code === '23505') {
@@ -92,7 +90,10 @@ export default function OnboardingPage() {
   return (
     <section>
       <h2>Choose your username</h2>
-      <p>Your username must be unique, 3–32 characters long, and use only letters, digits and underscores.</p>
+      <p>
+        Your username must be unique, 3–32 characters long, and use only letters, digits and
+        underscores.
+      </p>
       <form className="create-form" onSubmit={handleSubmit}>
         <label className="field">
           <input

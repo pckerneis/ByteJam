@@ -213,8 +213,8 @@ export default function CreatePage() {
       sampleRate === SampleRateOption._8k
         ? '8k'
         : sampleRate === SampleRateOption._16k
-        ? '16k'
-        : '44.1k';
+          ? '16k'
+          : '44.1k';
 
     const modeValue = mode === ModeOption.Float ? 'float' : 'int';
 
@@ -248,8 +248,8 @@ export default function CreatePage() {
     } else {
       setMode(ModeOption.Int);
     }
-  }
-  
+  };
+
   const rotateSampleRate = () => {
     switch (sampleRate) {
       case SampleRateOption._44_1k:

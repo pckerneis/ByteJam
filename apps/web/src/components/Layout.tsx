@@ -216,14 +216,9 @@ export function Layout({ children }: PropsWithChildren) {
     }
 
     const sr =
-      currentPost.sample_rate === '8k'
-        ? 8000
-        : currentPost.sample_rate === '16k'
-        ? 16000
-        : 44100;
+      currentPost.sample_rate === '8k' ? 8000 : currentPost.sample_rate === '16k' ? 16000 : 44100;
 
-    const mode: ModeOption =
-      currentPost.mode === 'float' ? ModeOption.Float : ModeOption.Int;
+    const mode: ModeOption = currentPost.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
     await toggle(currentPost.expression, mode, sr, true);
   };
@@ -296,16 +291,10 @@ export function Layout({ children }: PropsWithChildren) {
       return;
     }
 
-    updateFavoriteStateForPost(
-      currentPost.id,
-      false,
-      Math.max(0, baseCount - 1),
-    );
+    updateFavoriteStateForPost(currentPost.id, false, Math.max(0, baseCount - 1));
   };
 
-  const isFooterFavorited = currentPost
-    ? !!currentPost.favorited_by_current_user
-    : false;
+  const isFooterFavorited = currentPost ? !!currentPost.favorited_by_current_user : false;
 
   const handlePlayedPostInfoClick = () => {
     if (!currentPost) return;
@@ -318,7 +307,7 @@ export function Layout({ children }: PropsWithChildren) {
         <nav>
           <div className="app-title">
             <Link href="/">
-              <h1>{ APP_NAME }</h1>
+              <h1>{APP_NAME}</h1>
             </Link>
           </div>
           <ul>
@@ -377,11 +366,7 @@ export function Layout({ children }: PropsWithChildren) {
               : '-'}
           </div>
           <div className="played-post-name" ref={titleRef}>
-            <span
-              className={`played-post-name-text${
-                isTitleOverflowing ? ' is-overflowing' : ''
-              }`}
-            >
+            <span className={`played-post-name-text${isTitleOverflowing ? ' is-overflowing' : ''}`}>
               {currentPost ? currentPost.title || '(untitled)' : '-'}
             </span>
           </div>

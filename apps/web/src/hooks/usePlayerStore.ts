@@ -20,7 +20,8 @@ function getSnapshot(): PlayerStoreSnapshot {
   return {
     playlist,
     currentIndex,
-    currentPost: currentIndex >= 0 && currentIndex < playlist.length ? playlist[currentIndex] : null,
+    currentPost:
+      currentIndex >= 0 && currentIndex < playlist.length ? playlist[currentIndex] : null,
   };
 }
 

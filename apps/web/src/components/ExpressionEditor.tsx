@@ -5,10 +5,9 @@ import { linter, type Diagnostic } from '@codemirror/lint';
 import { tomorrowNightBlue } from '@uiw/codemirror-theme-tomorrow-night-blue';
 import { validateExpression, minimizeExpression, type ValidationIssue } from 'shared';
 
-const CodeMirror = dynamic(
-  () => import('@uiw/react-codemirror').then((mod) => mod.default),
-  { ssr: false },
-);
+const CodeMirror = dynamic(() => import('@uiw/react-codemirror').then((mod) => mod.default), {
+  ssr: false,
+});
 
 interface ExpressionEditorProps {
   value: string;

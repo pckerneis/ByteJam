@@ -38,7 +38,9 @@ export default function ExplorePage() {
 
       let query = supabase
         .from('posts')
-        .select('id,title,expression,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)')
+        .select(
+          'id,title,expression,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)',
+        )
         .eq('is_draft', false);
 
       if (activeTab === 'recent') {
@@ -65,7 +67,7 @@ export default function ExplorePage() {
           ...row,
           favorites_count: row.favorites?.[0]?.count ?? 0,
         }));
-        
+
         // If a user is logged in, mark which of these posts they have favorited.
         if (user && rows.length > 0) {
           const postIds = rows.map((r: any) => r.id);
@@ -174,19 +176,14 @@ export default function ExplorePage() {
         <p className="text-centered">No posts yet. Create something on the Create page!</p>
       )}
       {!loading && !error && posts.length > 0 && (
-        <PostList
-          posts={posts}
-          currentUserId={user ? (user as any).id : undefined}
-        />
+        <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
       )}
       <div ref={sentinelRef} style={{ height: 1 }} />
-      {hasMore && !loading && posts.length > 0 && (
-        <p className="text-centered">Loading more…</p>
-      )}
+      {hasMore && !loading && posts.length > 0 && <p className="text-centered">Loading more…</p>}
 
-      {!hasMore && !loading && posts.length > 0 &&
-        <p className='text-centered'>You reached the end!</p>
-      }
+      {!hasMore && !loading && posts.length > 0 && (
+        <p className="text-centered">You reached the end!</p>
+      )}
     </section>
   );
 }

@@ -33,13 +33,11 @@ export function useSupabaseAuth() {
 
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange(
-        (_event: AuthChangeEvent, newSession: Session | null) => {
-          if (isMounted) {
-            setSession(newSession);
-          }
-        },
-      );
+      } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, newSession: Session | null) => {
+        if (isMounted) {
+          setSession(newSession);
+        }
+      });
 
       return () => {
         subscription.unsubscribe();
@@ -54,9 +52,8 @@ export function useSupabaseAuth() {
     };
   }, []);
 
-  const fakeUser = devFakeAuth && devFakeEmail
-    ? ({ email: devFakeEmail } as unknown as Session['user'])
-    : null;
+  const fakeUser =
+    devFakeAuth && devFakeEmail ? ({ email: devFakeEmail } as unknown as Session['user']) : null;
 
   const user = fakeUser ?? session?.user ?? null;
 

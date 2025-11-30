@@ -42,14 +42,8 @@ class BytebeatProcessor extends AudioWorkletProcessor {
     this._levelSampleCount = 0;
     this._levelTargetSamples = 2048;
     this.port.onmessage = (event) => {
-      const {
-        type,
-        expression,
-        sampleRate: targetSampleRate,
-        classic,
-        float,
-      } = event.data || {};
-      if (type === "setExpression" && typeof expression === "string") {
+      const { type, expression, sampleRate: targetSampleRate, classic, float } = event.data || {};
+      if (type === 'setExpression' && typeof expression === 'string') {
         try {
           // eslint-disable-next-line no-new-func
           const fnBody = `
@@ -57,23 +51,23 @@ ${expressionApi}
 function plot(x) { return x; }
 return Number((${expression})) || 0;
 `;
-          const fn = new Function("t", fnBody);
+          const fn = new Function('t', fnBody);
           // Install the newly compiled function; it will be promoted to
           // _lastGoodFn only after a process() block runs without error.
           this._fn = fn;
           const hasTarget =
-            typeof targetSampleRate === "number" &&
+            typeof targetSampleRate === 'number' &&
             isFinite(targetSampleRate) &&
             targetSampleRate > 0;
           if (hasTarget) {
             this._targetRate = targetSampleRate;
           }
-      if (this._levelSampleCount >= this._levelTargetSamples) {
-        const rms = Math.sqrt(this._levelSumSquares / this._levelSampleCount) || 0;
-        this.port.postMessage({ type: "level", rms });
-        this._levelSumSquares = 0;
-        this._levelSampleCount = 0;
-      }
+          if (this._levelSampleCount >= this._levelTargetSamples) {
+            const rms = Math.sqrt(this._levelSumSquares / this._levelSampleCount) || 0;
+            this.port.postMessage({ type: 'level', rms });
+            this._levelSumSquares = 0;
+            this._levelSampleCount = 0;
+          }
 
           this._classic = !!classic;
           this._float = !!float;
@@ -91,11 +85,11 @@ return Number((${expression})) || 0;
         } catch (e) {
           // On compile error, keep the previous function but notify the UI
           this.port.postMessage({
-            type: "compileError",
+            type: 'compileError',
             message: String(e && e.message ? e.message : e),
           });
         }
-      } else if (type === "reset") {
+      } else if (type === 'reset') {
         // Explicit reset from main thread (e.g. on Play)
         this._t = 0;
         this._phase = 0;
@@ -201,7 +195,7 @@ return Number((${expression})) || 0;
         channel[i] = 0;
       }
       this.port.postMessage({
-        type: "runtimeError",
+        type: 'runtimeError',
         message: String(e && e.message ? e.message : e),
       });
       // Revert to last known-good function for subsequent blocks
@@ -214,4 +208,4 @@ return Number((${expression})) || 0;
 }
 
 // Required for AudioWorkletProcessor subclasses
-registerProcessor("bytebeat-processor", BytebeatProcessor);
+registerProcessor('bytebeat-processor', BytebeatProcessor);

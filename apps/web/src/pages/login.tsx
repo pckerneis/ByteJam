@@ -57,12 +57,8 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {status === 'sent' && (
-          <p className="counter">Check your inbox for the login link.</p>
-        )}
-        {status === 'error' && errorMessage && (
-          <p className="error-message">{errorMessage}</p>
-        )}
+        {status === 'sent' && <p className="counter">Check your inbox for the login link.</p>}
+        {status === 'error' && errorMessage && <p className="error-message">{errorMessage}</p>}
       </form>
     </section>
   );

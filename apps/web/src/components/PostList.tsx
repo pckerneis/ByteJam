@@ -59,8 +59,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
     // Ensure any existing playback is fully stopped before starting a new one
     await stop();
 
-    const sr =
-      post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
+    const sr = post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
 
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
@@ -131,13 +130,13 @@ export function PostList({ posts, currentUserId }: PostListProps) {
         const created = new Date(post.created_at).toLocaleDateString();
         const createdTitle = new Date(post.created_at).toLocaleString();
         const isActive = isPlaying && activePostId === post.id;
-        const canEdit = Boolean(currentUserId && post.profile_id && post.profile_id === currentUserId);
+        const canEdit = Boolean(
+          currentUserId && post.profile_id && post.profile_id === currentUserId,
+        );
         const favorite = favoriteState[post.id];
         const favoriteCount = favorite ? favorite.count : post.favorites_count ?? 0;
         const isFavorited =
-          favorite?.favorited !== undefined
-            ? favorite.favorited
-            : !!post.favorited_by_current_user;
+          favorite?.favorited !== undefined ? favorite.favorited : !!post.favorited_by_current_user;
 
         return (
           <li key={post.id} className={`post-item ${isActive ? 'playing' : ''}`}>
@@ -153,18 +152,15 @@ export function PostList({ posts, currentUserId }: PostListProps) {
               </div>
               <h3>{post.title}</h3>
               <div className="chips">
-                {post.is_draft && (
-                  <span className="chip draft-badge">Draft</span>
-                )}
+                {post.is_draft && <span className="chip draft-badge">Draft</span>}
                 <span className="chip mode">{post.mode}</span>
                 <span className="chip sample-rate">{post.sample_rate}</span>
-                <span className="created" title={createdTitle}>{created}</span>
+                <span className="created" title={createdTitle}>
+                  {created}
+                </span>
               </div>
             </div>
-            <div
-              className="post-expression"
-              onClick={() => void handleExpressionClick(post)}
-            >
+            <div className="post-expression" onClick={() => void handleExpressionClick(post)}>
               <ReadonlyExpression expression={post.expression} />
             </div>
             <div className="post-actions">

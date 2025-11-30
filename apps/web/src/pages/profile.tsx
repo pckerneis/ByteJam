@@ -67,15 +67,11 @@ export default function ProfilePage() {
       {status === 'idle' && username && (
         <UserProfileContent
           username={username}
-          extraHeader={(
-            <button
-              type="button"
-              className="button secondary"
-              onClick={handleEditProfile}
-            >
+          extraHeader={
+            <button type="button" className="button secondary" onClick={handleEditProfile}>
               Edit
             </button>
-          )}
+          }
         />
       )}
     </section>

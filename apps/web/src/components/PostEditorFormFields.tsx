@@ -62,7 +62,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
     submitLabel,
     showDeleteButton,
     onDeleteClick,
-    showActions
+    showActions,
   } = props;
 
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
@@ -125,27 +125,16 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
       </label>
 
       <div className="chips">
-        <button
-          type="button"
-          className="chip"
-          onClick={() => onToggleMode()}
-        >
+        <button type="button" className="chip" onClick={() => onToggleMode()}>
           {mode}
         </button>
-        <button
-          type="button"
-          className="chip"
-          onClick={() => onRotateSampleRate()}
-        >
+        <button type="button" className="chip" onClick={() => onRotateSampleRate()}>
           {sampleRate}
         </button>
       </div>
 
       <div className="expression-input">
-        <ExpressionEditor
-          value={expression}
-          onChange={onExpressionChange}
-        />
+        <ExpressionEditor value={expression} onChange={onExpressionChange} />
       </div>
       <div className="field-footer">
         <button
@@ -169,39 +158,35 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
       )}
       {lastError ? <p className="error-message">{lastError}</p> : null}
 
-      {showActions &&
-      <div className="form-actions">
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            checked={isDraft}
-            onChange={(e) => onDraftChange(e.target.checked)}
-          />
-          <span>Save as draft</span>
-        </label>
+      {showActions && (
+        <div className="form-actions">
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={isDraft}
+              onChange={(e) => onDraftChange(e.target.checked)}
+            />
+            <span>Save as draft</span>
+          </label>
 
-        <div className="form-actions-buttons">
-          {showDeleteButton && onDeleteClick && (
-            <button
-              type="button"
-              className="button danger"
-              onClick={onDeleteClick}
-              disabled={saveStatus === 'saving'}
-            >
-              Delete
+          <div className="form-actions-buttons">
+            {showDeleteButton && onDeleteClick && (
+              <button
+                type="button"
+                className="button danger"
+                onClick={onDeleteClick}
+                disabled={saveStatus === 'saving'}
+              >
+                Delete
+              </button>
+            )}
+
+            <button type="submit" className="button primary" disabled={!canSubmit}>
+              {submitLabel}
             </button>
-          )}
-
-          <button
-            type="submit"
-            className="button primary"
-            disabled={!canSubmit}
-          >
-            {submitLabel}
-          </button>
+          </div>
         </div>
-      </div>
-      }
+      )}
 
       <div className="form-actions-buttons" style={{ marginTop: '8px' }}>
         <button

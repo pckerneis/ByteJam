@@ -27,7 +27,9 @@ export default function PostDetailPage() {
 
       const { data, error } = await supabase
         .from('posts')
-        .select('id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)')
+        .select(
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)',
+        )
         .eq('id', id)
         .maybeSingle();
 
@@ -80,11 +82,7 @@ export default function PostDetailPage() {
 
   return (
     <section>
-      <button
-        type="button"
-        className="button ghost"
-        onClick={() => router.back()}
-      >
+      <button type="button" className="button ghost" onClick={() => router.back()}>
         ← Back
       </button>
       <h2>Post detail</h2>
@@ -93,10 +91,7 @@ export default function PostDetailPage() {
       {!loading && error && <p className="error-message">{error}</p>}
 
       {!loading && !error && posts.length > 0 && (
-        <PostList
-          posts={posts}
-          currentUserId={user ? (user as any).id : undefined}
-        />
+        <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
       )}
     </section>
   );

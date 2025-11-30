@@ -149,10 +149,7 @@ export default function UpdateProfilePage() {
     }
 
     // 3) Finally, delete the profile itself.
-    const { error: deleteProfileError } = await supabase
-      .from('profiles')
-      .delete()
-      .eq('id', userId);
+    const { error: deleteProfileError } = await supabase.from('profiles').delete().eq('id', userId);
 
     if (deleteProfileError) {
       setError(deleteProfileError.message);
@@ -196,11 +193,7 @@ export default function UpdateProfilePage() {
             />
           </label>
           <div>
-            <button
-              type="submit"
-              className="button primary"
-              disabled={saveStatus === 'saving'}
-            >
+            <button type="submit" className="button primary" disabled={saveStatus === 'saving'}>
               {saveStatus === 'saving' ? 'Saving…' : 'Save username'}
             </button>
           </div>
@@ -208,8 +201,8 @@ export default function UpdateProfilePage() {
           <h3>Delete account</h3>
 
           <p>
-            Deleting your account is permanent and cannot be undone. All of your
-            data, including posts, drafts, and favorites, will be permanently removed.
+            Deleting your account is permanent and cannot be undone. All of your data, including
+            posts, drafts, and favorites, will be permanently removed.
           </p>
 
           <div>
@@ -232,9 +225,9 @@ export default function UpdateProfilePage() {
           <div className="modal">
             <h3>Confirm account deletion</h3>
             <p>
-              Are you sure you want to delete your account? This action is permanent and
-              cannot be undone. All of your data, including posts, drafts, and favorites,
-              will be permanently removed.
+              Are you sure you want to delete your account? This action is permanent and cannot be
+              undone. All of your data, including posts, drafts, and favorites, will be permanently
+              removed.
             </p>
             <div className="modal-actions">
               <button

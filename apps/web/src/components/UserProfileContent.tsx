@@ -392,15 +392,17 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
           {loading && <p className="text-centered">Loading…</p>}
           {!loading && error && <p className="error-message">{error}</p>}
 
-          {hasLoadedFirstPage && !loading && !error && page === 0 && !hasMore && posts.length === 0 && (
-            <p className="text-centered">This user has no public posts yet.</p>
-          )}
+          {hasLoadedFirstPage &&
+            !loading &&
+            !error &&
+            page === 0 &&
+            !hasMore &&
+            posts.length === 0 && (
+              <p className="text-centered">This user has no public posts yet.</p>
+            )}
 
           {!loading && !error && posts.length > 0 && (
-            <PostList
-              posts={posts}
-              currentUserId={user ? (user as any).id : undefined}
-            />
+            <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
           )}
 
           <div ref={sentinelRef} style={{ height: 1 }} />
@@ -417,17 +419,12 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
       {activeTab === 'favorites' && (
         <>
           {loadingFavorites && <p className="text-centered">Loading favorites…</p>}
-          {!loadingFavorites && favoritesError && (
-            <p className="error-message">{favoritesError}</p>
-          )}
+          {!loadingFavorites && favoritesError && <p className="error-message">{favoritesError}</p>}
           {!loadingFavorites && !favoritesError && favoritePosts.length === 0 && (
             <p className="text-centered">This user has no public favorites yet.</p>
           )}
           {!loadingFavorites && !favoritesError && favoritePosts.length > 0 && (
-            <PostList
-              posts={favoritePosts}
-              currentUserId={user ? (user as any).id : undefined}
-            />
+            <PostList posts={favoritePosts} currentUserId={user ? (user as any).id : undefined} />
           )}
         </>
       )}
@@ -435,17 +432,12 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
       {activeTab === 'drafts' && isOwnProfile && (
         <>
           {loadingDrafts && <p className="text-centered">Loading drafts…</p>}
-          {!loadingDrafts && draftsError && (
-            <p className="error-message">{draftsError}</p>
-          )}
+          {!loadingDrafts && draftsError && <p className="error-message">{draftsError}</p>}
           {!loadingDrafts && !draftsError && draftPosts.length === 0 && (
             <p className="text-centered">You have no drafts yet.</p>
           )}
           {!loadingDrafts && !draftsError && draftPosts.length > 0 && (
-            <PostList
-              posts={draftPosts}
-              currentUserId={user ? (user as any).id : undefined}
-            />
+            <PostList posts={draftPosts} currentUserId={user ? (user as any).id : undefined} />
           )}
         </>
       )}

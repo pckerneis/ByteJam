@@ -90,7 +90,7 @@ export default function TosUpdatePage() {
         <a href="/terms" target="_blank" rel="noreferrer">
           latest Terms of Service
         </a>{' '}
-        and confirm your acceptance to continue using { APP_NAME }.
+        and confirm your acceptance to continue using {APP_NAME}.
       </p>
 
       <form className="create-form" onSubmit={handleSubmit}>
@@ -110,11 +110,7 @@ export default function TosUpdatePage() {
         </label>
 
         <div className="form-actions">
-          <button
-            type="submit"
-            className="button primary"
-            disabled={status === 'saving'}
-          >
+          <button type="submit" className="button primary" disabled={status === 'saving'}>
             {status === 'saving' ? 'Saving…' : 'Confirm'}
           </button>
         </div>
