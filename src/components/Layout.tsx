@@ -294,7 +294,7 @@ export function Layout({ children }: PropsWithChildren) {
         <nav>
           <div className="app-title">
             <Link href="/">
-              <h1>ByteJam</h1>
+              <h1>BytebeatCloud</h1>
             </Link>
           </div>
           <ul>

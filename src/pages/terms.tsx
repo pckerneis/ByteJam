@@ -4,12 +4,12 @@ export default function Terms() {
   return (
     <>
       <Head>
-        <title>ByteJam - Terms of Services</title>
+        <title>BytebeatCloud - Terms of Services</title>
       </Head>
       <section className="home-section">
         <h2>Terms of Service</h2>
         <p>
-          Welcome to ByteJam, an experimental platform for creating and sharing bytebeat
+          Welcome to BytebeatCloud, an experimental platform for creating and sharing bytebeat
           expressions. By using this service, you agree to the following terms.
         </p>
 

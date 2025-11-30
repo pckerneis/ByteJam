@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       <section className="home-section">
-        <h2>Welcome to ByteJam!</h2>
+        <h2>Welcome to BytebeatCloud!</h2>
         <p>
           A platform to <Link href="/explore">explore</Link> and <Link href="/create">share</Link>{' '}
           tiny musical expressions.

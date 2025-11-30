@@ -112,7 +112,7 @@ export default function ExplorePage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Explore</title>
+        <title>BytebeatCloud - Explore</title>
       </Head>
       <section>
         <h2>Explore</h2>

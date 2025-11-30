@@ -142,7 +142,7 @@ export default function UpdateProfilePage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Update profile</title>
+        <title>BytebeatCloud - Update profile</title>
       </Head>
       <section>
         {status === 'loading' && <p className="text-centered">Loading your profile…</p>}

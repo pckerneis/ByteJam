@@ -10,7 +10,7 @@ export default function UserPage() {
   return (
     <>
       <Head>
-        <title>ByteJam - {uname ?? 'User'}</title>
+        <title>BytebeatCloud - {uname ?? 'User'}</title>
       </Head>
       <UserProfileContent username={uname} />
     </>

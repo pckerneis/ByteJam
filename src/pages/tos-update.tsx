@@ -85,7 +85,7 @@ export default function TosUpdatePage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Updated Terms of Services</title>
+        <title>BytebeatCloud - Updated Terms of Services</title>
       </Head>
       <section className="home-section">
         <h2>Updated Terms of Service</h2>
@@ -94,7 +94,7 @@ export default function TosUpdatePage() {
           <a href="/terms" target="_blank" rel="noreferrer">
             latest Terms of Service
           </a>{' '}
-          and confirm your acceptance to continue using ByteJam.
+          and confirm your acceptance to continue using BytebeatCloud.
         </p>
 
         <form className="create-form" onSubmit={handleSubmit}>

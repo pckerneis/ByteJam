@@ -7,7 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>ByteJam</title>
+        <title>BytebeatCloud</title>
       </Head>
       <Layout>
         <Component {...pageProps} />

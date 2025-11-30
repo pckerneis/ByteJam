@@ -91,7 +91,7 @@ export default function OnboardingPage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Onboarding</title>
+        <title>BytebeatCloud - Onboarding</title>
       </Head>
       <section>
         <h2>Choose your username</h2>

@@ -204,7 +204,7 @@ export default function CreatePage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Create</title>
+        <title>BytebeatCloud - Create</title>
       </Head>
       <section>
         <h2>Create</h2>

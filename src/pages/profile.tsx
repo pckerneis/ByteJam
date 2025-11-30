@@ -20,7 +20,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Profile</title>
+        <title>BytebeatCloud - Profile</title>
       </Head>
       <section>
         {status === 'loading' && <p className="text-centered">Loading your profile…</p>}

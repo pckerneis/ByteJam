@@ -39,7 +39,7 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Login</title>
+        <title>BytebeatCloud - Login</title>
       </Head>
       <section>
         <h2>Login</h2>

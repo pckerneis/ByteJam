@@ -1,4 +1,4 @@
-# ByteJam
+# BytebeatCloud
 
 A bytebeat-inspired expression-based social network.
 

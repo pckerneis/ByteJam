@@ -83,7 +83,7 @@ export default function PostDetailPage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Post detail</title>
+        <title>BytebeatCloud - Post detail</title>
       </Head>
       <section>
         <button type="button" className="button ghost" onClick={() => router.back()}>

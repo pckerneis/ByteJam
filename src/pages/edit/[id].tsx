@@ -205,7 +205,7 @@ export default function EditPostPage() {
   return (
     <>
       <Head>
-        <title>ByteJam - Edit post</title>
+        <title>BytebeatCloud - Edit post</title>
       </Head>
       <section>
         <button type="button" className="button ghost" onClick={() => router.back()}>
