@@ -15,11 +15,15 @@ Create and share musical expressions.
 - [x] Add to favorites
 - [x] Transport controls
 - [x] Visualizer
+- [ ] Mobile layout
 - [ ] Master gain
-- [ ] Fork
+- [ ] Fork posts
 - [ ] Sandboxing
 - [ ] Follow users
 - [ ] Report posts or users
 - [ ] Tags
 - [ ] Personalized feed
-- [ ] Search expressions by name and tags
+- [ ] Search posts by name and tags
+- [ ] Dark mode
+- [ ] Responsive design for all screen sizes
+- [ ] Keyboard shortcuts
