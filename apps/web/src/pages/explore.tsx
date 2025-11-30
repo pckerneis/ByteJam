@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from '../components/PostList';
+import Head from 'next/head';
+import { APP_NAME } from '../constants';
 
 export default function ExplorePage() {
   const { user } = useSupabaseAuth();
@@ -14,8 +16,6 @@ export default function ExplorePage() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const [activeTab, setActiveTab] = useState<'recent' | 'popular'>('recent');
-
-  const [activePostId] = useState<string | null>(null); // kept for potential future use
 
   useEffect(() => {
     if (!supabase) {
@@ -154,36 +154,41 @@ export default function ExplorePage() {
   };
 
   return (
-    <section>
-      <h2>Explore</h2>
-      <div className="tab-header">
-        <span
-          className={`tab-button ${activeTab === 'recent' ? 'active' : ''}`}
-          onClick={() => handleTabClick('recent')}
-        >
-          Recent
-        </span>
-        <span
-          className={`tab-button ${activeTab === 'popular' ? 'active' : ''}`}
-          onClick={() => handleTabClick('popular')}
-        >
-          Popular
-        </span>
-      </div>
-      {loading && <p className="text-centered">Loading posts…</p>}
-      {error && !loading && <p className="error-message">{error}</p>}
-      {!loading && !error && posts.length === 0 && (
-        <p className="text-centered">No posts yet. Create something on the Create page!</p>
-      )}
-      {!loading && !error && posts.length > 0 && (
-        <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
-      )}
-      <div ref={sentinelRef} style={{ height: 1 }} />
-      {hasMore && !loading && posts.length > 0 && <p className="text-centered">Loading more…</p>}
+    <>
+      <Head>
+        <title>{APP_NAME} - Explore</title>
+      </Head>
+      <section>
+        <h2>Explore</h2>
+        <div className="tab-header">
+          <span
+            className={`tab-button ${activeTab === 'recent' ? 'active' : ''}`}
+            onClick={() => handleTabClick('recent')}
+          >
+            Recent
+          </span>
+          <span
+            className={`tab-button ${activeTab === 'popular' ? 'active' : ''}`}
+            onClick={() => handleTabClick('popular')}
+          >
+            Popular
+          </span>
+        </div>
+        {loading && <p className="text-centered">Loading posts…</p>}
+        {error && !loading && <p className="error-message">{error}</p>}
+        {!loading && !error && posts.length === 0 && (
+          <p className="text-centered">No posts yet. Create something on the Create page!</p>
+        )}
+        {!loading && !error && posts.length > 0 && (
+          <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
+        )}
+        <div ref={sentinelRef} style={{ height: 1 }} />
+        {hasMore && !loading && posts.length > 0 && <p className="text-centered">Loading more…</p>}
 
-      {!hasMore && !loading && posts.length > 0 && (
-        <p className="text-centered">You reached the end!</p>
-      )}
-    </section>
+        {!hasMore && !loading && posts.length > 0 && (
+          <p className="text-centered">You reached the end!</p>
+        )}
+      </section>
+    </>
   );
 }

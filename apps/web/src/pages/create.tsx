@@ -12,6 +12,8 @@ import {
   validateExpression,
   type ValidationIssue,
 } from 'shared';
+import Head from 'next/head';
+import { APP_NAME } from '../constants';
 
 const EXPRESSION_MAX = 1024;
 const CREATE_DRAFT_STORAGE_KEY = 'bitejam-create-draft-v1';
@@ -265,39 +267,44 @@ export default function CreatePage() {
   };
 
   return (
-    <section>
-      <h2>Create</h2>
-      {!user && (
-        <p className="text-centered login-to-publish-message">
-          <a href={'/login'}>Log in</a> to publish a post, or use a share link.
-        </p>
-      )}
+    <>
+      <Head>
+        <title>{APP_NAME} - Create</title>
+      </Head>
+      <section>
+        <h2>Create</h2>
+        {!user && (
+          <p className="text-centered login-to-publish-message">
+            <a href={'/login'}>Log in</a> to publish a post, or use a share link.
+          </p>
+        )}
 
-      <form className="create-form" onSubmit={handleSubmit}>
-        <PostEditorFormFields
-          title={title}
-          onTitleChange={setTitle}
-          expression={expression}
-          onExpressionChange={handleExpressionChange}
-          mode={mode}
-          sampleRate={sampleRate}
-          onToggleMode={toggleMode}
-          onRotateSampleRate={rotateSampleRate}
-          isDraft={isDraft}
-          onDraftChange={setIsDraft}
-          isPlaying={isPlaying}
-          onPlayClick={handlePlayClick}
-          validationIssue={validationIssue}
-          lastError={lastError || null}
-          isExpressionTooLong={isExpressionTooLong}
-          expressionLength={expressionLength}
-          expressionMax={EXPRESSION_MAX}
-          saveStatus={saveStatus}
-          saveError={saveError}
-          submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save'}
-          showActions={!!user}
-        />
-      </form>
-    </section>
+        <form className="create-form" onSubmit={handleSubmit}>
+          <PostEditorFormFields
+            title={title}
+            onTitleChange={setTitle}
+            expression={expression}
+            onExpressionChange={handleExpressionChange}
+            mode={mode}
+            sampleRate={sampleRate}
+            onToggleMode={toggleMode}
+            onRotateSampleRate={rotateSampleRate}
+            isDraft={isDraft}
+            onDraftChange={setIsDraft}
+            isPlaying={isPlaying}
+            onPlayClick={handlePlayClick}
+            validationIssue={validationIssue}
+            lastError={lastError || null}
+            isExpressionTooLong={isExpressionTooLong}
+            expressionLength={expressionLength}
+            expressionMax={EXPRESSION_MAX}
+            saveStatus={saveStatus}
+            saveError={saveError}
+            submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save'}
+            showActions={!!user}
+          />
+        </form>
+      </section>
+    </>
   );
 }

@@ -172,84 +172,89 @@ export default function UpdateProfilePage() {
   };
 
   return (
-    <section>
-      {status === 'loading' && <p className="text-centered">Loading your profile…</p>}
-      {status === 'error' && <p className="error-message">{error}</p>}
+    <>
+      <Head>
+        <title>{APP_NAME} - Update profile</title>
+      </Head>
+      <section>
+        {status === 'loading' && <p className="text-centered">Loading your profile…</p>}
+        {status === 'error' && <p className="error-message">{error}</p>}
 
-      {status === 'idle' && (
-        <form className="create-form" onSubmit={handleSave}>
-          <h2>Update profile</h2>
-          <p>Logged in as {user?.email ?? ''}</p>
+        {status === 'idle' && (
+          <form className="create-form" onSubmit={handleSave}>
+            <h2>Update profile</h2>
+            <p>Logged in as {user?.email ?? ''}</p>
 
-          <h3>Update username</h3>
-          <label className="field">
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="post-title-input"
-              placeholder="Choose a username"
-              maxLength={32}
-            />
-          </label>
-          <div>
-            <button type="submit" className="button primary" disabled={saveStatus === 'saving'}>
-              {saveStatus === 'saving' ? 'Saving…' : 'Save username'}
-            </button>
-          </div>
-
-          <h3>Delete account</h3>
-
-          <p>
-            Deleting your account is permanent and cannot be undone. All of your data, including
-            posts, drafts, and favorites, will be permanently removed.
-          </p>
-
-          <div>
-            <button
-              type="button"
-              className="button danger"
-              onClick={handleDeleteAccountClick}
-              disabled={saveStatus === 'saving'}
-            >
-              Delete account
-            </button>
-          </div>
-
-          {error && <p className="error-message">{error}</p>}
-        </form>
-      )}
-
-      {isDeleteModalOpen && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h3>Confirm account deletion</h3>
-            <p>
-              Are you sure you want to delete your account? This action is permanent and cannot be
-              undone. All of your data, including posts, drafts, and favorites, will be permanently
-              removed.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="button secondary"
-                onClick={handleCancelDelete}
-                disabled={saveStatus === 'saving'}
-              >
-                Cancel
+            <h3>Update username</h3>
+            <label className="field">
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="post-title-input"
+                placeholder="Choose a username"
+                maxLength={32}
+              />
+            </label>
+            <div>
+              <button type="submit" className="button primary" disabled={saveStatus === 'saving'}>
+                {saveStatus === 'saving' ? 'Saving…' : 'Save username'}
               </button>
+            </div>
+
+            <h3>Delete account</h3>
+
+            <p>
+              Deleting your account is permanent and cannot be undone. All of your data, including
+              posts, drafts, and favorites, will be permanently removed.
+            </p>
+
+            <div>
               <button
                 type="button"
                 className="button danger"
-                onClick={handleConfirmDeleteAccount}
+                onClick={handleDeleteAccountClick}
                 disabled={saveStatus === 'saving'}
               >
-                Yes, delete my account
+                Delete account
               </button>
             </div>
+
+            {error && <p className="error-message">{error}</p>}
+          </form>
+        )}
+
+        {isDeleteModalOpen && (
+          <div className="modal-backdrop">
+            <div className="modal">
+              <h3>Confirm account deletion</h3>
+              <p>
+                Are you sure you want to delete your account? This action is permanent and cannot be
+                undone. All of your data, including posts, drafts, and favorites, will be
+                permanently removed.
+              </p>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={handleCancelDelete}
+                  disabled={saveStatus === 'saving'}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="button danger"
+                  onClick={handleConfirmDeleteAccount}
+                  disabled={saveStatus === 'saving'}
+                >
+                  Yes, delete my account
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+    </>
   );
 }

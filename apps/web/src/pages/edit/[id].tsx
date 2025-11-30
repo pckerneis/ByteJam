@@ -12,6 +12,8 @@ import {
   validateExpression,
   type ValidationIssue,
 } from 'shared';
+import Head from 'next/head';
+import { APP_NAME } from '../../constants';
 
 const EXPRESSION_MAX = 1024;
 
@@ -260,65 +262,70 @@ export default function EditPostPage() {
   }
 
   return (
-    <section>
-      <button type="button" className="button ghost" onClick={() => router.back()}>
-        ← Back
-      </button>
-      <h2>Edit post</h2>
-      <form className="create-form" onSubmit={handleSubmit}>
-        <PostEditorFormFields
-          title={title}
-          onTitleChange={setTitle}
-          expression={expression}
-          onExpressionChange={handleExpressionChange}
-          mode={mode}
-          sampleRate={sampleRate}
-          onToggleMode={toggleMode}
-          onRotateSampleRate={rotateSampleRate}
-          isDraft={isDraft}
-          onDraftChange={setIsDraft}
-          isPlaying={isPlaying}
-          onPlayClick={handlePlayClick}
-          validationIssue={validationIssue}
-          lastError={lastError || null}
-          isExpressionTooLong={isExpressionTooLong}
-          expressionLength={expressionLength}
-          expressionMax={EXPRESSION_MAX}
-          saveStatus={saveStatus}
-          saveError={saveError}
-          submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save changes'}
-          showDeleteButton
-          onDeleteClick={() => setShowDeleteConfirm(true)}
-          showActions={!!user}
-        />
-      </form>
+    <>
+      <Head>
+        <title>{APP_NAME} - Edit post</title>
+      </Head>
+      <section>
+        <button type="button" className="button ghost" onClick={() => router.back()}>
+          ← Back
+        </button>
+        <h2>Edit post</h2>
+        <form className="create-form" onSubmit={handleSubmit}>
+          <PostEditorFormFields
+            title={title}
+            onTitleChange={setTitle}
+            expression={expression}
+            onExpressionChange={handleExpressionChange}
+            mode={mode}
+            sampleRate={sampleRate}
+            onToggleMode={toggleMode}
+            onRotateSampleRate={rotateSampleRate}
+            isDraft={isDraft}
+            onDraftChange={setIsDraft}
+            isPlaying={isPlaying}
+            onPlayClick={handlePlayClick}
+            validationIssue={validationIssue}
+            lastError={lastError || null}
+            isExpressionTooLong={isExpressionTooLong}
+            expressionLength={expressionLength}
+            expressionMax={EXPRESSION_MAX}
+            saveStatus={saveStatus}
+            saveError={saveError}
+            submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save changes'}
+            showDeleteButton
+            onDeleteClick={() => setShowDeleteConfirm(true)}
+            showActions={!!user}
+          />
+        </form>
 
-      {showDeleteConfirm && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h3>Delete post</h3>
-            <p>Are you sure you want to delete this post permanently?</p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="button secondary"
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={saveStatus === 'saving'}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="button danger"
-                onClick={() => void handleDelete()}
-                disabled={saveStatus === 'saving'}
-              >
-                Delete
-              </button>
+        {showDeleteConfirm && (
+          <div className="modal-backdrop">
+            <div className="modal">
+              <h3>Delete post</h3>
+              <p>Are you sure you want to delete this post permanently?</p>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={saveStatus === 'saving'}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="button danger"
+                  onClick={() => void handleDelete()}
+                  disabled={saveStatus === 'saving'}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+    </>
   );
 }

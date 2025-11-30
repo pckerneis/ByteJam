@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useSupabaseAuth } from '../../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from '../../components/PostList';
+import { APP_NAME } from '../../constants';
+import Head from 'next/head';
 
 export default function PostDetailPage() {
   const router = useRouter();
@@ -81,18 +83,23 @@ export default function PostDetailPage() {
   }, [id, user]);
 
   return (
-    <section>
-      <button type="button" className="button ghost" onClick={() => router.back()}>
-        ← Back
-      </button>
-      <h2>Post detail</h2>
+    <>
+      <Head>
+        <title>{APP_NAME} - Post detail</title>
+      </Head>
+      <section>
+        <button type="button" className="button ghost" onClick={() => router.back()}>
+          ← Back
+        </button>
+        <h2>Post detail</h2>
 
-      {loading && <p>Loading…</p>}
-      {!loading && error && <p className="error-message">{error}</p>}
+        {loading && <p>Loading…</p>}
+        {!loading && error && <p className="error-message">{error}</p>}
 
-      {!loading && !error && posts.length > 0 && (
-        <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
-      )}
-    </section>
+        {!loading && !error && posts.length > 0 && (
+          <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
+        )}
+      </section>
+    </>
   );
 }

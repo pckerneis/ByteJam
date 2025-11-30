@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { APP_NAME } from '../constants';
+import Head from 'next/head';
 
 const CURRENT_TOS_VERSION = '2025-11-30-v1';
 
@@ -83,40 +84,45 @@ export default function TosUpdatePage() {
   };
 
   return (
-    <section className="home-section">
-      <h2>Updated Terms of Service</h2>
-      <p>
-        Our Terms of Service have changed. Please review the{' '}
-        <a href="/terms" target="_blank" rel="noreferrer">
-          latest Terms of Service
-        </a>{' '}
-        and confirm your acceptance to continue using {APP_NAME}.
-      </p>
+    <>
+      <Head>
+        <title>{APP_NAME} - Updated Terms of Services</title>
+      </Head>
+      <section className="home-section">
+        <h2>Updated Terms of Service</h2>
+        <p>
+          Our Terms of Service have changed. Please review the{' '}
+          <a href="/terms" target="_blank" rel="noreferrer">
+            latest Terms of Service
+          </a>{' '}
+          and confirm your acceptance to continue using {APP_NAME}.
+        </p>
 
-      <form className="create-form" onSubmit={handleSubmit}>
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            checked={acceptTos}
-            onChange={(e) => setAcceptTos(e.target.checked)}
-          />
-          <span>
-            I have read and accept the{' '}
-            <a href="/terms" target="_blank" rel="noreferrer">
-              updated Terms of Service
-            </a>
-            .
-          </span>
-        </label>
+        <form className="create-form" onSubmit={handleSubmit}>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={acceptTos}
+              onChange={(e) => setAcceptTos(e.target.checked)}
+            />
+            <span>
+              I have read and accept the{' '}
+              <a href="/terms" target="_blank" rel="noreferrer">
+                updated Terms of Service
+              </a>
+              .
+            </span>
+          </label>
 
-        <div className="form-actions">
-          <button type="submit" className="button primary" disabled={status === 'saving'}>
-            {status === 'saving' ? 'Saving…' : 'Confirm'}
-          </button>
-        </div>
+          <div className="form-actions">
+            <button type="submit" className="button primary" disabled={status === 'saving'}>
+              {status === 'saving' ? 'Saving…' : 'Confirm'}
+            </button>
+          </div>
 
-        {error && <p className="error-message">{error}</p>}
-      </form>
-    </section>
+          {error && <p className="error-message">{error}</p>}
+        </form>
+      </section>
+    </>
   );
 }

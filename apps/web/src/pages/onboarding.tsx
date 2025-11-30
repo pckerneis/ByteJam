@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { validateUsername } from '../lib/validateUsername';
+import Head from 'next/head';
+import { APP_NAME } from '../constants';
 
 const CURRENT_TOS_VERSION = '2025-11-30-v1';
 
@@ -88,49 +90,54 @@ export default function OnboardingPage() {
   };
 
   return (
-    <section>
-      <h2>Choose your username</h2>
-      <p>
-        Your username must be unique, 3–32 characters long, and use only letters, digits and
-        underscores.
-      </p>
-      <form className="create-form" onSubmit={handleSubmit}>
-        <label className="field">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="post-title-input"
-            placeholder="Choose a username"
-            maxLength={32}
-          />
-        </label>
+    <>
+      <Head>
+        <title>{APP_NAME} - Onboarding</title>
+      </Head>
+      <section>
+        <h2>Choose your username</h2>
+        <p>
+          Your username must be unique, 3–32 characters long, and use only letters, digits and
+          underscores.
+        </p>
+        <form className="create-form" onSubmit={handleSubmit}>
+          <label className="field">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="post-title-input"
+              placeholder="Choose a username"
+              maxLength={32}
+            />
+          </label>
 
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            checked={acceptTos}
-            onChange={(e) => setAcceptTos(e.target.checked)}
-          />
-          <span>
-            I accept the{' '}
-            <a href="/terms" target="_blank" rel="noreferrer">
-              Terms of Service
-            </a>
-          </span>
-        </label>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={acceptTos}
+              onChange={(e) => setAcceptTos(e.target.checked)}
+            />
+            <span>
+              I accept the{' '}
+              <a href="/terms" target="_blank" rel="noreferrer">
+                Terms of Service
+              </a>
+            </span>
+          </label>
 
-        <div className="form-actions">
-          <button
-            type="submit"
-            className="button primary"
-            disabled={status === 'saving' || !username.trim()}
-          >
-            {status === 'saving' ? 'Saving…' : 'Save username'}
-          </button>
-        </div>
-        {error && <p className="error-message">{error}</p>}
-      </form>
-    </section>
+          <div className="form-actions">
+            <button
+              type="submit"
+              className="button primary"
+              disabled={status === 'saving' || !username.trim()}
+            >
+              {status === 'saving' ? 'Saving…' : 'Save username'}
+            </button>
+          </div>
+          {error && <p className="error-message">{error}</p>}
+        </form>
+      </section>
+    </>
   );
 }
