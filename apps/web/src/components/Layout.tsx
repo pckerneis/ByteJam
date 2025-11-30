@@ -7,6 +7,7 @@ import { warmUpBytebeatEngine, useBytebeatPlayer } from '../hooks/useBytebeatPla
 import { usePlayerStore } from '../hooks/usePlayerStore';
 import { ModeOption } from 'shared';
 import { supabase } from '../lib/supabaseClient';
+import { APP_NAME } from '../constants';
 
 const CURRENT_TOS_VERSION = '2025-11-30-v1';
 
@@ -317,7 +318,7 @@ export function Layout({ children }: PropsWithChildren) {
         <nav>
           <div className="app-title">
             <Link href="/">
-              <h1>Bitebeats</h1>
+              <h1>{ APP_NAME }</h1>
             </Link>
           </div>
           <ul>

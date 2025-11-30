@@ -14,7 +14,7 @@ import {
 } from 'shared';
 
 const EXPRESSION_MAX = 1024;
-const CREATE_DRAFT_STORAGE_KEY = 'bitebeats-create-draft-v1';
+const CREATE_DRAFT_STORAGE_KEY = 'bitejam-create-draft-v1';
 
 export default function CreatePage() {
   const router = useRouter();

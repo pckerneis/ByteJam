@@ -1,8 +1,10 @@
+import { APP_NAME } from "../constants";
+
 export default function Home() {
   return (
     <>
       <section className='home-section'>
-        <h2>Welcome to bitebeats!</h2>
+        <h2>Welcome to { APP_NAME }!</h2>
         <p>A platform to <a href='/explore'>explore</a> and <a href='/create'>share</a> tiny musical expressions.</p>
 
         <fieldset>

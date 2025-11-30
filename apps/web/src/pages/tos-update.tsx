@@ -2,6 +2,7 @@ import { useState, type FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
+import { APP_NAME } from '../constants';
 
 const CURRENT_TOS_VERSION = '2025-11-30-v1';
 
@@ -89,7 +90,7 @@ export default function TosUpdatePage() {
         <a href="/terms" target="_blank" rel="noreferrer">
           latest Terms of Service
         </a>{' '}
-        and confirm your acceptance to continue using Bitebeats.
+        and confirm your acceptance to continue using { APP_NAME }.
       </p>
 
       <form className="create-form" onSubmit={handleSubmit}>

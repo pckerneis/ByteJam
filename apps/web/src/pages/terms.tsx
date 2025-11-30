@@ -1,10 +1,12 @@
+import { APP_NAME } from "../constants";
+
 export default function Terms() {
   return (
     <>
       <section className='home-section'>
         <h2>Terms of Service</h2>
         <p>
-            Welcome to Bitebeats, an experimental platform for creating and sharing bytebeat expressions.
+            Welcome to { APP_NAME }, an experimental platform for creating and sharing bytebeat expressions.
             By using this service, you agree to the following terms.
         </p>
 
