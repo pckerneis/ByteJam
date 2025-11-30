@@ -3,10 +3,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from './PostList';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
-import {
-  attachFavoritesCount,
-  enrichWithViewerFavorites,
-} from '../utils/favorites';
+import { attachFavoritesCount, enrichWithViewerFavorites } from '../utils/favorites';
 
 interface UserProfileContentProps {
   username: string | null;

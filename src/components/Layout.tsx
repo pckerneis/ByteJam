@@ -232,7 +232,7 @@ export function Layout({ children }: PropsWithChildren) {
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
     await toggle(post.expression, mode, sr);
-  }
+  };
 
   const handleFooterPrev = async () => {
     await playPost(prev());
