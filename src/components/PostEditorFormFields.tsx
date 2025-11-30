@@ -2,21 +2,14 @@ import { useState } from 'react';
 import { ExpressionEditor, ExpressionErrorSnippet } from './ExpressionEditor';
 import { ModeOption, SampleRateOption } from '../model/expression';
 import { ValidationIssue } from '../model/expression-validator';
+import type { PostMetadataModel } from '../model/postEditor';
 
 interface PostEditorFormFieldsProps {
-  title: string;
-  onTitleChange: (value: string) => void;
+  meta: PostMetadataModel;
+  onMetaChange: (next: PostMetadataModel) => void;
 
   expression: string;
   onExpressionChange: (value: string) => void;
-
-  mode: ModeOption;
-  sampleRate: SampleRateOption;
-  onToggleMode: () => void;
-  onRotateSampleRate: () => void;
-
-  isDraft: boolean;
-  onDraftChange: (value: boolean) => void;
 
   isPlaying: boolean;
   onPlayClick: () => void;
@@ -41,16 +34,10 @@ interface PostEditorFormFieldsProps {
 
 export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
   const {
-    title,
-    onTitleChange,
+    meta,
+    onMetaChange,
     expression,
     onExpressionChange,
-    mode,
-    sampleRate,
-    onToggleMode,
-    onRotateSampleRate,
-    isDraft,
-    onDraftChange,
     isPlaying,
     onPlayClick,
     validationIssue,
@@ -68,6 +55,30 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
 
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const canSubmit = Boolean(expression.trim()) && !validationIssue && saveStatus !== 'saving';
+
+  const { title, mode, sampleRate, isDraft } = meta;
+
+  const toggleMode = () => {
+    if (mode === ModeOption.Int) {
+      onMetaChange({ ...meta, mode: ModeOption.Float });
+    } else {
+      onMetaChange({ ...meta, mode: ModeOption.Int });
+    }
+  };
+
+  const rotateSampleRate = () => {
+    switch (sampleRate) {
+      case SampleRateOption._44_1k:
+        onMetaChange({ ...meta, sampleRate: SampleRateOption._8k });
+        break;
+      case SampleRateOption._8k:
+        onMetaChange({ ...meta, sampleRate: SampleRateOption._16k });
+        break;
+      case SampleRateOption._16k:
+        onMetaChange({ ...meta, sampleRate: SampleRateOption._44_1k });
+        break;
+    }
+  };
 
   const handleCopyShareLink = async () => {
     const trimmedExpr = expression.trim();
@@ -119,17 +130,17 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
           type="text"
           maxLength={64}
           value={title}
-          onChange={(e) => onTitleChange(e.target.value)}
+          onChange={(e) => onMetaChange({ ...meta, title: e.target.value })}
           className="post-title-input"
           placeholder="Name your bytebeat expression"
         />
       </label>
 
       <div className="chips">
-        <button type="button" className="chip" onClick={() => onToggleMode()}>
+        <button type="button" className="chip" onClick={toggleMode}>
           {mode}
         </button>
-        <button type="button" className="chip" onClick={() => onRotateSampleRate()}>
+        <button type="button" className="chip" onClick={rotateSampleRate}>
           {sampleRate}
         </button>
       </div>
@@ -165,7 +176,12 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
             <input
               type="checkbox"
               checked={isDraft}
-              onChange={(e) => onDraftChange(e.target.checked)}
+              onChange={(e) =>
+                onMetaChange({
+                  ...meta,
+                  isDraft: e.target.checked,
+                })
+              }
             />
             <span>Save as draft</span>
           </label>

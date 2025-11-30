@@ -8,7 +8,8 @@ import { PostEditorFormFields } from '../../components/PostEditorFormFields';
 import Head from 'next/head';
 import { APP_NAME } from '../../constants';
 import { getSampleRateValue, ModeOption, SampleRateOption } from '../../model/expression';
-import { validateExpression, ValidationIssue } from '../../model/expression-validator';
+import { validateExpression } from '../../model/expression-validator';
+import { useExpressionPlayer } from '../../hooks/useExpressionPlayer';
 
 const EXPRESSION_MAX = 1024;
 
@@ -33,10 +34,17 @@ export default function EditPostPage() {
   const [saveError, setSaveError] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const [validationIssue, setValidationIssue] = useState<ValidationIssue | null>(null);
-  const validationTimeoutRef = useRef<number | null>(null);
-
   const expressionLength = expression.length;
+
+  const { validationIssue, handleExpressionChange, handlePlayClick, setValidationIssue } =
+    useExpressionPlayer({
+      expression,
+      setExpression,
+      mode,
+      sampleRateValue: sr,
+      toggle,
+      setCurrentPostById,
+    });
 
   useEffect(() => {
     return () => {
@@ -103,45 +111,6 @@ export default function EditPostPage() {
       cancelled = true;
     };
   }, [id, user]);
-
-  const handleExpressionChange = (value: string) => {
-    setExpression(value);
-
-    const trimmed = value.trim();
-    if (!trimmed) {
-      setValidationIssue(null);
-      return;
-    }
-
-    if (validationTimeoutRef.current !== null) {
-      window.clearTimeout(validationTimeoutRef.current);
-    }
-
-    validationTimeoutRef.current = window.setTimeout(() => {
-      const result = validateExpression(value);
-      setValidationIssue(result.valid ? null : result.issues[0] ?? null);
-    }, 200);
-  };
-
-  const handlePlayClick = () => {
-    const trimmed = expression.trim();
-    if (!trimmed) {
-      setValidationIssue(null);
-      return;
-    }
-
-    const result = validateExpression(expression);
-
-    if (!result.valid) {
-      setValidationIssue(result.issues[0] ?? null);
-      return;
-    }
-
-    setValidationIssue(null);
-    // Clear any globally selected post while previewing the edited expression.
-    setCurrentPostById(null);
-    void toggle(expression, mode, sr, true);
-  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -225,26 +194,18 @@ export default function EditPostPage() {
 
   const isExpressionTooLong = expressionLength > EXPRESSION_MAX;
 
-  const toggleMode = () => {
-    if (mode === ModeOption.Int) {
-      setMode(ModeOption.Float);
-    } else {
-      setMode(ModeOption.Int);
-    }
+  const meta = {
+    title,
+    mode,
+    sampleRate,
+    isDraft,
   };
 
-  const rotateSampleRate = () => {
-    switch (sampleRate) {
-      case SampleRateOption._44_1k:
-        setSampleRate(SampleRateOption._8k);
-        break;
-      case SampleRateOption._8k:
-        setSampleRate(SampleRateOption._16k);
-        break;
-      case SampleRateOption._16k:
-        setSampleRate(SampleRateOption._44_1k);
-        break;
-    }
+  const handleMetaChange = (next: typeof meta) => {
+    setTitle(next.title);
+    setMode(next.mode);
+    setSampleRate(next.sampleRate);
+    setIsDraft(next.isDraft);
   };
 
   if (loading) {
@@ -268,16 +229,10 @@ export default function EditPostPage() {
         <h2>Edit post</h2>
         <form className="create-form" onSubmit={handleSubmit}>
           <PostEditorFormFields
-            title={title}
-            onTitleChange={setTitle}
+            meta={meta}
+            onMetaChange={handleMetaChange}
             expression={expression}
             onExpressionChange={handleExpressionChange}
-            mode={mode}
-            sampleRate={sampleRate}
-            onToggleMode={toggleMode}
-            onRotateSampleRate={rotateSampleRate}
-            isDraft={isDraft}
-            onDraftChange={setIsDraft}
             isPlaying={isPlaying}
             onPlayClick={handlePlayClick}
             validationIssue={validationIssue}
