@@ -62,7 +62,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
     const sr = post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
-    await toggle(post.expression, mode, sr, true);
+    await toggle(post.expression, mode, sr);
     setActivePostId(post.id);
     setPlaylist(posts, post.id);
     setCurrentPostById(post.id);

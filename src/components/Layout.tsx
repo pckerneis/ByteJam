@@ -219,7 +219,7 @@ export function Layout({ children }: PropsWithChildren) {
 
     const mode: ModeOption = currentPost.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
-    await toggle(currentPost.expression, mode, sr, true);
+    await toggle(currentPost.expression, mode, sr);
   };
 
   const handleFooterPrev = async () => {
@@ -231,7 +231,7 @@ export function Layout({ children }: PropsWithChildren) {
     const sr = post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
-    await toggle(post.expression, mode, sr, true);
+    await toggle(post.expression, mode, sr);
   };
 
   const handleFooterNext = async () => {
@@ -243,7 +243,7 @@ export function Layout({ children }: PropsWithChildren) {
     const sr = post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
-    await toggle(post.expression, mode, sr, true);
+    await toggle(post.expression, mode, sr);
   };
 
   const handleFooterFavoriteClick = async () => {

@@ -7,11 +7,18 @@ import { supabase } from '../lib/supabaseClient';
 import { PostEditorFormFields } from '../components/PostEditorFormFields';
 import Head from 'next/head';
 import { APP_NAME } from '../constants';
-import { getSampleRateValue, ModeOption, SampleRateOption } from '../model/expression';
+import {
+  getSampleRateValue,
+  ModeOption,
+  SampleRateOption,
+  decodeMode,
+  decodeSampleRate,
+  encodeMode,
+  encodeSampleRate,
+} from '../model/expression';
 import { validateExpression } from '../model/expression-validator';
 import { useExpressionPlayer } from '../hooks/useExpressionPlayer';
 
-const EXPRESSION_MAX = 1024;
 const CREATE_DRAFT_STORAGE_KEY = 'bitejam-create-draft-v1';
 
 export default function CreatePage() {
@@ -29,8 +36,6 @@ export default function CreatePage() {
 
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success'>('idle');
   const [saveError, setSaveError] = useState('');
-
-  const expressionLength = expression.length;
 
   const { validationIssue, handleExpressionChange, handlePlayClick, setValidationIssue } =
     useExpressionPlayer({
@@ -74,18 +79,12 @@ export default function CreatePage() {
           }
           setExpression(parsed.expr);
 
-          if (parsed.mode === 'int') {
-            setMode(ModeOption.Int);
-          } else if (parsed.mode === 'float') {
-            setMode(ModeOption.Float);
+          if (parsed.mode) {
+            setMode(decodeMode(parsed.mode));
           }
 
-          if (parsed.sr === '8k') {
-            setSampleRate(SampleRateOption._8k);
-          } else if (parsed.sr === '16k') {
-            setSampleRate(SampleRateOption._16k);
-          } else if (parsed.sr === '44.1k') {
-            setSampleRate(SampleRateOption._44_1k);
+          if (parsed.sr) {
+            setSampleRate(decodeSampleRate(parsed.sr));
           }
 
           return;
@@ -113,12 +112,8 @@ export default function CreatePage() {
       if (typeof parsed.expression === 'string') setExpression(parsed.expression);
       if (typeof parsed.isDraft === 'boolean') setIsDraft(parsed.isDraft);
 
-      if (parsed.mode === 'int') setMode(ModeOption.Int);
-      else if (parsed.mode === 'float') setMode(ModeOption.Float);
-
-      if (parsed.sampleRate === '8k') setSampleRate(SampleRateOption._8k);
-      else if (parsed.sampleRate === '16k') setSampleRate(SampleRateOption._16k);
-      else if (parsed.sampleRate === '44.1k') setSampleRate(SampleRateOption._44_1k);
+      if (parsed.mode) setMode(decodeMode(parsed.mode));
+      if (parsed.sampleRate) setSampleRate(decodeSampleRate(parsed.sampleRate));
     } catch {
       // ignore malformed localStorage
     }
@@ -130,14 +125,8 @@ export default function CreatePage() {
     if (typeof window === 'undefined') return;
 
     try {
-      const sampleRateValue =
-        sampleRate === SampleRateOption._8k
-          ? '8k'
-          : sampleRate === SampleRateOption._16k
-            ? '16k'
-            : '44.1k';
-
-      const modeValue = mode === ModeOption.Float ? 'float' : 'int';
+      const sampleRateValue = encodeSampleRate(sampleRate);
+      const modeValue = encodeMode(mode);
 
       window.localStorage.setItem(
         CREATE_DRAFT_STORAGE_KEY,
@@ -176,14 +165,8 @@ export default function CreatePage() {
     setSaveStatus('saving');
     setSaveError('');
 
-    const sampleRateValue =
-      sampleRate === SampleRateOption._8k
-        ? '8k'
-        : sampleRate === SampleRateOption._16k
-          ? '16k'
-          : '44.1k';
-
-    const modeValue = mode === ModeOption.Float ? 'float' : 'int';
+    const sampleRateValue = encodeSampleRate(sampleRate);
+    const modeValue = encodeMode(mode);
 
     const { data, error } = await supabase
       .from('posts')
@@ -206,8 +189,6 @@ export default function CreatePage() {
 
     await router.push(`/post/${data.id}`);
   };
-
-  const isExpressionTooLong = expressionLength > EXPRESSION_MAX;
 
   const meta = {
     title,
@@ -246,9 +227,6 @@ export default function CreatePage() {
             onPlayClick={handlePlayClick}
             validationIssue={validationIssue}
             lastError={lastError || null}
-            isExpressionTooLong={isExpressionTooLong}
-            expressionLength={expressionLength}
-            expressionMax={EXPRESSION_MAX}
             saveStatus={saveStatus}
             saveError={saveError}
             submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save'}

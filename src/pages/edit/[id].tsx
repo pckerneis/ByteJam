@@ -7,11 +7,17 @@ import { supabase } from '../../lib/supabaseClient';
 import { PostEditorFormFields } from '../../components/PostEditorFormFields';
 import Head from 'next/head';
 import { APP_NAME } from '../../constants';
-import { getSampleRateValue, ModeOption, SampleRateOption } from '../../model/expression';
+import {
+  getSampleRateValue,
+  ModeOption,
+  SampleRateOption,
+  decodeMode,
+  decodeSampleRate,
+  encodeMode,
+  encodeSampleRate,
+} from '../../model/expression';
 import { validateExpression } from '../../model/expression-validator';
 import { useExpressionPlayer } from '../../hooks/useExpressionPlayer';
-
-const EXPRESSION_MAX = 1024;
 
 export default function EditPostPage() {
   const router = useRouter();
@@ -23,7 +29,6 @@ export default function EditPostPage() {
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
   const [sampleRate, setSampleRate] = useState<SampleRateOption>(SampleRateOption._44_1k);
-
   const { isPlaying, toggle, lastError, stop } = useBytebeatPlayer();
   const { setCurrentPostById } = usePlayerStore();
   const sr = getSampleRateValue(sampleRate);
@@ -93,14 +98,8 @@ export default function EditPostPage() {
       setTitle(data.title ?? '');
       setExpression(data.expression ?? '');
       setIsDraft(Boolean(data.is_draft));
-      setMode(data.mode === 'int' ? ModeOption.Int : ModeOption.Float);
-      setSampleRate(
-        data.sample_rate === '8k'
-          ? SampleRateOption._8k
-          : data.sample_rate === '16k'
-            ? SampleRateOption._16k
-            : SampleRateOption._44_1k,
-      );
+      setMode(decodeMode(data.mode as any));
+      setSampleRate(decodeSampleRate(data.sample_rate as any));
 
       setLoading(false);
     };
@@ -135,14 +134,8 @@ export default function EditPostPage() {
     setSaveStatus('saving');
     setSaveError('');
 
-    const sampleRateValue =
-      sampleRate === SampleRateOption._8k
-        ? '8k'
-        : sampleRate === SampleRateOption._16k
-          ? '16k'
-          : '44.1k';
-
-    const modeValue = mode === ModeOption.Float ? 'float' : 'int';
+    const sampleRateValue = encodeSampleRate(sampleRate);
+    const modeValue = encodeMode(mode);
 
     const { error } = await supabase
       .from('posts')
@@ -192,8 +185,6 @@ export default function EditPostPage() {
     await router.push('/profile');
   };
 
-  const isExpressionTooLong = expressionLength > EXPRESSION_MAX;
-
   const meta = {
     title,
     mode,
@@ -237,9 +228,6 @@ export default function EditPostPage() {
             onPlayClick={handlePlayClick}
             validationIssue={validationIssue}
             lastError={lastError || null}
-            isExpressionTooLong={isExpressionTooLong}
-            expressionLength={expressionLength}
-            expressionMax={EXPRESSION_MAX}
             saveStatus={saveStatus}
             saveError={saveError}
             submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save changes'}

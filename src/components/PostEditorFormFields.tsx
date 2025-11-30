@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { ExpressionEditor, ExpressionErrorSnippet } from './ExpressionEditor';
-import { ModeOption, SampleRateOption } from '../model/expression';
+import { ModeOption, SampleRateOption, encodeMode, encodeSampleRate } from '../model/expression';
 import { ValidationIssue } from '../model/expression-validator';
 import type { PostMetadataModel } from '../model/postEditor';
+import exp from 'node:constants';
+import { EXPRESSION_MAX } from '../constants';
 
 interface PostEditorFormFieldsProps {
   meta: PostMetadataModel;
@@ -16,10 +18,6 @@ interface PostEditorFormFieldsProps {
 
   validationIssue: ValidationIssue | null;
   lastError: string | null;
-
-  isExpressionTooLong: boolean;
-  expressionLength: number;
-  expressionMax: number;
 
   saveStatus: 'idle' | 'saving' | 'success';
   saveError: string;
@@ -42,9 +40,6 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
     onPlayClick,
     validationIssue,
     lastError,
-    isExpressionTooLong,
-    expressionLength,
-    expressionMax,
     saveStatus,
     saveError,
     submitLabel,
@@ -53,6 +48,8 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
     showActions,
   } = props;
 
+  const expressionLength = expression.length;
+  const isExpressionTooLong = expressionLength > EXPRESSION_MAX;
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const canSubmit = Boolean(expression.trim()) && !validationIssue && saveStatus !== 'saving';
 
@@ -88,14 +85,8 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
 
     const trimmedTitle = title.trim();
 
-    const sampleRateValue =
-      sampleRate === SampleRateOption._8k
-        ? '8k'
-        : sampleRate === SampleRateOption._16k
-          ? '16k'
-          : '44.1k';
-
-    const modeValue = mode === ModeOption.Float ? 'float' : 'int';
+    const sampleRateValue = encodeSampleRate(sampleRate);
+    const modeValue = encodeMode(mode);
 
     const payload = {
       title: trimmedTitle || undefined,
@@ -158,7 +149,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
           {isPlaying ? 'Stop' : 'Play'}
         </button>
         <span className={isExpressionTooLong ? 'counter error' : 'counter'}>
-          {expressionLength} / {expressionMax}
+          {expressionLength} / {EXPRESSION_MAX}
         </span>
       </div>
 
