@@ -37,6 +37,11 @@ export function Layout({ children }: PropsWithChildren) {
   const visualizerAnimationRef = useRef<number | null>(null);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    await router.push('/');
+  };
+
   useEffect(() => {
     const devFakeAuth = process.env.NEXT_PUBLIC_DEV_FAKE_AUTH === '1';
 
@@ -110,11 +115,6 @@ export function Layout({ children }: PropsWithChildren) {
       window.removeEventListener('keydown', handleFirstInteraction);
     };
   }, []);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    await router.push('/');
-  };
 
   useEffect(() => {
     const container = titleRef.current;
@@ -301,15 +301,14 @@ export function Layout({ children }: PropsWithChildren) {
             <NavLink href="/create">Create</NavLink>
             <NavLink href="/explore">Explore</NavLink>
             {user && <NavLink href="/profile">Profile</NavLink>}
-            {user ? (
-              <li>
+            {user && (
+              <li className="nav-signout">
                 <button type="button" className="nav" onClick={handleSignOut}>
                   Sign out
                 </button>
               </li>
-            ) : (
-              <NavLink href="/login">Login</NavLink>
             )}
+            {!user && <NavLink href="/login">Login</NavLink>}
           </ul>
         </nav>
         <main>{children}</main>

@@ -5,9 +5,5 @@ export async function favoritePost(userId: string, postId: string) {
 }
 
 export async function unfavoritePost(userId: string, postId: string) {
-  return supabase
-    .from('favorites')
-    .delete()
-    .eq('profile_id', userId)
-    .eq('post_id', postId);
+  return supabase.from('favorites').delete().eq('profile_id', userId).eq('post_id', postId);
 }

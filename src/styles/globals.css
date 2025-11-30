@@ -531,3 +531,91 @@ button.chip {
 .expression-preview {
   background-color: #fee2e2;
 }
+
+/* Mobile layout */
+
+@media (max-width: 640px) {
+  .top-content {
+    flex-direction: column;
+  }
+
+  nav {
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--panel-border-color);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 10px;
+  }
+
+  .app-title {
+    padding: 8px 0;
+    justify-content: flex-start;
+  }
+
+  nav ul {
+    flex-direction: row;
+    gap: 10px;
+    padding: 0;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+
+  .nav-signout {
+    display: none;
+  }
+
+  main {
+    padding: 8px;
+    align-items: stretch;
+  }
+
+  main > section {
+    max-width: none;
+  }
+
+  .footer {
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .transport-buttons {
+    gap: 4px;
+  }
+
+  .transport-button {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .transport-button.play {
+    width: 32px;
+    height: 32px;
+  }
+
+  .played-post-info {
+    width: 40%;
+    overflow: hidden;
+  }
+
+  .vizualizer canvas {
+    width: 100px;
+  }
+
+  .post-list {
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .post-header h3 {
+    font-size: 15px;
+  }
+
+  .chips .chip {
+    font-size: 9px;
+    padding-inline: 6px;
+  }
+}

@@ -134,6 +134,11 @@ export default function UpdateProfilePage() {
     setIsDeleteModalOpen(false);
   };
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    await router.push('/');
+  };
+
   return (
     <>
       <Head>
@@ -148,6 +153,10 @@ export default function UpdateProfilePage() {
             <h2>Update profile</h2>
             <p>Logged in as {user?.email ?? ''}</p>
 
+            <button type="button" className="button" onClick={handleSignOut}>
+              Sign out
+            </button>
+
             <h3>Update username</h3>
             <label className="field">
               <input
@@ -159,11 +168,9 @@ export default function UpdateProfilePage() {
                 maxLength={32}
               />
             </label>
-            <div>
-              <button type="submit" className="button primary" disabled={saveStatus === 'saving'}>
-                {saveStatus === 'saving' ? 'Saving…' : 'Save username'}
-              </button>
-            </div>
+            <button type="submit" className="button primary" disabled={saveStatus === 'saving'}>
+              {saveStatus === 'saving' ? 'Saving…' : 'Save username'}
+            </button>
 
             <h3>Delete account</h3>
 
@@ -172,16 +179,14 @@ export default function UpdateProfilePage() {
               posts, drafts, and favorites, will be permanently removed.
             </p>
 
-            <div>
-              <button
-                type="button"
-                className="button danger"
-                onClick={handleDeleteAccountClick}
-                disabled={saveStatus === 'saving'}
-              >
-                Delete account
-              </button>
-            </div>
+            <button
+              type="button"
+              className="button danger"
+              onClick={handleDeleteAccountClick}
+              disabled={saveStatus === 'saving'}
+            >
+              Delete account
+            </button>
 
             {error && <p className="error-message">{error}</p>}
           </form>

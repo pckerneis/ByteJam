@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { UserProfileContent } from '../components/UserProfileContent';
 import Head from 'next/head';
+import { supabase } from '../lib/supabaseClient';
 import { useCurrentUserProfile } from '../hooks/useCurrentUserProfile';
 
 export default function ProfilePage() {
@@ -9,6 +10,11 @@ export default function ProfilePage() {
 
   const handleEditProfile = () => {
     void router.push('/update-profile');
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    await router.push('/');
   };
 
   return (
@@ -24,9 +30,11 @@ export default function ProfilePage() {
           <UserProfileContent
             username={username}
             extraHeader={
-              <button type="button" className="button secondary" onClick={handleEditProfile}>
-                Edit
-              </button>
+              <>
+                <button type="button" className="button secondary" onClick={handleEditProfile}>
+                  Edit
+                </button>
+              </>
             }
           />
         )}
