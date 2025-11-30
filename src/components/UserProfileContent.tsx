@@ -5,7 +5,6 @@ import { PostList, type PostRow } from './PostList';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import {
   attachFavoritesCount,
-  attachFavoritedByCurrentUser,
   enrichWithViewerFavorites,
 } from '../utils/favorites';
 

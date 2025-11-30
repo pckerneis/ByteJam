@@ -7,7 +7,12 @@ interface UseInfiniteScrollParams {
   setPage: (updater: (prev: number) => number) => void;
 }
 
-export function useInfiniteScroll({ hasMore, loadingMoreRef, sentinelRef, setPage }: UseInfiniteScrollParams) {
+export function useInfiniteScroll({
+  hasMore,
+  loadingMoreRef,
+  sentinelRef,
+  setPage,
+}: UseInfiniteScrollParams) {
   useEffect(() => {
     if (!hasMore) return;
 

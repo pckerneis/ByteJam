@@ -7,7 +7,12 @@ interface UseExpressionPlayerOptions {
   setExpression: (value: string) => void;
   mode: ModeOption;
   sampleRateValue: number;
-  toggle: (expression: string, mode: ModeOption, sampleRate: number, loop?: boolean) => void | Promise<void>;
+  toggle: (
+    expression: string,
+    mode: ModeOption,
+    sampleRate: number,
+    loop?: boolean,
+  ) => void | Promise<void>;
   setCurrentPostById: (id: string | null) => void;
   loopPreview?: boolean;
 }

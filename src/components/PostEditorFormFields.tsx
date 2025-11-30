@@ -3,7 +3,6 @@ import { ExpressionEditor, ExpressionErrorSnippet } from './ExpressionEditor';
 import { ModeOption, SampleRateOption, encodeMode, encodeSampleRate } from '../model/expression';
 import { ValidationIssue } from '../model/expression-validator';
 import type { PostMetadataModel } from '../model/postEditor';
-import exp from 'node:constants';
 import { EXPRESSION_MAX } from '../constants';
 
 interface PostEditorFormFieldsProps {

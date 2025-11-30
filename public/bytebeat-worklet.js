@@ -68,7 +68,6 @@ return Number((${expression})) || 0;
 
           this._float = !!float;
           this._phase = 0;
-
         } catch (e) {
           // On compile error, keep the previous function but notify the UI
           this.port.postMessage({
@@ -92,50 +91,50 @@ return Number((${expression})) || 0;
     const fn = this._fn;
     const gain = this._gain;
     try {
-        let t = this._t | 0;
-        let phase = this._phase;
-        let lastRaw = this._lastRaw;
-        const ratio = this._targetRate / sampleRate; // target samples per device sample
+      let t = this._t | 0;
+      let phase = this._phase;
+      let lastRaw = this._lastRaw;
+      const ratio = this._targetRate / sampleRate; // target samples per device sample
 
-        if (this._float) {
-          for (let i = 0; i < channel.length; i += 1) {
-            phase += ratio;
-            if (phase >= 1) {
-              const steps = Math.floor(phase);
-              phase -= steps;
-              t += steps;
-              const tSeconds = t / this._targetRate;
-              const v = Number(fn(tSeconds)) || 0;
-              // clamp to [-1,1]
-              lastRaw = Math.max(-1, Math.min(1, v));
-            }
-
-            const sample = lastRaw * gain;
-            channel[i] = sample;
-            this._levelSumSquares += sample * sample;
-            this._levelSampleCount += 1;
+      if (this._float) {
+        for (let i = 0; i < channel.length; i += 1) {
+          phase += ratio;
+          if (phase >= 1) {
+            const steps = Math.floor(phase);
+            phase -= steps;
+            t += steps;
+            const tSeconds = t / this._targetRate;
+            const v = Number(fn(tSeconds)) || 0;
+            // clamp to [-1,1]
+            lastRaw = Math.max(-1, Math.min(1, v));
           }
-        } else {
-          for (let i = 0; i < channel.length; i += 1) {
-            phase += ratio;
-            if (phase >= 1) {
-              const steps = Math.floor(phase);
-              phase -= steps;
-              t += steps;
-              lastRaw = fn(t) | 0;
-            }
 
-            const byteValue = lastRaw & 0xff;
-            const sample = ((byteValue - 128) / 128) * gain;
-            channel[i] = sample;
-            this._levelSumSquares += sample * sample;
-            this._levelSampleCount += 1;
-          }
+          const sample = lastRaw * gain;
+          channel[i] = sample;
+          this._levelSumSquares += sample * sample;
+          this._levelSampleCount += 1;
         }
+      } else {
+        for (let i = 0; i < channel.length; i += 1) {
+          phase += ratio;
+          if (phase >= 1) {
+            const steps = Math.floor(phase);
+            phase -= steps;
+            t += steps;
+            lastRaw = fn(t) | 0;
+          }
 
-        this._t = t;
-        this._phase = phase;
-        this._lastRaw = lastRaw;
+          const byteValue = lastRaw & 0xff;
+          const sample = ((byteValue - 128) / 128) * gain;
+          channel[i] = sample;
+          this._levelSumSquares += sample * sample;
+          this._levelSampleCount += 1;
+        }
+      }
+
+      this._t = t;
+      this._phase = phase;
+      this._lastRaw = lastRaw;
 
       // If we reach here without throwing, remember this function as the
       // last known-good implementation.
