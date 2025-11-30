@@ -296,7 +296,7 @@ export function Layout({ children }: PropsWithChildren) {
       <div className="top-content">
         <nav>
           <div className="app-title">
-            <Link href="/explore">
+            <Link href="/">
               <h1>Bitebeats</h1>
             </Link>
           </div>
