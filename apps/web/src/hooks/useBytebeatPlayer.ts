@@ -177,7 +177,6 @@ export function useBytebeatPlayer(): BytebeatPlayer {
         // This prevents starting playback when there is a compile error.
         try {
           // eslint-disable-next-line no-new-func
-          // eslint-disable-next-line @typescript-eslint/no-implied-eval
           // We only care that this compiles; the worklet does the actual evaluation.
           void new Function('t', String(expression));
         } catch (e) {

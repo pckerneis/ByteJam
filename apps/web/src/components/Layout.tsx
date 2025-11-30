@@ -86,7 +86,7 @@ export function Layout({ children }: PropsWithChildren) {
     return () => {
       cancelled = true;
     };
-  }, [user, checkedProfile, router.pathname]);
+  }, [user, checkedProfile, router.pathname, router]);
 
   // Warm up the audio engine on the very first user interaction anywhere
   // in the app, so the initial AudioContext/worklet cost is paid upfront.

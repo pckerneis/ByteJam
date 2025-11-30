@@ -1,11 +1,12 @@
 import { APP_NAME } from "../constants";
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <>
       <section className='home-section'>
         <h2>Welcome to { APP_NAME }!</h2>
-        <p>A platform to <a href='/explore'>explore</a> and <a href='/create'>share</a> tiny musical expressions.</p>
+        <p>A platform to <Link href='/explore'>explore</Link> and <Link href='/create'>share</Link> tiny musical expressions.</p>
 
         <fieldset>
           <legend>What is bytebeat?</legend>
@@ -14,7 +15,7 @@ export default function Home() {
             that use arithmetic and bitwise operations to create unique algorithmic soundscapes.
           </p>
 
-          <p><a href="/explore">Browse existing bytebeats</a> or <a href="/create">create your own</a>.</p>
+          <p><Link href="/explore">Browse existing bytebeats</Link> or <Link href="/create">create your own</Link>.</p>
         </fieldset>
       </section>
     </>
