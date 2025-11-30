@@ -6,6 +6,7 @@ import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { warmUpBytebeatEngine, useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { usePlayerStore } from '../hooks/usePlayerStore';
 import { supabase } from '../lib/supabaseClient';
+import { favoritePost, unfavoritePost } from '../services/favoritesClient';
 import { APP_NAME } from '../constants';
 import { ModeOption } from '../model/expression';
 import { PostRow } from './PostList';
@@ -247,28 +248,19 @@ export function Layout({ children }: PropsWithChildren) {
     const isFavorited = !!currentPost.favorited_by_current_user;
 
     if (!isFavorited) {
-      const { error } = await supabase
-        .from('favorites')
-        .insert({ profile_id: userId, post_id: currentPost.id });
+      const { error } = await favoritePost(userId, currentPost.id);
 
       if (error) {
-        const code = (error as any).code as string | undefined;
-        if (code !== '23505') {
-          // eslint-disable-next-line no-console
-          console.warn('Error favoriting post', error.message);
-          return;
-        }
+        // eslint-disable-next-line no-console
+        console.warn('Error favoriting post', error.message);
+        return;
       }
 
       updateFavoriteStateForPost(currentPost.id, true, baseCount + 1);
       return;
     }
 
-    const { error: deleteError } = await supabase
-      .from('favorites')
-      .delete()
-      .eq('profile_id', userId)
-      .eq('post_id', currentPost.id);
+    const { error: deleteError } = await unfavoritePost(userId, currentPost.id);
 
     if (deleteError) {
       // eslint-disable-next-line no-console

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
-import { supabase } from '../lib/supabaseClient';
+import { favoritePost, unfavoritePost } from '../services/favoritesClient';
 import { ReadonlyExpression } from './ExpressionEditor';
 import { usePlayerStore } from '../hooks/usePlayerStore';
 import { ModeOption } from '../model/expression';
@@ -78,46 +78,32 @@ export function PostList({ posts, currentUserId }: PostListProps) {
     const current = favoriteState[post.id];
     const baseCount = post.favorites_count ?? 0;
     const currentCount = current ? current.count : baseCount;
+    const isCurrentlyFavorited =
+      current?.favorited !== undefined ? current.favorited : !!post.favorited_by_current_user;
 
-    // Try to insert; if unique violation, delete instead.
-    const { error } = await supabase
-      .from('favorites')
-      .insert({ profile_id: userId, post_id: post.id });
+    if (!isCurrentlyFavorited) {
+      const { error } = await favoritePost(userId, post.id);
 
-    if (!error) {
-      // Favorited successfully.
+      if (error) {
+        console.warn('Error favoriting post', error.message);
+      }
+
       setFavoriteState((prev) => ({
         ...prev,
         [post.id]: { count: currentCount + 1, favorited: true },
       }));
-      return;
+    } else {
+      const { error: deleteError } = await unfavoritePost(userId, post.id);
+
+      if (deleteError) {
+        console.warn('Error removing favorite', deleteError.message);
+      }
+
+      setFavoriteState((prev) => ({
+        ...prev,
+        [post.id]: { count: Math.max(0, currentCount - 1), favorited: false },
+      }));
     }
-
-    const code = (error as any).code as string | undefined;
-    if (code !== '23505') {
-      // Non-unique violation error; do not attempt delete.
-      // eslint-disable-next-line no-console
-      console.warn('Error favoriting post', error.message);
-      return;
-    }
-
-    // Already favorited -> remove favorite.
-    const { error: deleteError } = await supabase
-      .from('favorites')
-      .delete()
-      .eq('profile_id', userId)
-      .eq('post_id', post.id);
-
-    if (deleteError) {
-      // eslint-disable-next-line no-console
-      console.warn('Error removing favorite', deleteError.message);
-      return;
-    }
-
-    setFavoriteState((prev) => ({
-      ...prev,
-      [post.id]: { count: Math.max(0, currentCount - 1), favorited: false },
-    }));
   };
 
   return (
