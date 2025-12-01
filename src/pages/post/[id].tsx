@@ -28,7 +28,7 @@ export default function PostDetailPage() {
       const { data, error } = await supabase
         .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('id', id)
         .maybeSingle();

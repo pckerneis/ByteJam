@@ -34,7 +34,7 @@ export default function ExplorePage() {
       let query = supabase
         .from('posts_with_meta')
         .select(
-          'id,title,expression,sample_rate,mode,created_at,profile_id,is_draft,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
+          'id,title,expression,sample_rate,mode,created_at,profile_id,is_draft,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('is_draft', false);
 

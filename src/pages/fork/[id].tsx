@@ -140,6 +140,7 @@ export default function ForkPostPage() {
         sample_rate: sampleRateValue,
         mode: modeValue,
         fork_of_post_id: id,
+        is_fork: true,
       })
       .select('id')
       .single();

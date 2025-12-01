@@ -80,7 +80,7 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
       const { data, error } = await supabase
         .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('profile_id', profile.id)
         .eq('is_draft', false)
@@ -184,7 +184,7 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
       const { data: postsData, error: postsError } = await supabase
         .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
         )
         .in('id', postIds)
         .eq('is_draft', false)
@@ -250,7 +250,7 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
       const { data: draftData, error: draftError } = await supabase
         .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('profile_id', profile.id)
         .eq('is_draft', true)

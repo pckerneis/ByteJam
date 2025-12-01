@@ -23,6 +23,7 @@ export interface PostRow {
   favorites_count?: number;
   favorited_by_current_user?: boolean;
   fork_of_post_id?: string | null;
+  is_fork?: boolean;
 }
 
 interface PostListProps {
@@ -184,13 +185,17 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                 )}
               </div>
               <h3>{post.title}</h3>
-              {post.fork_of_post_id && (
+              {(post.fork_of_post_id || post.is_fork) && (
                 <div className="forked-from">
-                  <Link href={`/post/${post.fork_of_post_id}`} className="fork-link">
-                    {`Forked from ${post.origin_title || '(untitled)'} by @${
-                      post.origin_username || 'unknown'
-                    }`}
-                  </Link>
+                  {post.origin_title || post.origin_username ? (
+                    <Link href={`/post/${post.fork_of_post_id}`} className="fork-link">
+                      {`Forked from ${post.origin_title || '(untitled)'} by @${
+                        post.origin_username || 'unknown'
+                      }`}
+                    </Link>
+                  ) : post.is_fork ? (
+                    <span>Forked from (deleted)</span>
+                  ) : null}
                 </div>
               )}
               <div className="chips">
