@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { ModeOption } from '../model/expression';
-import { validateExpression, type ValidationIssue } from '../model/expression-validator';
+import { validateExpression, type ValidationIssue } from '../utils/expression-validator';
 
 interface UseExpressionPlayerOptions {
   expression: string;

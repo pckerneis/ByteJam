@@ -15,7 +15,7 @@ import {
   encodeMode,
   encodeSampleRate,
 } from '../model/expression';
-import { validateExpression } from '../model/expression-validator';
+import { validateExpression } from '../utils/expression-validator';
 import { useExpressionPlayer } from '../hooks/useExpressionPlayer';
 
 const CREATE_DRAFT_STORAGE_KEY = 'bitejam-create-draft-v1';

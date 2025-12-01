@@ -2,7 +2,7 @@ import { useState, type FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
-import { validateUsername } from '../lib/validateUsername';
+import { validateUsername } from '../utils/validateUsername';
 import Head from 'next/head';
 
 const CURRENT_TOS_VERSION = '2025-11-30-v1';

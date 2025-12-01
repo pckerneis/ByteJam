@@ -15,7 +15,7 @@ import {
   encodeMode,
   encodeSampleRate,
 } from '../../model/expression';
-import { validateExpression } from '../../model/expression-validator';
+import { validateExpression } from '../../utils/expression-validator';
 import { useExpressionPlayer } from '../../hooks/useExpressionPlayer';
 
 export default function EditPostPage() {

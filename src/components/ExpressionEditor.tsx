@@ -3,7 +3,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { EditorView } from '@codemirror/view';
 import { linter, type Diagnostic } from '@codemirror/lint';
 import { tomorrowNightBlue } from '@uiw/codemirror-theme-tomorrow-night-blue';
-import { validateExpression, ValidationIssue } from '../model/expression-validator';
+import { validateExpression, ValidationIssue } from '../utils/expression-validator';
 import { minimizeExpression } from '../model/expression';
 
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror').then((mod) => mod.default), {
