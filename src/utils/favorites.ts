@@ -1,12 +1,5 @@
 import { supabase } from '../lib/supabaseClient';
 
-export function attachFavoritesCount(rows: any[]): any[] {
-  return (rows ?? []).map((row: any) => ({
-    ...row,
-    favorites_count: row.favorites?.[0]?.count ?? 0,
-  }));
-}
-
 export function attachFavoritedByCurrentUser(rows: any[], favs: any[]): any[] {
   const favoritedSet = new Set((favs ?? []).map((f: any) => f.post_id as string));
   if (favoritedSet.size === 0) return rows;

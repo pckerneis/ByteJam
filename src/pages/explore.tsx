@@ -4,7 +4,7 @@ import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from '../components/PostList';
 import Head from 'next/head';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
-import { attachFavoritesCount, enrichWithViewerFavorites } from '../utils/favorites';
+import { enrichWithViewerFavorites } from '../utils/favorites';
 
 export default function ExplorePage() {
   const { user } = useSupabaseAuth();
@@ -32,18 +32,18 @@ export default function ExplorePage() {
       setError('');
 
       let query = supabase
-        .from('posts')
+        .from('posts_with_meta')
         .select(
-          'id,title,expression,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)',
+          'id,title,expression,sample_rate,mode,created_at,profile_id,is_draft,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('is_draft', false);
 
       if (activeTab === 'recent') {
         query = query.order('created_at', { ascending: false });
       } else {
-        // Order by favorites count first, then recency as a tiebreaker.
+        // Order by favorites_count from posts_with_meta first, then recency.
         query = query
-          .order('count', { foreignTable: 'favorites', ascending: false })
+          .order('favorites_count', { ascending: false })
           .order('created_at', { ascending: false });
       }
 
@@ -58,10 +58,10 @@ export default function ExplorePage() {
         }
         setHasMore(false);
       } else {
-        let rows = attachFavoritesCount(data ?? []);
+        let rows = (data ?? []) as PostRow[];
 
         if (user && rows.length > 0) {
-          rows = await enrichWithViewerFavorites((user as any).id as string, rows);
+          rows = (await enrichWithViewerFavorites((user as any).id as string, rows)) as PostRow[];
         }
 
         setPosts((prev) => {

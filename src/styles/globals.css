@@ -250,6 +250,10 @@ main > section {
   border-bottom: 1px solid var(--secondary-text-color);
 }
 
+.forked-from {
+  font-size: 10px;
+}
+
 .expression-input {
   font-family: inherit;
   font-size: 13px;

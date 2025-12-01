@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { PostList, type PostRow } from './PostList';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
-import { attachFavoritesCount, enrichWithViewerFavorites } from '../utils/favorites';
+import { enrichWithViewerFavorites } from '../utils/favorites';
 
 interface UserProfileContentProps {
   username: string | null;
@@ -78,9 +78,9 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
       }
 
       const { data, error } = await supabase
-        .from('posts')
+        .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('profile_id', profile.id)
         .eq('is_draft', false)
@@ -99,10 +99,10 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
         }
         setHasMore(false);
       } else {
-        let rows = attachFavoritesCount(data ?? []);
+        let rows = (data ?? []) as PostRow[];
 
         if (user && rows.length > 0) {
-          rows = await enrichWithViewerFavorites((user as any).id as string, rows);
+          rows = (await enrichWithViewerFavorites((user as any).id as string, rows)) as PostRow[];
         }
 
         setPosts((prev) => (page === 0 ? rows : [...prev, ...rows]));
@@ -182,9 +182,9 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
 
       // 3) Load the corresponding posts with favorites_count.
       const { data: postsData, error: postsError } = await supabase
-        .from('posts')
+        .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
         )
         .in('id', postIds)
         .eq('is_draft', false)
@@ -198,11 +198,11 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
         setFavoritesError('Unable to load favorites.');
         setFavoritePosts([]);
       } else {
-        let rows = attachFavoritesCount(postsData ?? []);
+        let rows = (postsData ?? []) as PostRow[];
 
         // Mark which of these posts the CURRENT viewer has favorited.
         if (user && rows.length > 0) {
-          rows = await enrichWithViewerFavorites((user as any).id as string, rows);
+          rows = (await enrichWithViewerFavorites((user as any).id as string, rows)) as PostRow[];
         }
 
         setFavoritePosts(rows as PostRow[]);
@@ -248,9 +248,9 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
 
       // Load draft posts for this profile with favorites_count.
       const { data: draftData, error: draftError } = await supabase
-        .from('posts')
+        .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('profile_id', profile.id)
         .eq('is_draft', true)
@@ -266,11 +266,11 @@ export function UserProfileContent({ username, extraHeader }: UserProfileContent
         setLoadingDrafts(false);
         return;
       } else {
-        let rows = attachFavoritesCount(draftData ?? []);
+        let rows = (draftData ?? []) as PostRow[];
 
         // Mark which of these drafts the CURRENT viewer has favorited.
         if (user && rows.length > 0) {
-          rows = await enrichWithViewerFavorites((user as any).id as string, rows);
+          rows = (await enrichWithViewerFavorites((user as any).id as string, rows)) as PostRow[];
         }
 
         setDraftPosts(rows as PostRow[]);

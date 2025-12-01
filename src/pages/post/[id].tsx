@@ -26,9 +26,9 @@ export default function PostDetailPage() {
       setPosts([]);
 
       const { data, error } = await supabase
-        .from('posts')
+        .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,profiles(username),favorites(count)',
+          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('id', id)
         .maybeSingle();
@@ -49,10 +49,7 @@ export default function PostDetailPage() {
         return;
       }
 
-      let rowWithCount = {
-        ...(data as any),
-        favorites_count: (data as any).favorites?.[0]?.count ?? 0,
-      } as PostRow;
+      let rowWithCount = data as PostRow;
 
       if (user) {
         const { data: favs, error: favError } = await supabase

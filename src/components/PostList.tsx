@@ -17,11 +17,12 @@ export interface PostRow {
   mode: string;
   created_at: string;
   profile_id?: string;
-  profiles?: {
-    username: string | null;
-  } | null;
+  author_username?: string | null;
+  origin_title?: string | null;
+  origin_username?: string | null;
   favorites_count?: number;
   favorited_by_current_user?: boolean;
+  fork_of_post_id?: string | null;
 }
 
 interface PostListProps {
@@ -157,7 +158,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
   return (
     <ul className="post-list">
       {posts.map((post) => {
-        const username = post.profiles?.username ?? null;
+        const username = post.author_username ?? null;
         const created = new Date(post.created_at).toLocaleDateString();
         const createdTitle = new Date(post.created_at).toLocaleString();
         const isActive = isPlaying && activePostId === post.id;
@@ -183,6 +184,15 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                 )}
               </div>
               <h3>{post.title}</h3>
+              {post.fork_of_post_id && (
+                <div className="forked-from">
+                  <Link href={`/post/${post.fork_of_post_id}`} className="fork-link">
+                    {`Forked from ${post.origin_title || '(untitled)'} by @${
+                      post.origin_username || 'unknown'
+                    }`}
+                  </Link>
+                </div>
+              )}
               <div className="chips">
                 {post.is_draft && <span className="chip draft-badge">Draft</span>}
                 <span className="chip mode">{post.mode}</span>
@@ -208,9 +218,13 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                 <span className="heart">&lt;3</span>
                 <span className="favorite-count">{favoriteCount}</span>
               </button>
-              {canEdit && (
+              {canEdit ? (
                 <Link href={`/edit/${post.id}`} className="edit-link">
                   Edit
+                </Link>
+              ) : (
+                <Link href={`/fork/${post.id}`} className="edit-link">
+                  Fork
                 </Link>
               )}
             </div>

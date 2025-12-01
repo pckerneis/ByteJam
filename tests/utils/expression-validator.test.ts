@@ -36,9 +36,7 @@ describe('validateExpression - undefined variables and declarations', () => {
   it('flags use of undeclared identifier', () => {
     const result = validateExpression('foo + 1');
     expect(result.valid).toBe(false);
-    expect(result.issues.some((i) => i.message.includes("Undefined variable: 'foo'"))).toBe(
-      true,
-    );
+    expect(result.issues.some((i) => i.message.includes("Undefined variable: 'foo'"))).toBe(true);
   });
 
   it('rejects declarations with var', () => {
