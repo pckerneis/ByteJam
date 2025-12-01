@@ -5,6 +5,7 @@ import { linter, type Diagnostic } from '@codemirror/lint';
 import { tomorrowNightBlue } from '@uiw/codemirror-theme-tomorrow-night-blue';
 import { validateExpression, ValidationIssue } from '../utils/expression-validator';
 import { minimizeExpression } from '../model/expression';
+import { memo, useMemo } from 'react';
 
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror').then((mod) => mod.default), {
   ssr: false,
@@ -39,18 +40,22 @@ const expressionLinter = linter((view): Diagnostic[] => {
   ];
 });
 
+const editorExtensions = [javascript(), EditorView.lineWrapping, expressionLinter];
+
+const editorBasicSetup = {
+  lineNumbers: false,
+  foldGutter: false,
+  highlightActiveLine: false,
+  autocompletion: false,
+} as const;
+
 export function ExpressionEditor({ value, onChange }: ExpressionEditorProps) {
   return (
     <CodeMirror
       value={value}
       height="200px"
-      extensions={[javascript(), EditorView.lineWrapping, expressionLinter]}
-      basicSetup={{
-        lineNumbers: false,
-        foldGutter: false,
-        highlightActiveLine: false,
-        autocompletion: false,
-      }}
+      extensions={editorExtensions}
+      basicSetup={editorBasicSetup}
       theme={tomorrowNightBlue}
       onChange={(nextValue: string) => onChange(nextValue)}
     />
@@ -61,25 +66,31 @@ interface ReadonlyExpressionProps {
   expression: string;
 }
 
-export function ReadonlyExpression({ expression }: ReadonlyExpressionProps) {
-  const minimized = minimizeExpression(expression);
+const readonlyExtensions = [javascript(), EditorView.lineWrapping];
+
+const readonlyBasicSetup = {
+  lineNumbers: false,
+  foldGutter: false,
+  highlightActiveLine: false,
+} as const;
+
+export const ReadonlyExpression = memo(function ReadonlyExpression({
+  expression,
+}: ReadonlyExpressionProps) {
+  const minimized = useMemo(() => minimizeExpression(expression), [expression]);
 
   return (
     <CodeMirror
       value={minimized}
       height="auto"
       editable={false}
-      extensions={[javascript(), EditorView.lineWrapping]}
-      basicSetup={{
-        lineNumbers: false,
-        foldGutter: false,
-        highlightActiveLine: false,
-      }}
+      extensions={readonlyExtensions}
+      basicSetup={readonlyBasicSetup}
       theme={tomorrowNightBlue}
       onChange={() => {}}
     />
   );
-}
+});
 
 interface ExpressionErrorSnippetProps {
   expression: string;
