@@ -50,6 +50,7 @@ body {
   --code-text-color: #dde8f5;
   --accent-color: #7b34ff;
   --danger-color: #ff5f6a;
+  --danger-background-color: #ffeced;
   --button-primary-text-color: #ffffff;
   --button-border-color: #c5c5c5;
   --button-bg-color: #ffffff;
@@ -81,8 +82,9 @@ body {
 
   --accent-color: #4ee6a5;      /* mint */
   --danger-color: #ff5f6a;
+  --danger-background-color: #ffeced;
 
-  --button-primary-text-color: #ffffff;
+  --button-primary-text-color: #000000;
   --button-border-color: #c5c5c5;
   --button-bg-color: #ffffff;
   --button-secondary-bg-color: #f5f5f5;
@@ -119,6 +121,7 @@ body {
 
   --accent-color: #5865f2;      /* indigo */
   --danger-color: #f27678;      /* softer red */
+  --danger-background-color: #ffeced;
 
   --button-primary-text-color: #ffffff;
   --button-border-color: #d1d3e2;
@@ -157,6 +160,7 @@ body {
 
   --accent-color: #e34749;       /* strong red */
   --danger-color: #e34749;
+  --danger-background-color: #ffeced;
 
   --button-primary-text-color: #ffffff;
   --button-border-color: #c5c5c5;
@@ -196,8 +200,9 @@ body {
 
   --accent-color: #7b34ff;          /* keep your purple brand accent */
   --danger-color: #ff6b6b;
+  --danger-background-color: #513a3c;
 
-  --button-primary-text-color: #ffffff;
+  --button-primary-text-color: #000000;
   --button-border-color: #3a3a3a;
   --button-bg-color: #262626;
   --button-secondary-bg-color: #1f1f1f;
@@ -234,6 +239,7 @@ body {
 
   --accent-color: #4ee6a5;          /* the “mint neon” */
   --danger-color: #ff5f6a;
+  --danger-background-color: #513a3c;
 
   --button-primary-text-color: #0f0f15;
   --button-border-color: #3a3a45;
@@ -272,6 +278,7 @@ body {
 
   --accent-color: #ffb03b;             /* honey amber – unique among your themes */
   --danger-color: #ff6d6d;             /* softened coral red */
+  --danger-background-color: #513a3c;
 
   --button-primary-text-color: #1a1a1c;
   --button-border-color: #45454a;
@@ -308,8 +315,9 @@ body {
   --code-bg-color: #000000;                       /* pure zero-black */
   --code-text-color: #d8e2ff;                     /* slight blue tint for clarity */
 
-  --accent-color: #7b34ff;                        /* strong purple works amazingly on black */
+  --accent-color: #a879ff;                        /* strong purple works amazingly on black */
   --danger-color: #ff5460;
+  --danger-background-color: #513a3c;
 
   --button-primary-text-color: #000000;
   --button-border-color: rgba(255, 255, 255, 0.15);
@@ -652,7 +660,7 @@ main > section {
 }
 
 .button.danger {
-  background: #ffe5e7;
+  background: var(--danger-background-color);
   border-color: var(--danger-color);
   color: var(--danger-color);
 }
