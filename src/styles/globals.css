@@ -158,9 +158,13 @@ main {
 }
 
 h1 {
-  font-size: 20px;
+  font-size: 16px;
   margin: 0;
   padding: 0;
+}
+
+.home-section fieldset {
+  margin-top: 20px;
 }
 
 nav ul {
@@ -552,6 +556,10 @@ button.chip {
   .app-title {
     padding: 8px 0;
     justify-content: flex-start;
+  }
+
+  h1 {
+    font-size: 14px;
   }
 
   nav ul {
