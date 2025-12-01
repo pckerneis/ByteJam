@@ -15,13 +15,13 @@ Create and share musical expressions.
 - [x] Add to favorites
 - [x] Transport controls
 - [x] Visualizer
-- [ ] Mobile layout
+- [x] Mobile layout
+- [x] Fork posts
+- [ ] Tags
 - [ ] Master gain
-- [ ] Fork posts
 - [ ] Sandboxing
 - [ ] Follow users
 - [ ] Report posts or users
-- [ ] Tags
 - [ ] Personalized feed
 - [ ] Search posts by name and tags
 - [ ] Dark mode
