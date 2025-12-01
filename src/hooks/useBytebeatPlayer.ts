@@ -225,11 +225,38 @@ export function useBytebeatPlayer(options?: { enableVisualizer?: boolean }): Byt
   );
 
   const stop = useCallback(async () => {
-    const ctx = audioContext;
-    if (ctx && ctx.state === 'running') {
-      await ctx.suspend();
+    try {
+      const ctx = audioContext;
+      const node = workletNode;
+
+      if (node) {
+        // Tell the worklet to reset its internal state.
+        try {
+          node.port.postMessage({ type: 'reset' });
+        } catch {
+          // Ignore posting errors; we'll still try to silence via the context.
+        }
+      }
+
+      if (ctx && ctx.state === 'running') {
+        try {
+          await ctx.suspend();
+        } catch {
+          // Ignore suspend errors; we'll fall back to disconnecting the node.
+        }
+      }
+
+      if (ctx && node && workletConnected) {
+        try {
+          node.disconnect(ctx.destination);
+        } catch {
+          // Ignore disconnect errors.
+        }
+        workletConnected = false;
+      }
+    } finally {
+      setGlobalIsPlaying(false);
     }
-    setGlobalIsPlaying(false);
   }, []);
 
   return useMemo(
