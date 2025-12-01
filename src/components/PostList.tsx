@@ -184,7 +184,11 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                   <span className="username">@unknown</span>
                 )}
               </div>
-              <h3>{post.title}</h3>
+              <h3>
+                <Link className='post-title' href={`/post/${post.id}`}>
+                  {post.title || '(untitled)'}
+                </Link>
+              </h3>
               {(post.fork_of_post_id || post.is_fork) && (
                 <div className="forked-from">
                   {post.origin_title || post.origin_username ? (
