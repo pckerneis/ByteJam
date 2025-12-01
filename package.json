@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier \"**/*.{js,jsx,ts,tsx,json,md,css,scss}\" --write"
+    "format": "prettier \"**/*.{js,jsx,ts,tsx,json,md,css,scss}\" --write",
+    "test": "vitest"
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.1",
@@ -29,6 +30,7 @@
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.3",
     "prettier": "3.2.5",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "vitest": "^2.1.0"
   }
 }
