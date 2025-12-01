@@ -25,14 +25,64 @@ function NavLink({ href, children }: PropsWithChildren<{ href: string }>) {
   );
 }
 
+const AVAILABLE_THEMES = [
+  'default',
+  'mint',
+  'indigo',
+  'mono-red',
+  'dark-minimal',
+  'dark-cyber',
+  'dark-graphite',
+  'oled',
+] as const;
+
+type ThemeId = (typeof AVAILABLE_THEMES)[number];
+
 export function Layout({ children }: PropsWithChildren) {
   const { user } = useSupabaseAuth();
   const router = useRouter();
   const [checkedProfile, setCheckedProfile] = useState(false);
+  const [theme, setTheme] = useState<ThemeId | null>(null);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     await router.push('/');
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const stored = window.localStorage.getItem('ui-theme') as ThemeId | null;
+    if (stored && AVAILABLE_THEMES.includes(stored)) {
+      setTheme(stored);
+    } else {
+      setTheme('default');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (!theme) return;
+
+    const root = document.body;
+
+    AVAILABLE_THEMES.forEach((t) => {
+      root.classList.remove(`theme-${t}`);
+    });
+
+    root.classList.add(`theme-${theme}`);
+    window.localStorage.setItem('ui-theme', theme);
+  }, [theme]);
+
+  const handleCycleTheme = () => {
+    if (!theme) {
+      setTheme('default');
+      return;
+    }
+
+    const idx = AVAILABLE_THEMES.indexOf(theme);
+    const next = AVAILABLE_THEMES[(idx + 1) % AVAILABLE_THEMES.length];
+    setTheme(next);
   };
 
   useEffect(() => {
@@ -131,6 +181,15 @@ export function Layout({ children }: PropsWithChildren) {
             )}
             {!user && <NavLink href="/login">Login</NavLink>}
           </ul>
+          <div className="theme-switcher">
+            <button
+              type="button"
+              className="theme-toggle-button"
+              onClick={handleCycleTheme}
+            >
+              {theme ?? 'default'}
+            </button>
+          </div>
         </nav>
         <main>{children}</main>
       </div>
@@ -356,8 +415,8 @@ function FooterPlayer() {
       <div className="played-post-info" onClick={handlePlayedPostInfoClick}>
         <div className="played-post-author">
           {currentPost
-            ? currentPost.profiles?.username
-              ? `@${currentPost.profiles.username}`
+            ? currentPost.author_username
+              ? `@${currentPost.author_username}`
               : '@unknown'
             : '-'}
         </div>
