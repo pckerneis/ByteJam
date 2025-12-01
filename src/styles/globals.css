@@ -251,7 +251,7 @@ main > section {
 }
 
 .forked-from {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .expression-input {
@@ -629,5 +629,114 @@ button.chip {
   .chips .chip {
     font-size: 9px;
     padding-inline: 6px;
+  }
+}
+
+/* Desktop scaling: slightly larger UI on wide screens */
+@media (min-width: 1024px) {
+  body {
+    /* ~1.2x base font size */
+    font-size: 17px;
+  }
+
+  main > section {
+    /* widen main content a bit */
+    max-width: 720px;
+  }
+
+  h1 {
+    font-size: 19px;
+  }
+
+  .footer {
+    font-size: 0.96em;
+    gap: 26px;
+    padding: 12px;
+  }
+
+  .transport-button {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+
+  .transport-button.play {
+    width: 30px;
+    height: 30px;
+  }
+
+  .played-post-author,
+  .played-post-name {
+    font-size: 12px;
+  }
+
+  .post-title-input {
+    font-size: 19px;
+    padding: 5px 0;
+  }
+
+  .expression-input {
+    font-size: 16px;
+  }
+
+  .expression-preview {
+    font-size: 14px;
+    padding: 14px 22px;
+  }
+
+  .forked-from {
+    font-size: 14px;
+  }
+
+  .button {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+
+  .counter {
+    font-size: 13px;
+  }
+
+  .error-message {
+    font-size: 13px;
+  }
+
+  .checkbox {
+    font-size: 16px;
+  }
+
+  .chips .chip {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+
+  .chips .created {
+    font-size: 12px;
+  }
+
+  .post-list {
+    gap: 30px;
+  }
+
+  .post-item {
+    gap: 10px;
+    padding: 6px;
+  }
+
+  .post-item .post-meta {
+    font-size: 14px;
+  }
+
+  .post-expression {
+    font-size: 14px;
+  }
+
+  .favorite-button {
+    font-size: 14px;
+    padding: 3px 8px;
+  }
+
+  .edit-link {
+    font-size: 14px;
   }
 }
