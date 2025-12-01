@@ -9,17 +9,34 @@ body {
   font-family: 'Inconsolata', monospace;
   font-size: 14px;
 
-  --text-color: black;
-  --secondary-text-color: #555;
+  --bg-color: #ffffff;
+  --sidebar-bg-color: #f5f6f7;
+  --card-bg-color: #fafafa;
+  --border-color: #e3e6e8;
+  --text-color: #1a1c1e;
+  --secondary-text-color: #6a6f73;
+  --code-bg-color: #0e1a2b;
+  --code-text-color: #dde8f5;
+  --accent-color: #7b34ff;
+  --danger-color: #ff5f6a;
+  --button-primary-text-color: #ffffff;
+  --button-border-color: #c5c5c5;
+  --button-bg-color: #ffffff;
+  --button-secondary-bg-color: #f5f5f5;
+  --error-text-color: #b91c1c;
+  --error-bg-color: #fee2e2;
+  --shadow-soft-color: #00000033;
+  --modal-overlay-color: rgba(0, 0, 0, 0.35);
+  --tab-active-bg-color: #efefef;
+  --panel-border-color: var(--border-color);
+  --chip-border-color: var(--border-color);
+  --chip-background-color: var(--card-bg-color);
+  --post-expression-background-color: var(--card-bg-color);
+  --post-expression-playing-background-color: #f5f5f5;
+  --post-playing-border-color: #cfcfcf;
 
-  --panel-border-color: #c8c8c8ff;
-
-  --chip-border-color: #bbb;
-  --chip-background-color: #f5f5f5;
-
-  --post-expression-background-color: #ddd;
-  --post-expression-playing-background-color: #b4deea;
-  --post-playing-border-color: #ddd;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .root {
@@ -131,7 +148,7 @@ body {
 
 a {
   text-decoration: none;
-  color: var(--secondary-text-color);
+  color: var(--accent-color);
 }
 
 nav {
@@ -140,6 +157,7 @@ nav {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  background-color: var(--sidebar-bg-color);
 }
 
 main {
@@ -221,7 +239,7 @@ main > section {
   padding: 6px;
   margin: 8px;
   border-radius: 4px;
-  background: var(--chip-background-color);
+  background: var(--card-bg-color);
 }
 
 .create-form {
@@ -265,7 +283,7 @@ main > section {
   font-family: inherit;
   font-size: 12px;
   border-radius: 4px;
-  border: 1px solid #e8dada;
+  border: 1px solid var(--border-color);
   white-space: pre-wrap;
 }
 
@@ -280,18 +298,18 @@ main > section {
   font-size: 13px;
   padding: 6px 10px;
   border-radius: 4px;
-  border: 1px solid rgb(197, 197, 197);
-  background: white;
+  border: 1px solid var(--button-border-color);
+  background: var(--button-bg-color);
   cursor: pointer;
 }
 
 .button.secondary {
-  background: #f5f5f5;
+  background: var(--button-secondary-bg-color);
 }
 
 .button.primary {
-  background: black;
-  color: white;
+  background: var(--accent-color);
+  color: var(--button-primary-text-color);
 }
 
 .button.ghost {
@@ -302,9 +320,9 @@ main > section {
 }
 
 .button.danger {
-  background: #fee2e2;
-  border-color: #fecaca;
-  color: #b91c1c;
+  background: #ffe5e7;
+  border-color: var(--danger-color);
+  color: var(--danger-color);
 }
 
 .button:disabled {
@@ -318,13 +336,13 @@ main > section {
 }
 
 .counter.error {
-  color: #b91c1c;
+  color: var(--error-text-color);
 }
 
 .error-message {
   margin-top: 4px;
   font-size: 11px;
-  color: #b91c1c;
+  color: var(--error-text-color);
 }
 
 .form-actions {
@@ -391,18 +409,18 @@ button.chip {
 }
 
 .favorite-button.favorited {
-  background: #f3513f;
-  color: white;
+  background: var(--danger-color);
+  color: #ffffff;
   font-weight: bold;
 }
 
 .favorite-button .heart {
-  color: #c0392b;
+  color: var(--danger-color);
   font-weight: bold;
 }
 
 .favorite-button.favorited .heart {
-  color: #fac4be;
+  color: #ffe5e7;
 }
 
 .favorite-count {
@@ -432,10 +450,14 @@ button.chip {
   border: 1px solid transparent;
 }
 
+.post-item .post-title {
+  color: var(--text-color);
+}
+
 .post-item.playing {
-  background: #f5f5f5;
+  background: var(--post-expression-playing-background-color);
   border-color: var(--post-playing-border-color);
-  box-shadow: 0 0 15px 0 #00000033;
+  box-shadow: 0 0 15px 0 var(--shadow-soft-color);
 }
 
 .post-header {
@@ -459,6 +481,11 @@ button.chip {
 
 .post-item .post-meta .username {
   flex: 1;
+  color: var(--text-color);
+}
+
+.fork-link {
+  color: var(--text-color);
 }
 
 .post-expression {
@@ -479,7 +506,7 @@ button.chip {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--modal-overlay-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -492,7 +519,7 @@ button.chip {
   padding: 16px 18px;
   max-width: 360px;
   width: 90%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px var(--shadow-soft-color);
 }
 
 .modal h3 {
@@ -523,7 +550,7 @@ button.chip {
 }
 
 .tab-button {
-  padding: 4px 8px;
+  padding: 4px 16px;
   color: var(--secondary-text-color);
   cursor: pointer;
 }
@@ -532,8 +559,8 @@ button.chip {
   font-weight: bold;
   padding-bottom: 4px;
   color: var(--text-color);
-  border-bottom: 3px solid var(--text-color);
-  background: #efefef;
+  border-bottom: 3px solid var(--accent-color);
+  background: var(--tab-active-bg-color);
 }
 
 .expression-error-snippet {
@@ -541,7 +568,7 @@ button.chip {
 }
 
 .expression-preview {
-  background-color: #fee2e2;
+  background-color: var(--error-bg-color);
 }
 
 /* Mobile layout */
