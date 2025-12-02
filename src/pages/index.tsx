@@ -34,7 +34,7 @@ export default function Home() {
 
         <div className="home-footer">
           <div>BytebeatCloud</div>
-          <div>v{process.env.NEXT_PUBLIC_APP_VERSION ?? 'dev'}</div>
+          <div>{process.env.NEXT_PUBLIC_APP_VERSION ?? 'dev'}</div>
           <div>
             <Link href="/terms">Terms of Service</Link>
           </div>
