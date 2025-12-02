@@ -80,7 +80,7 @@ body {
   --code-bg-color: #0e1a2b;
   --code-text-color: #dde8f5;
 
-  --accent-color: #4ee6a5;      /* mint */
+  --accent-color: #4ee6a5; /* mint */
   --danger-color: #ff5f6a;
   --danger-background-color: #ffeced;
 
@@ -95,7 +95,7 @@ body {
   --shadow-soft-color: #00000033;
   --modal-overlay-color: rgba(0, 0, 0, 0.35);
 
-  --tab-active-bg-color: #e3fff4;   /* very light mint */
+  --tab-active-bg-color: #e3fff4; /* very light mint */
   --panel-border-color: var(--border-color);
 
   --chip-border-color: var(--border-color);
@@ -119,8 +119,8 @@ body {
   --code-bg-color: #0d1024;
   --code-text-color: #e2e5ff;
 
-  --accent-color: #5865f2;      /* indigo */
-  --danger-color: #f27678;      /* softer red */
+  --accent-color: #5865f2; /* indigo */
+  --danger-color: #f27678; /* softer red */
   --danger-background-color: #ffeced;
 
   --button-primary-text-color: #ffffff;
@@ -158,7 +158,7 @@ body {
   --code-bg-color: #07111f;
   --code-text-color: #e3ecf9;
 
-  --accent-color: #e34749;       /* strong red */
+  --accent-color: #e34749; /* strong red */
   --danger-color: #e34749;
   --danger-background-color: #ffeced;
 
@@ -184,7 +184,6 @@ body {
   --post-expression-overlay-color: rgba(0, 0, 0, 0.25);
 }
 
-
 /* Dark Minimal Theme */
 .theme-dark-minimal {
   --bg-color: #121212;
@@ -195,10 +194,10 @@ body {
   --text-color: #e6e6e8;
   --secondary-text-color: #a0a0a5;
 
-  --code-bg-color: #0d1117;         /* GitHub-style dark code background */
+  --code-bg-color: #0d1117; /* GitHub-style dark code background */
   --code-text-color: #dce6f2;
 
-  --accent-color: #7b34ff;          /* keep your purple brand accent */
+  --accent-color: #7b34ff; /* keep your purple brand accent */
   --danger-color: #ff6b6b;
   --danger-background-color: #513a3c;
 
@@ -234,10 +233,10 @@ body {
   --text-color: #e4e4ef;
   --secondary-text-color: #9a9ab3;
 
-  --code-bg-color: #050510;         /* very deep midnight blue */
+  --code-bg-color: #050510; /* very deep midnight blue */
   --code-text-color: #cfdcff;
 
-  --accent-color: #4ee6a5;          /* the “mint neon” */
+  --accent-color: #4ee6a5; /* the “mint neon” */
   --danger-color: #ff5f6a;
   --danger-background-color: #513a3c;
 
@@ -265,19 +264,19 @@ body {
 
 /* Dark Graphite Theme */
 .theme-dark-graphite {
-  --bg-color: #1a1a1c;                 /* warm, deep grey (not blue or pure black) */
+  --bg-color: #1a1a1c; /* warm, deep grey (not blue or pure black) */
   --sidebar-bg-color: #1f1f22;
   --card-bg-color: #232326;
   --border-color: #303033;
 
-  --text-color: #e6dfd3;               /* slightly warm white */
+  --text-color: #e6dfd3; /* slightly warm white */
   --secondary-text-color: #9c9ca3;
 
-  --code-bg-color: #131315;            /* softer than pure black, easier on the eyes */
-  --code-text-color: #f2e9d8;          /* warm, soft parchment tone (distinct!) */
+  --code-bg-color: #131315; /* softer than pure black, easier on the eyes */
+  --code-text-color: #f2e9d8; /* warm, soft parchment tone (distinct!) */
 
-  --accent-color: #ffb03b;             /* honey amber – unique among your themes */
-  --danger-color: #ff6d6d;             /* softened coral red */
+  --accent-color: #ffb03b; /* honey amber – unique among your themes */
+  --danger-color: #ff6d6d; /* softened coral red */
   --danger-background-color: #513a3c;
 
   --button-primary-text-color: #1a1a1c;
@@ -306,34 +305,34 @@ body {
 .theme-oled {
   --bg-color: #000000;
   --sidebar-bg-color: rgba(255, 255, 255, 0.02); /* barely there */
-  --card-bg-color: #0d0d0d;     /* light glassy panel */
+  --card-bg-color: #0d0d0d; /* light glassy panel */
   --border-color: rgba(255, 255, 255, 0.08);
 
   --text-color: #e4e4e4;
   --secondary-text-color: #9c9c9c;
 
-  --code-bg-color: #000000;                       /* pure zero-black */
-  --code-text-color: #d8e2ff;                     /* slight blue tint for clarity */
+  --code-bg-color: #000000; /* pure zero-black */
+  --code-text-color: #d8e2ff; /* slight blue tint for clarity */
 
-  --accent-color: #a879ff;                        /* strong purple works amazingly on black */
+  --accent-color: #a879ff; /* strong purple works amazingly on black */
   --danger-color: #ff5460;
   --danger-background-color: #513a3c;
 
   --button-primary-text-color: #000000;
   --button-border-color: rgba(255, 255, 255, 0.15);
-  --button-bg-color: #7b34ff;                     /* bright but not neon */
+  --button-bg-color: #7b34ff; /* bright but not neon */
   --button-secondary-bg-color: rgba(255, 255, 255, 0.05);
 
   --error-text-color: #ffb3b3;
-  --error-bg-color: rgba(255, 0, 0, 0.10);
+  --error-bg-color: rgba(255, 0, 0, 0.1);
 
-  --shadow-soft-color: rgba(0, 0, 0, 0);          /* no fake shadows, OLED has true blacks */
+  --shadow-soft-color: rgba(0, 0, 0, 0); /* no fake shadows, OLED has true blacks */
   --modal-overlay-color: rgba(0, 0, 0, 0.75);
 
   --tab-active-bg-color: rgba(255, 255, 255, 0.06);
   --panel-border-color: var(--border-color);
 
-  --chip-border-color: rgba(255, 255, 255, 0.10);
+  --chip-border-color: rgba(255, 255, 255, 0.1);
   --chip-background-color: rgba(255, 255, 255, 0.04);
 
   --post-expression-background-color: rgba(255, 255, 255, 0.03);
@@ -859,19 +858,19 @@ button.chip {
 
 .post-expression-play-button {
   border-radius: 999px;
-    width: 35px;
-    height: 35px;
-    border: 1px solid var(--panel-border-color);
-    padding: 4px 10px;
-    background: var(--bg-color);
-    color: var(--accent-color);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    justify-content: center;
-    font-size: 16px;
-    padding-left: 12px;
-    padding-top: 2px;
+  width: 35px;
+  height: 35px;
+  border: 1px solid var(--panel-border-color);
+  padding: 4px 10px;
+  background: var(--bg-color);
+  color: var(--accent-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  font-size: 16px;
+  padding-left: 12px;
+  padding-top: 2px;
 }
 
 /* Modal */

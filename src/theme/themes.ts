@@ -1,7 +1,7 @@
 import type { Extension } from '@codemirror/state';
 import { tomorrowNightBlue } from '@uiw/codemirror-theme-tomorrow-night-blue';
 import { aura } from '@uiw/codemirror-theme-aura';
-import { githubDark  } from '@uiw/codemirror-theme-github';
+import { githubDark } from '@uiw/codemirror-theme-github';
 import { monokaiDimmed } from '@uiw/codemirror-theme-monokai-dimmed';
 import { noctisLilac } from '@uiw/codemirror-theme-noctis-lilac';
 import { basicDark } from '@uiw/codemirror-theme-basic';

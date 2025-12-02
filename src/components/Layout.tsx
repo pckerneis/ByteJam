@@ -153,38 +153,34 @@ export function Layout({ children }: PropsWithChildren) {
       <div className="root">
         <div className="top-content">
           <nav>
-          <div className="app-title">
-            <Link href="/">
-              <h1>BytebeatCloud</h1>
-            </Link>
-          </div>
-          <ul>
-            <NavLink href="/create">Create</NavLink>
-            <NavLink href="/explore">Explore</NavLink>
-            {user && <NavLink href="/profile">Profile</NavLink>}
-            {user && (
-              <li className="nav-signout">
-                <button type="button" className="nav" onClick={handleSignOut}>
-                  Sign out
-                </button>
-              </li>
-            )}
-            {!user && <NavLink href="/login">Login</NavLink>}
-          </ul>
-          <div className="theme-switcher">
-            <button
-              type="button"
-              className="theme-toggle-button"
-              onClick={handleCycleTheme}
-            >
-              {getUiTheme(theme ?? DEFAULT_THEME_ID).label}
-            </button>
-          </div>
-        </nav>
-        <main>{children}</main>
+            <div className="app-title">
+              <Link href="/">
+                <h1>BytebeatCloud</h1>
+              </Link>
+            </div>
+            <ul>
+              <NavLink href="/create">Create</NavLink>
+              <NavLink href="/explore">Explore</NavLink>
+              {user && <NavLink href="/profile">Profile</NavLink>}
+              {user && (
+                <li className="nav-signout">
+                  <button type="button" className="nav" onClick={handleSignOut}>
+                    Sign out
+                  </button>
+                </li>
+              )}
+              {!user && <NavLink href="/login">Login</NavLink>}
+            </ul>
+            <div className="theme-switcher">
+              <button type="button" className="theme-toggle-button" onClick={handleCycleTheme}>
+                {getUiTheme(theme ?? DEFAULT_THEME_ID).label}
+              </button>
+            </div>
+          </nav>
+          <main>{children}</main>
+        </div>
+        <FooterPlayer />
       </div>
-      <FooterPlayer />
-    </div>
     </ThemeContext.Provider>
   );
 }

@@ -33,10 +33,13 @@ interface PostListProps {
 
 function formatSampleRate(sr: string): string {
   switch (sr) {
-    case '8k': return '8kHz';
-    case '16k': return '16kHz';
+    case '8k':
+      return '8kHz';
+    case '16k':
+      return '16kHz';
     default:
-    case '44.1k': return '44.1kHz';
+    case '44.1k':
+      return '44.1kHz';
   }
 }
 
@@ -194,7 +197,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                 )}
               </div>
               <h3>
-                <Link className='post-title' href={`/post/${post.id}`}>
+                <Link className="post-title" href={`/post/${post.id}`}>
                   {post.title || '(untitled)'}
                 </Link>
               </h3>
