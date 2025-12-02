@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { PropsWithChildren } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { warmUpBytebeatEngine, useBytebeatPlayer } from '../hooks/useBytebeatPlayer';
 import { usePlayerStore } from '../hooks/usePlayerStore';
@@ -190,6 +190,7 @@ function FooterPlayer() {
   const router = useRouter();
   const { isPlaying, toggle, stop, waveform } = useBytebeatPlayer();
   const { currentPost, next, prev, updateFavoriteStateForPost } = usePlayerStore();
+  const theme = useContext(ThemeContext);
   const [footerFavoritePending, setFooterFavoritePending] = useState(false);
   const titleRef = useRef<HTMLDivElement | null>(null);
   const visualizerRef = useRef<HTMLCanvasElement | null>(null);
@@ -244,23 +245,24 @@ function FooterPlayer() {
     const width = canvas.width;
     const height = canvas.height;
 
-    // Read the current theme accent color from CSS variables, with a safe fallback.
-    let accentColor: string = '#000';
-    let backgroundColor: string = '#fff';
-    if (typeof window !== 'undefined') {
-      const style = window.getComputedStyle(canvas);
-      const fromVar = style.getPropertyValue('--accent-color');
-      if (fromVar && fromVar.trim()) {
-        accentColor = fromVar.trim();
+    const drawFrame = () => {
+      // Read the current theme accent/background color from CSS variables on each frame,
+      // so that theme changes are reflected immediately.
+      let accentColor: string = '#000';
+      let backgroundColor: string = '#fff';
+      if (typeof window !== 'undefined') {
+        const style = window.getComputedStyle(canvas);
+        const fromVar = style.getPropertyValue('--accent-color');
+        if (fromVar && fromVar.trim()) {
+          accentColor = fromVar.trim();
+        }
+
+        const fromVar2 = style.getPropertyValue('--card-bg-color');
+        if (fromVar2 && fromVar2.trim()) {
+          backgroundColor = fromVar2.trim();
+        }
       }
 
-      const fromVar2 = style.getPropertyValue('--card-bg-color');
-      if (fromVar2 && fromVar2.trim()) {
-        backgroundColor = fromVar2.trim();
-      }
-    }
-
-    const render = () => {
       ctx.fillStyle = backgroundColor;
       ctx.fillRect(0, 0, width, height);
 
@@ -284,14 +286,29 @@ function FooterPlayer() {
 
         ctx.stroke();
       }
+    };
 
-      visualizerAnimationRef.current = window.requestAnimationFrame(render);
+    const loop = () => {
+      drawFrame();
+      if (isPlaying) {
+        visualizerAnimationRef.current = window.requestAnimationFrame(loop);
+      }
     };
 
     if (visualizerAnimationRef.current != null) {
       window.cancelAnimationFrame(visualizerAnimationRef.current);
     }
-    visualizerAnimationRef.current = window.requestAnimationFrame(render);
+
+    // Defer the first draw to the next animation frame so that the Layout
+    // theme effect has applied the new body class before we read CSS variables.
+    visualizerAnimationRef.current = window.requestAnimationFrame(() => {
+      // Always draw at least once so that theme changes are reflected even when not playing.
+      drawFrame();
+
+      if (isPlaying) {
+        visualizerAnimationRef.current = window.requestAnimationFrame(loop);
+      }
+    });
 
     return () => {
       if (visualizerAnimationRef.current != null) {
@@ -299,7 +316,7 @@ function FooterPlayer() {
         visualizerAnimationRef.current = null;
       }
     };
-  }, [isPlaying, currentPost?.id, waveform]);
+  }, [isPlaying, currentPost?.id, waveform, theme]);
 
   const playPost = async (post: PostRow | null) => {
     if (!post) return;
