@@ -31,6 +31,15 @@ interface PostListProps {
   currentUserId?: string;
 }
 
+function formatSampleRate(sr: string): string {
+  switch (sr) {
+    case '8k': return '8kHz';
+    case '16k': return '16kHz';
+    default:
+    case '44.1k': return '44.1kHz';
+  }
+}
+
 export function PostList({ posts, currentUserId }: PostListProps) {
   const { toggle, stop, isPlaying } = useBytebeatPlayer();
   const [activePostId, setActivePostId] = useState<string | null>(null);
@@ -205,7 +214,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
               <div className="chips">
                 {post.is_draft && <span className="chip draft-badge">Draft</span>}
                 <span className="chip mode">{post.mode}</span>
-                <span className="chip sample-rate">{post.sample_rate}</span>
+                <span className="chip sample-rate">{formatSampleRate(post.sample_rate)}</span>
                 <span className="created" title={createdTitle}>
                   {created}
                 </span>
