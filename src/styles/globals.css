@@ -145,8 +145,8 @@ body {
   --post-expression-overlay-color: rgba(0, 0, 0, 0.25);
 }
 
-/* Minimal Mono + Red Theme */
-.theme-mono-red {
+/* Carmine Theme */
+.theme-carmine {
   --bg-color: #fcfcfc;
   --sidebar-bg-color: #f4f4f4;
   --card-bg-color: #ffffff;

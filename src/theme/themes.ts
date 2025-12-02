@@ -10,7 +10,7 @@ export type ThemeId =
   | 'default'
   | 'mint'
   | 'indigo'
-  | 'mono-red'
+  | 'carmine'
   | 'dark-minimal'
   | 'dark-cyber'
   | 'dark-graphite'
@@ -28,7 +28,7 @@ export const UI_THEMES: UiTheme[] = [
   { id: 'default', label: 'default', codeMirrorTheme: noctisLilac },
   { id: 'mint', label: 'mint', codeMirrorTheme: aura },
   { id: 'indigo', label: 'indigo', codeMirrorTheme: tomorrowNightBlue },
-  { id: 'mono-red', label: 'mono + red', codeMirrorTheme: monokaiDimmed },
+  { id: 'carmine', label: 'carmine', codeMirrorTheme: monokaiDimmed },
   { id: 'dark-graphite', label: 'dark graphite', codeMirrorTheme: basicDark },
   { id: 'dark-minimal', label: 'dark minimal', codeMirrorTheme: aura },
   { id: 'dark-cyber', label: 'dark cyber', codeMirrorTheme: aura },
