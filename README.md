@@ -1,8 +1,10 @@
 # BytebeatCloud
 
-BytebeatCloud is a modern, social, and mobile-friendly environment for experimenting with bytebeat and floatbeat audio. It aims to go beyond traditional “paste code and play” tools by offering publishing features, user profiles, and an evolving community-driven experience.
+[BytebeatCloud](https://bytebeat.cloud/) is a modern, social, and mobile-friendly environment for experimenting with bytebeat and floatbeat audio.
 
-🚀 Why another Bytebeat app?
+It aims to go beyond traditional “paste code and play” tools by offering publishing features, user profiles, and an evolving community-driven experience.
+
+## Why another Bytebeat app?
 
 BytebeatCloud brings a social layer on top of bytebeat.
 You can still generate a simple share link, but you can also:
@@ -48,4 +50,3 @@ There are a few differences with other web implementations:
 - [ ] Report posts or users
 - [ ] Personalized feed
 - [ ] Search posts by name and tags
-- [ ] Keyboard shortcuts
