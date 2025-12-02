@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
-import { validateUsername } from '../utils/validateUsername';
+import { validateUsername } from '../utils/username-validator';
 import Head from 'next/head';
 import { useCurrentUserProfile } from '../hooks/useCurrentUserProfile';
 
