@@ -887,7 +887,7 @@ button.chip {
 }
 
 .modal {
-  background: white;
+  background: var(--bg-color);
   border-radius: 6px;
   padding: 16px 18px;
   max-width: 360px;
