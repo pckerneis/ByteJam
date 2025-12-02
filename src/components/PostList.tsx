@@ -43,6 +43,13 @@ function formatSampleRate(sr: string): string {
   }
 }
 
+function getLengthCategoryChip(expression: string): string | null {
+  const len = expression.length;
+  if (len < 256) return '<256B';
+  if (len < 1024) return '<1KiB';
+  return null;
+}
+
 export function PostList({ posts, currentUserId }: PostListProps) {
   const { toggle, stop, isPlaying } = useBytebeatPlayer();
   const [activePostId, setActivePostId] = useState<string | null>(null);
@@ -183,6 +190,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
         const isFavorited =
           favorite?.favorited !== undefined ? favorite.favorited : !!post.favorited_by_current_user;
         const isFavoritePending = favoritePending[post.id];
+        const lengthCategory = getLengthCategoryChip(post.expression);
 
         return (
           <li key={post.id} className={`post-item ${isActive ? 'playing' : ''}`}>
@@ -218,6 +226,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
                 {post.is_draft && <span className="chip draft-badge">Draft</span>}
                 <span className="chip mode">{post.mode}</span>
                 <span className="chip sample-rate">{formatSampleRate(post.sample_rate)}</span>
+                {lengthCategory && <span className="chip length-chip">{lengthCategory}</span>}
                 <span className="created" title={createdTitle}>
                   {created}
                 </span>
