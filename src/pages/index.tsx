@@ -13,7 +13,7 @@ export default function Home() {
         <p>
           This app is still in development. Expect bugs and incomplete features. Contributions
           welcome on{' '}
-          <Link href="https://github.com/pckerneis/ByteJam" target="_blank">
+          <Link href="https://github.com/pckerneis/BytebeatCloud" target="_blank">
             GitHub
           </Link>
           !
