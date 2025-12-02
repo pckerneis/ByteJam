@@ -41,12 +41,12 @@ There are a few differences with other web implementations:
 - [x] Mobile layout
 - [x] Fork posts
 - [x] Dark mode
-- [x] Responsive design for all screen sizes
+- [x] Responsive design
 - [x] Progressive Web App
 - [x] Offline mode
+- [x] Length categories
 - [ ] On-the-fly update of edited expressions
 - [ ] Tags
-- [ ] Length categories
 - [ ] Master gain
 - [ ] Follow users
 - [ ] Report posts or users
