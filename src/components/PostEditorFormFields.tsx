@@ -27,6 +27,7 @@ interface PostEditorFormFieldsProps {
   onDeleteClick?: () => void;
 
   showActions: boolean;
+  isFork: boolean;
 }
 
 export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
@@ -45,6 +46,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
     showDeleteButton,
     onDeleteClick,
     showActions,
+    isFork,
   } = props;
 
   const expressionLength = expression.length;
@@ -102,7 +104,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
     }
 
     const origin = window.location.origin;
-    const href = `${origin}/create?q=${encodeURIComponent(encoded)}`;
+    const href = `${origin}/${isFork ? 'fork' : 'create'}?q=${encodeURIComponent(encoded)}`;
 
     try {
       await navigator.clipboard.writeText(href);

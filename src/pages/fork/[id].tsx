@@ -192,9 +192,17 @@ export default function ForkPostPage() {
             <a href={'/login'}>Log in</a> to publish a post, or use a share link.
           </p>
         )}
-        <p className="text-centered">
-          Fork from {originalTitle || '(untitled)'} by @{originalAuthor || 'unknown'}
-        </p>
+        {originalTitle && originalAuthor && (
+          <p>
+            Fork from <a href={`/post/${id}`}>{originalTitle || '(untitled)'}</a> by{' '}
+            <a href={`/u/${originalAuthor}`}>@{originalAuthor}</a>
+          </p>
+        )}
+        {(!originalTitle || !originalAuthor) && (
+          <p>
+            Fork from unknown post
+          </p>
+        )}
         <form className="create-form" onSubmit={handleSubmit}>
           <PostEditorFormFields
             meta={meta}
@@ -209,6 +217,7 @@ export default function ForkPostPage() {
             saveError={saveError}
             submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save fork'}
             showActions={!!user}
+            isFork={true}
           />
         </form>
       </section>

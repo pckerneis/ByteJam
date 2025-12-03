@@ -228,6 +228,7 @@ export default function CreatePage() {
             saveError={saveError}
             submitLabel={saveStatus === 'saving' ? 'Saving…' : 'Save'}
             showActions={!!user}
+            isFork={false}
           />
         </form>
       </section>

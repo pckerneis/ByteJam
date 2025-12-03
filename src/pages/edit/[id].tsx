@@ -228,6 +228,7 @@ export default function EditPostPage() {
             showDeleteButton
             onDeleteClick={() => setShowDeleteConfirm(true)}
             showActions={!!user}
+            isFork={false}
           />
         </form>
 
