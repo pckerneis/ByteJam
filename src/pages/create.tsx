@@ -7,16 +7,13 @@ import { supabase } from '../lib/supabaseClient';
 import { PostEditorFormFields } from '../components/PostEditorFormFields';
 import Head from 'next/head';
 import {
-  getSampleRateValue,
   ModeOption,
-  SampleRateOption,
   decodeMode,
-  decodeSampleRate,
-  encodeMode,
-  encodeSampleRate,
+  encodeMode, MAX_SAMPLE_RATE, MIN_SAMPLE_RATE, DEFAULT_SAMPLE_RATE,
 } from '../model/expression';
 import { validateExpression } from '../utils/expression-validator';
 import { useExpressionPlayer } from '../hooks/useExpressionPlayer';
+import { PostMetadataModel } from '../model/postEditor';
 
 const CREATE_DRAFT_STORAGE_KEY = 'bitejam-create-draft-v1';
 
@@ -26,10 +23,9 @@ export default function CreatePage() {
   const [expression, setExpression] = useState('');
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
-  const [sampleRate, setSampleRate] = useState<SampleRateOption>(SampleRateOption._44_1k);
+  const [sampleRate, setSampleRate] = useState<number>(DEFAULT_SAMPLE_RATE);
   const { isPlaying, toggle, lastError, stop } = useBytebeatPlayer({ enableVisualizer: false });
   const { setCurrentPostById } = usePlayerStore();
-  const sr = getSampleRateValue(sampleRate);
 
   const { user } = useSupabaseAuth();
 
@@ -41,7 +37,7 @@ export default function CreatePage() {
       expression,
       setExpression,
       mode,
-      sampleRateValue: sr,
+      sampleRateValue: sampleRate,
       toggle,
       setCurrentPostById,
       loopPreview: true,
@@ -69,7 +65,7 @@ export default function CreatePage() {
           title?: string;
           expr?: string;
           mode?: 'int' | 'float';
-          sr?: '8k' | '16k' | '44.1k';
+          sr?: number;
         } | null;
 
         if (parsed && typeof parsed.expr === 'string') {
@@ -82,8 +78,8 @@ export default function CreatePage() {
             setMode(decodeMode(parsed.mode));
           }
 
-          if (parsed.sr) {
-            setSampleRate(decodeSampleRate(parsed.sr));
+          if (parsed.sr && !Number.isNaN(parsed.sr)) {
+            setSampleRate(Math.min(Math.max(MIN_SAMPLE_RATE, parsed.sr), MAX_SAMPLE_RATE));
           }
 
           return;
@@ -102,7 +98,7 @@ export default function CreatePage() {
         expression?: string;
         isDraft?: boolean;
         mode?: 'int' | 'float';
-        sampleRate?: '8k' | '16k' | '44.1k';
+        sampleRate?: number;
       } | null;
 
       if (!parsed) return;
@@ -112,7 +108,7 @@ export default function CreatePage() {
       if (typeof parsed.isDraft === 'boolean') setIsDraft(parsed.isDraft);
 
       if (parsed.mode) setMode(decodeMode(parsed.mode));
-      if (parsed.sampleRate) setSampleRate(decodeSampleRate(parsed.sampleRate));
+      if (parsed.sampleRate) setSampleRate(parsed.sampleRate);
     } catch {
       // ignore malformed localStorage
     }
@@ -124,7 +120,6 @@ export default function CreatePage() {
     if (typeof window === 'undefined') return;
 
     try {
-      const sampleRateValue = encodeSampleRate(sampleRate);
       const modeValue = encodeMode(mode);
 
       window.localStorage.setItem(
@@ -134,7 +129,7 @@ export default function CreatePage() {
           expression,
           isDraft,
           mode: modeValue,
-          sampleRate: sampleRateValue,
+          sampleRate,
         }),
       );
     } catch {
@@ -162,7 +157,6 @@ export default function CreatePage() {
     setSaveStatus('saving');
     setSaveError('');
 
-    const sampleRateValue = encodeSampleRate(sampleRate);
     const modeValue = encodeMode(mode);
 
     const { data, error } = await supabase
@@ -172,7 +166,7 @@ export default function CreatePage() {
         title: trimmedTitle,
         expression: trimmedExpr,
         is_draft: isDraft,
-        sample_rate: sampleRateValue,
+        sample_rate: sampleRate,
         mode: modeValue,
       })
       .select('id')
@@ -187,7 +181,7 @@ export default function CreatePage() {
     await router.push(`/post/${data.id}`);
   };
 
-  const meta = {
+  const meta: PostMetadataModel = {
     title,
     mode,
     sampleRate,

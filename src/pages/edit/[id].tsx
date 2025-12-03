@@ -7,13 +7,9 @@ import { supabase } from '../../lib/supabaseClient';
 import { PostEditorFormFields } from '../../components/PostEditorFormFields';
 import Head from 'next/head';
 import {
-  getSampleRateValue,
   ModeOption,
-  SampleRateOption,
   decodeMode,
-  decodeSampleRate,
-  encodeMode,
-  encodeSampleRate,
+  encodeMode, DEFAULT_SAMPLE_RATE,
 } from '../../model/expression';
 import { validateExpression } from '../../utils/expression-validator';
 import { useExpressionPlayer } from '../../hooks/useExpressionPlayer';
@@ -27,10 +23,9 @@ export default function EditPostPage() {
   const [expression, setExpression] = useState('');
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
-  const [sampleRate, setSampleRate] = useState<SampleRateOption>(SampleRateOption._44_1k);
+  const [sampleRate, setSampleRate] = useState<number>(DEFAULT_SAMPLE_RATE);
   const { isPlaying, toggle, lastError, stop } = useBytebeatPlayer({ enableVisualizer: false });
   const { setCurrentPostById } = usePlayerStore();
-  const sr = getSampleRateValue(sampleRate);
 
   const { user } = useSupabaseAuth();
 
@@ -43,7 +38,7 @@ export default function EditPostPage() {
       expression,
       setExpression,
       mode,
-      sampleRateValue: sr,
+      sampleRateValue: sampleRate,
       toggle,
       setCurrentPostById,
     });
@@ -95,7 +90,7 @@ export default function EditPostPage() {
       setExpression(data.expression ?? '');
       setIsDraft(Boolean(data.is_draft));
       setMode(decodeMode(data.mode as any));
-      setSampleRate(decodeSampleRate(data.sample_rate as any));
+      setSampleRate(data.sample_rate);
 
       setLoading(false);
     };
@@ -129,7 +124,6 @@ export default function EditPostPage() {
     setSaveStatus('saving');
     setSaveError('');
 
-    const sampleRateValue = encodeSampleRate(sampleRate);
     const modeValue = encodeMode(mode);
 
     const { error } = await supabase
@@ -138,7 +132,7 @@ export default function EditPostPage() {
         title: trimmedTitle,
         expression: trimmedExpr,
         is_draft: isDraft,
-        sample_rate: sampleRateValue,
+        sample_rate: sampleRate,
         mode: modeValue,
       })
       .eq('id', id)

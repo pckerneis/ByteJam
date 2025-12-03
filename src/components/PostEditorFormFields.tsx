@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { ExpressionEditor, ExpressionErrorSnippet } from './ExpressionEditor';
-import { ModeOption, SampleRateOption, encodeMode, encodeSampleRate } from '../model/expression';
+import {
+  ModeOption,
+  encodeMode,
+  SAMPLE_RATE_PRESETS,
+  MAX_SAMPLE_RATE,
+  MIN_SAMPLE_RATE,
+  formatSampleRate,
+} from '../model/expression';
 import { ValidationIssue } from '../utils/expression-validator';
 import type { PostMetadataModel } from '../model/postEditor';
 import { EXPRESSION_MAX } from '../constants';
@@ -28,6 +35,19 @@ interface PostEditorFormFieldsProps {
 
   showActions: boolean;
   isFork: boolean;
+}
+
+function findNextPresetSampleRate(sampleRate: number): number {
+  if (sampleRate >= MAX_SAMPLE_RATE)
+    return MIN_SAMPLE_RATE;
+
+  for (let sr of SAMPLE_RATE_PRESETS) {
+    if (sr > sampleRate) {
+      return sr;
+    }
+  }
+
+  return MAX_SAMPLE_RATE;
 }
 
 export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
@@ -65,17 +85,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
   };
 
   const rotateSampleRate = () => {
-    switch (sampleRate) {
-      case SampleRateOption._44_1k:
-        onMetaChange({ ...meta, sampleRate: SampleRateOption._8k });
-        break;
-      case SampleRateOption._8k:
-        onMetaChange({ ...meta, sampleRate: SampleRateOption._16k });
-        break;
-      case SampleRateOption._16k:
-        onMetaChange({ ...meta, sampleRate: SampleRateOption._44_1k });
-        break;
-    }
+    onMetaChange({ ...meta, sampleRate: findNextPresetSampleRate(sampleRate) });
   };
 
   const handleCopyShareLink = async () => {
@@ -86,14 +96,13 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
 
     const trimmedTitle = title.trim();
 
-    const sampleRateValue = encodeSampleRate(sampleRate);
     const modeValue = encodeMode(mode);
 
     const payload = {
       title: trimmedTitle || undefined,
       expr: trimmedExpr,
       mode: modeValue,
-      sr: sampleRateValue,
+      sr: sampleRate,
     };
 
     let encoded = '';
@@ -133,7 +142,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
           {mode}
         </button>
         <button type="button" className="chip" onClick={rotateSampleRate}>
-          {sampleRate}
+          {formatSampleRate(sampleRate)}
         </button>
       </div>
 

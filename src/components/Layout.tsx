@@ -326,7 +326,7 @@ function FooterPlayer() {
 
     await stop();
 
-    const sr = post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
+    const sr = post.sample_rate;
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
     await toggle(post.expression, mode, sr);

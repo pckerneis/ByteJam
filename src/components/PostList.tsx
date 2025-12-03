@@ -6,14 +6,14 @@ import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 import { favoritePost, unfavoritePost } from '../services/favoritesClient';
 import { ReadonlyExpression } from './ExpressionEditor';
 import { usePlayerStore } from '../hooks/usePlayerStore';
-import { ModeOption } from '../model/expression';
+import { formatSampleRate, ModeOption } from '../model/expression';
 
 export interface PostRow {
   id: string;
   title: string;
   expression: string;
   is_draft?: boolean;
-  sample_rate: string;
+  sample_rate: number;
   mode: string;
   created_at: string;
   profile_id?: string;
@@ -29,18 +29,6 @@ export interface PostRow {
 interface PostListProps {
   posts: PostRow[];
   currentUserId?: string;
-}
-
-function formatSampleRate(sr: string): string {
-  switch (sr) {
-    case '8k':
-      return '8kHz';
-    case '16k':
-      return '16kHz';
-    default:
-    case '44.1k':
-      return '44.1kHz';
-  }
 }
 
 function getLengthCategoryChip(expression: string): string | null {
@@ -105,7 +93,7 @@ export function PostList({ posts, currentUserId }: PostListProps) {
     // Ensure any existing playback is fully stopped before starting a new one
     await stop();
 
-    const sr = post.sample_rate === '8k' ? 8000 : post.sample_rate === '16k' ? 16000 : 44100;
+    const sr = post.sample_rate;
     const mode: ModeOption = post.mode === 'float' ? ModeOption.Float : ModeOption.Int;
 
     await toggle(post.expression, mode, sr);

@@ -1,8 +1,8 @@
-import { ModeOption, SampleRateOption } from './expression';
+import { ModeOption } from './expression';
 
 export interface PostMetadataModel {
   title: string;
   mode: ModeOption;
-  sampleRate: SampleRateOption;
+  sampleRate: number;
   isDraft: boolean;
 }

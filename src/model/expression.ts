@@ -3,25 +3,20 @@ export enum ModeOption {
   Float = 'float',
 }
 
-export enum SampleRateOption {
-  _8k = '8kHz',
-  _16k = '16kHz',
-  _44_1k = '44.1kHz',
-}
+export const MIN_SAMPLE_RATE = 8000;
+export const MAX_SAMPLE_RATE = 44100;
+export const DEFAULT_SAMPLE_RATE = 44100;
+
+export const SAMPLE_RATE_PRESETS = [
+  8000,
+  11025,
+  16000,
+  22050,
+  32000,
+  44100,
+];
 
 export type EncodedMode = 'int' | 'float';
-export type EncodedSampleRate = '8k' | '16k' | '44.1k';
-
-export function getSampleRateValue(sampleRate: SampleRateOption): number {
-  switch (sampleRate) {
-    case SampleRateOption._8k:
-      return 8000;
-    case SampleRateOption._16k:
-      return 16000;
-    case SampleRateOption._44_1k:
-      return 44100;
-  }
-}
 
 export function encodeMode(mode: ModeOption): EncodedMode {
   // ModeOption values already match the encoded strings.
@@ -33,28 +28,8 @@ export function decodeMode(value: EncodedMode | null | undefined): ModeOption {
   return ModeOption.Float;
 }
 
-export function encodeSampleRate(sampleRate: SampleRateOption): EncodedSampleRate {
-  switch (sampleRate) {
-    case SampleRateOption._8k:
-      return '8k';
-    case SampleRateOption._16k:
-      return '16k';
-    case SampleRateOption._44_1k:
-    default:
-      return '44.1k';
-  }
-}
-
-export function decodeSampleRate(value: EncodedSampleRate | null | undefined): SampleRateOption {
-  switch (value) {
-    case '8k':
-      return SampleRateOption._8k;
-    case '16k':
-      return SampleRateOption._16k;
-    case '44.1k':
-    default:
-      return SampleRateOption._44_1k;
-  }
+export function formatSampleRate(sr: number): string {
+  return sr / 1000 + 'kHz';
 }
 
 export function minimizeExpression(expr: string): string {
