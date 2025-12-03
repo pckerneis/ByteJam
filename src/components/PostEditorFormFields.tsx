@@ -41,8 +41,7 @@ interface PostEditorFormFieldsProps {
 }
 
 function findNextPresetSampleRate(sampleRate: number): number {
-  if (sampleRate >= MAX_SAMPLE_RATE)
-    return MIN_SAMPLE_RATE;
+  if (sampleRate >= MAX_SAMPLE_RATE) return MIN_SAMPLE_RATE;
 
   for (let sr of SAMPLE_RATE_PRESETS) {
     if (sr > sampleRate) {
@@ -327,7 +326,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
                 className="button primary"
                 onClick={commitSampleRateFromInput}
                 disabled={Number.isNaN(parseInt(sampleRateInput, 10))}
-             >
+              >
                 Apply
               </button>
             </div>

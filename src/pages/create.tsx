@@ -9,7 +9,10 @@ import Head from 'next/head';
 import {
   ModeOption,
   decodeMode,
-  encodeMode, MAX_SAMPLE_RATE, MIN_SAMPLE_RATE, DEFAULT_SAMPLE_RATE,
+  encodeMode,
+  MAX_SAMPLE_RATE,
+  MIN_SAMPLE_RATE,
+  DEFAULT_SAMPLE_RATE,
 } from '../model/expression';
 import { validateExpression } from '../utils/expression-validator';
 import { useExpressionPlayer } from '../hooks/useExpressionPlayer';
@@ -25,7 +28,9 @@ export default function CreatePage() {
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
   const [sampleRate, setSampleRate] = useState<number>(DEFAULT_SAMPLE_RATE);
   const [draftLoaded, setDraftLoaded] = useState(false);
-  const { isPlaying, toggle, lastError, stop, updateExpression } = useBytebeatPlayer({ enableVisualizer: false });
+  const { isPlaying, toggle, lastError, stop, updateExpression } = useBytebeatPlayer({
+    enableVisualizer: false,
+  });
   const { setCurrentPostById } = usePlayerStore();
 
   const { user } = useSupabaseAuth();
@@ -126,7 +131,7 @@ export default function CreatePage() {
 
       if (parsed.mode) setMode(decodeMode(parsed.mode));
       if (parsed.sampleRate) setSampleRate(parsed.sampleRate);
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
 
@@ -152,7 +157,7 @@ export default function CreatePage() {
           sampleRate,
         }),
       );
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
   }, [title, expression, isDraft, mode, sampleRate, draftLoaded]);

@@ -72,8 +72,8 @@ export default function Privacy() {
             <li>Right to object</li>
           </ul>
           <p>
-            To exercise your rights, contact: {process.env.LEGAL_CONTACT_EMAIL}. You may also lodge a
-            complaint with a supervisory authority.
+            To exercise your rights, contact: {process.env.LEGAL_CONTACT_EMAIL}. You may also lodge
+            a complaint with a supervisory authority.
           </p>
 
           <h2>7. Cookies</h2>
@@ -99,9 +99,7 @@ export default function Privacy() {
           </p>
 
           <h2>10. Contact & DPO</h2>
-          <p>
-            Contact: {process.env.LEGAL_CONTACT_EMAIL}
-          </p>
+          <p>Contact: {process.env.LEGAL_CONTACT_EMAIL}</p>
           <p>
             We do not currently have a DPO appointed (contact us if you believe one is required).
           </p>

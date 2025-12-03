@@ -17,7 +17,11 @@ interface UseExpressionPlayerOptions {
   loopPreview?: boolean;
   isPlaying: boolean;
   liveUpdateEnabled: boolean;
-  updateExpression: (expression: string, mode: ModeOption, sampleRate: number) => void | Promise<void>;
+  updateExpression: (
+    expression: string,
+    mode: ModeOption,
+    sampleRate: number,
+  ) => void | Promise<void>;
 }
 
 export function useExpressionPlayer({

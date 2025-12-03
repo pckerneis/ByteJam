@@ -12,7 +12,11 @@ interface UserProfileContentProps {
   hideFollowButton?: boolean;
 }
 
-export function UserProfileContent({ username, extraHeader, hideFollowButton }: UserProfileContentProps) {
+export function UserProfileContent({
+  username,
+  extraHeader,
+  hideFollowButton,
+}: UserProfileContentProps) {
   const router = useRouter();
   const { user } = useSupabaseAuth();
 

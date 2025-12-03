@@ -80,9 +80,7 @@ export default function LegalMentions() {
           </p>
 
           <h2>7. Contact</h2>
-          <p>
-            Pour toute question : {process.env.LEGAL_CONTACT_EMAIL}
-          </p>
+          <p>Pour toute question : {process.env.LEGAL_CONTACT_EMAIL}</p>
         </div>
 
         <h1 id="en">Legal notice — English version</h1>
@@ -138,7 +136,8 @@ export default function LegalMentions() {
           </p>
           <p>
             Data is hosted by Supabase (data processor). Users have rights of access, rectification,
-            deletion, objection and portability. To exercise these rights contact: {process.env.LEGAL_CONTACT_EMAIL}.
+            deletion, objection and portability. To exercise these rights contact:{' '}
+            {process.env.LEGAL_CONTACT_EMAIL}.
           </p>
 
           <h2>5. Liability & moderation</h2>
@@ -155,9 +154,7 @@ export default function LegalMentions() {
           </p>
 
           <h2>7. Contact</h2>
-          <p>
-            For questions: {process.env.LEGAL_CONTACT_EMAIL}
-          </p>
+          <p>For questions: {process.env.LEGAL_CONTACT_EMAIL}</p>
         </div>
 
         <footer>

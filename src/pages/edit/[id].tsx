@@ -6,11 +6,7 @@ import { useSupabaseAuth } from '../../hooks/useSupabaseAuth';
 import { supabase } from '../../lib/supabaseClient';
 import { PostEditorFormFields } from '../../components/PostEditorFormFields';
 import Head from 'next/head';
-import {
-  ModeOption,
-  decodeMode,
-  encodeMode, DEFAULT_SAMPLE_RATE,
-} from '../../model/expression';
+import { ModeOption, decodeMode, encodeMode, DEFAULT_SAMPLE_RATE } from '../../model/expression';
 import { validateExpression } from '../../utils/expression-validator';
 import { useExpressionPlayer } from '../../hooks/useExpressionPlayer';
 
@@ -24,7 +20,9 @@ export default function EditPostPage() {
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
   const [sampleRate, setSampleRate] = useState<number>(DEFAULT_SAMPLE_RATE);
-  const { isPlaying, toggle, lastError, stop, updateExpression } = useBytebeatPlayer({ enableVisualizer: false });
+  const { isPlaying, toggle, lastError, stop, updateExpression } = useBytebeatPlayer({
+    enableVisualizer: false,
+  });
   const { setCurrentPostById } = usePlayerStore();
 
   const { user } = useSupabaseAuth();

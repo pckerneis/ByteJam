@@ -7,13 +7,13 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key.startsWith(CACHE_PREFIX))
-          .map((key) => caches.delete(key)),
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.filter((key) => key.startsWith(CACHE_PREFIX)).map((key) => caches.delete(key)),
+        ),
       ),
-    ),
   );
 
   void self.clients.claim();
@@ -44,9 +44,7 @@ self.addEventListener('fetch', (event) => {
 
   // Network-first for HTML/navigation requests: always try to get fresh UI, fallback to cache.
   if (isHtml) {
-    event.respondWith(
-      fetch(request).catch(() => caches.match(request)),
-    );
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
     return;
   }
 
