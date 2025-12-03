@@ -571,12 +571,22 @@ h1 {
 .home-footer {
   color: var(--secondary-text-color);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 22px;
-  padding: 10px;
+  flex-wrap: wrap;
+  gap: 5px 22px;
   font-size: 0.8em;
   margin-top: auto;
+  padding: 20px 10px 10px;
+}
+
+.home-footer > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px 22px;
 }
 
 nav ul {

@@ -90,8 +90,11 @@ export default function Home() {
         </section>
 
         <div className="home-footer">
+          <div>
           <div>BytebeatCloud</div>
           <div>{process.env.NEXT_PUBLIC_APP_VERSION ?? 'dev'}</div>
+          </div>
+          <div>
           <div>
             <Link href="/terms">Terms of Service</Link>
           </div>
@@ -100,6 +103,7 @@ export default function Home() {
           </div>
           <div>
             <Link href="/legal-notice">Legal Notice</Link>
+          </div>
           </div>
         </div>
       </section>
