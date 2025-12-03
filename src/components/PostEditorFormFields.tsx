@@ -215,6 +215,10 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
         >
           {isPlaying ? 'Stop' : 'Play'}
         </button>
+        <label className="checkbox">
+          <input type="checkbox" />
+          Live update
+        </label>
         <span className={isExpressionTooLong ? 'counter error' : 'counter'}>
           {expressionLength} / {EXPRESSION_MAX}
         </span>

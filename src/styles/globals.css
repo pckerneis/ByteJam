@@ -359,6 +359,45 @@ input[type="number"] {
   border: 1px solid var(--chip-border-color);
 }
 
+
+input[type="checkbox"] {
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+
+  display: grid;
+  place-content: center;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 40ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--accent-color);
+  background-color: CanvasText;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="checkbox"]:focus {
+  outline: max(1px, 0.15em) solid currentColor;
+  outline-offset: max(2px, 0.15em);
+}
+
 button {
   color: var(--text-color);
 }
@@ -669,6 +708,7 @@ main > section {
 .field-footer {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   align-items: center;
 }
 
@@ -711,8 +751,9 @@ main > section {
 }
 
 .counter {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--secondary-text-color);
+  margin-left: auto;
 }
 
 .counter.error {
@@ -721,7 +762,7 @@ main > section {
 
 .error-message {
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--error-text-color);
 }
 
@@ -753,7 +794,7 @@ main > section {
 
 .chips .chip {
   font-family: inherit;
-  font-size: 10px;
+  font-size: 11px;
   padding: 2px 8px;
   border-radius: 1rem;
   border: 1px solid var(--chip-border-color);
@@ -766,7 +807,7 @@ button.chip {
 }
 
 .chips .created {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--secondary-text-color);
   margin-left: auto;
 }
