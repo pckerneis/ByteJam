@@ -1,6 +1,51 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { supabase } from '../lib/supabaseClient';
+import { PostList, type PostRow } from '../components/PostList';
+import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
+import { enrichWithViewerFavorites } from '../utils/favorites';
 
 export default function Home() {
+  const { user } = useSupabaseAuth();
+  const [trendingPosts, setTrendingPosts] = useState<PostRow[]>([]);
+  const [trendingLoading, setTrendingLoading] = useState(true);
+  const [trendingError, setTrendingError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadTrending = async () => {
+      setTrendingLoading(true);
+      setTrendingError('');
+
+      const rpcResult = await supabase.rpc('get_trending_feed', { page: 0 });
+
+      if (cancelled) return;
+
+      if (rpcResult.error) {
+        setTrendingError(rpcResult.error.message ?? String(rpcResult.error));
+        setTrendingPosts([]);
+        setTrendingLoading(false);
+        return;
+      }
+
+      let rows = (rpcResult.data ?? []) as PostRow[];
+
+      if (user && rows.length > 0) {
+        rows = (await enrichWithViewerFavorites((user as any).id as string, rows)) as PostRow[];
+      }
+
+      setTrendingPosts(rows);
+      setTrendingLoading(false);
+    };
+
+    void loadTrending();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
   return (
     <>
       <section className="home-section">
@@ -31,6 +76,18 @@ export default function Home() {
             <Link href="/create">create your own</Link>.
           </p>
         </fieldset>
+
+        <section style={{ marginTop: '24px' }}>
+          <h3>Trending posts</h3>
+          {trendingLoading && <p className="text-centered">Loading trending posts…</p>}
+          {!trendingLoading && trendingError && <p className="error-message">{trendingError}</p>}
+          {!trendingLoading && !trendingError && trendingPosts.length === 0 && (
+            <p className="text-centered">No trending posts yet.</p>
+          )}
+          {!trendingLoading && !trendingError && trendingPosts.length > 0 && (
+            <PostList posts={trendingPosts} currentUserId={user ? (user as any).id : undefined} />
+          )}
+        </section>
 
         <div className="home-footer">
           <div>BytebeatCloud</div>

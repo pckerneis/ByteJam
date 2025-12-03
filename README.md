@@ -48,10 +48,12 @@ There are a few differences with other web implementations:
 - [x] Arbitrary sample rate
 - [x] On-the-fly update of edited expressions
 - [x] Follow users
+- [x] Feed (global and personalized)
+- [x] Recent posts
+- [x] Trending posts on last 7 days
 
 **Coming soon**
 
-- [ ] Personalized feed
 - [ ] Tags
 - [ ] Master gain
 
