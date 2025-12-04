@@ -23,7 +23,7 @@ The audio engine and expression interpreter uses Javascript. this makes this app
 
 There are a few differences with other web implementations:
 
-- Sample rate can be switched to predefined values rather than arbitrary values.
+- Length is limited to 4096 characters.
 - In float mode, `t` is a seconds counter rather than a sample counter.
 - Only a subset of JS is allowed. You cannot use `for`, `if`, `while`, `switch`, `var`, `let`, `const`... ternary operations and implicit declarations with assignment are fine though.
 
@@ -56,6 +56,7 @@ There are a few differences with other web implementations:
 
 - [ ] Tags
 - [ ] Master gain
+- [ ] Filter by tags
 
 **Coming later**
 
@@ -64,4 +65,4 @@ There are a few differences with other web implementations:
 - [ ] Block/unblock users
 - [ ] Post description
 - [ ] Pin posts on profile
-- [ ] Search posts by name and tags
+- [ ] Search posts by name
