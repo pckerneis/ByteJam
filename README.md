@@ -66,3 +66,5 @@ There are a few differences with other web implementations:
 - [ ] Post description
 - [ ] Pin posts on profile
 - [ ] Search posts by name
+- [ ] C-compatible badge
+- [ ] Reject silent/too loud posts
