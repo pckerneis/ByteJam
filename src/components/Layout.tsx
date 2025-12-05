@@ -197,11 +197,11 @@ export function Layout({ children }: PropsWithChildren) {
   }, []);
 
   const formatNotificationsCount = (count: number) => {
-      if (count > 99) {
-          return '99+';
-      }
+    if (count > 99) {
+      return '99+';
+    }
 
-      return count.toString();
+    return count.toString();
   }
 
   return (
@@ -257,7 +257,7 @@ export function Layout({ children }: PropsWithChildren) {
 function FooterPlayer() {
   const { user } = useSupabaseAuth();
   const router = useRouter();
-  const { isPlaying, toggle, stop, waveform } = useBytebeatPlayer();
+  const { isPlaying, toggle, stop, waveform, masterGain, setMasterGain } = useBytebeatPlayer();
   const { currentPost, next, prev, updateFavoriteStateForPost } = usePlayerStore();
   const theme = useContext(ThemeContext);
   const [footerFavoritePending, setFooterFavoritePending] = useState(false);
@@ -501,6 +501,25 @@ function FooterPlayer() {
       <div className="visualizer">
         <canvas ref={visualizerRef} width={150} height={26}></canvas>
       </div>
+
+      <div className="footer-volume">
+        <button type="button" className="volume-button" aria-label="Master volume">
+          🔊
+        </button>
+        <div className='volume-slider-backdrop'>
+          <div className="volume-slider-container">
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={masterGain}
+              onChange={(e) => setMasterGain(Number(e.target.value))}
+              className="volume-slider"
+            />
+          </div>
+        </div>
+      </div>
       <div className="played-post-info" onClick={handlePlayedPostInfoClick}>
         <div className="played-post-author">
           {currentPost
@@ -517,9 +536,8 @@ function FooterPlayer() {
       </div>
       <button
         type="button"
-        className={`favorite-button${isFooterFavorited ? ' favorited' : ''}${
-          footerFavoritePending ? ' pending' : ''
-        }`}
+        className={`favorite-button${isFooterFavorited ? ' favorited' : ''}${footerFavoritePending ? ' pending' : ''
+          }`}
         onClick={handleFooterFavoriteClick}
         disabled={!currentPost || footerFavoritePending}
       >

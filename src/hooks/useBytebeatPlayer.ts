@@ -9,12 +9,15 @@ interface BytebeatPlayer {
   level: number;
   waveform: Float32Array | null;
   updateExpression: (expression: string, mode: ModeOption, sampleRate: number) => Promise<void>;
+  masterGain: number;
+  setMasterGain: (value: number) => void;
 }
 
 // Module-level singletons so the audio engine is shared across the whole app.
 let audioContext: AudioContext | null = null;
 let workletNode: AudioWorkletNode | null = null;
 let workletConnected = false;
+let globalGainNode: GainNode | null = null;
 let analyserNode: AnalyserNode | null = null;
 let analyserData: Float32Array | null = null;
 let analyserTimerId: number | null = null;
@@ -43,6 +46,18 @@ function setGlobalLevel(value: number) {
   levelListeners.forEach((listener) => listener(value));
 }
 
+let globalMasterGain = 1;
+const masterGainListeners = new Set<(value: number) => void>();
+
+function setGlobalMasterGain(value: number) {
+  const clamped = Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 1;
+  globalMasterGain = clamped;
+  if (globalGainNode) {
+    globalGainNode.gain.value = clamped;
+  }
+  masterGainListeners.forEach((listener) => listener(clamped));
+}
+
 let globalWaveform: Float32Array | null = null;
 const waveformListeners = new Set<(value: Float32Array | null) => void>();
 
@@ -65,6 +80,12 @@ async function ensureContextAndNodeBase() {
 
   if (!workletNode && audioContext) {
     workletNode = new AudioWorkletNode(audioContext, 'bytebeat-processor');
+  }
+
+  if (!globalGainNode && audioContext) {
+    const gain = audioContext.createGain();
+    gain.gain.value = globalMasterGain;
+    globalGainNode = gain;
   }
 
   if (!analyserNode && audioContext && workletNode) {
@@ -107,6 +128,7 @@ export function useBytebeatPlayer(options?: { enableVisualizer?: boolean }): Byt
   const [lastError, setLastError] = useState<string | null>(null);
   const [level, setLevel] = useState(globalLevel);
   const [waveform, setWaveform] = useState<Float32Array | null>(globalWaveform);
+  const [masterGain, setMasterGainState] = useState(globalMasterGain);
 
   useEffect(() => {
     const listener = (value: boolean) => {
@@ -130,6 +152,16 @@ export function useBytebeatPlayer(options?: { enableVisualizer?: boolean }): Byt
       levelListeners.delete(listener);
     };
   }, [enableVisualizer]);
+
+  useEffect(() => {
+    const listener = (value: number) => {
+      setMasterGainState(value);
+    };
+    masterGainListeners.add(listener);
+    return () => {
+      masterGainListeners.delete(listener);
+    };
+  }, []);
 
   useEffect(() => {
     if (!enableVisualizer) {
@@ -184,7 +216,12 @@ export function useBytebeatPlayer(options?: { enableVisualizer?: boolean }): Byt
 
         if (shouldStart) {
           if (!workletConnected) {
-            node.connect(ctx.destination);
+            if (globalGainNode) {
+              node.connect(globalGainNode);
+              globalGainNode.connect(ctx.destination);
+            } else {
+              node.connect(ctx.destination);
+            }
             workletConnected = true;
           }
           // Pre-validate expression by attempting to construct a Function on the main thread.
@@ -280,7 +317,14 @@ export function useBytebeatPlayer(options?: { enableVisualizer?: boolean }): Byt
 
       if (ctx && node && workletConnected) {
         try {
-          node.disconnect(ctx.destination);
+          node.disconnect();
+          if (globalGainNode) {
+            try {
+              globalGainNode.disconnect();
+            } catch {
+              // Ignore disconnect errors.
+            }
+          }
         } catch {
           // Ignore disconnect errors.
         }
@@ -300,7 +344,11 @@ export function useBytebeatPlayer(options?: { enableVisualizer?: boolean }): Byt
       level,
       waveform,
       updateExpression,
+      masterGain,
+      setMasterGain: (value: number) => {
+        setGlobalMasterGain(value);
+      },
     }),
-    [isPlaying, lastError, toggle, stop, level, waveform, updateExpression],
+    [isPlaying, lastError, toggle, stop, level, waveform, updateExpression, masterGain],
   );
 }
