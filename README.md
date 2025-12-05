@@ -52,13 +52,13 @@ There are a few differences with other web implementations:
 - [x] Recent posts
 - [x] Trending posts on last 7 days
 - [x] In-app notifications
+- [x] Master gain
+- [x] Support SR up to 48kHz
 
 **Coming soon**
 
-- [ ] Master gain
 - [ ] Tags
 - [ ] Filter by tags
-- [ ] Support SR up to 48kHz
 
 **Coming later**
 
