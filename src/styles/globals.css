@@ -401,6 +401,10 @@ button {
   color: var(--text-color);
 }
 
+.secondary-text {
+  color: var(--secondary-text-color);
+}
+
 .top-content {
   display: flex;
   overflow: hidden;
@@ -1047,6 +1051,29 @@ button.chip {
   background-color: var(--error-bg-color);
 }
 
+/* Notifications page */
+
+.notifications-list {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification-item {
+  list-style: none;
+  border-left: 3px solid grey;
+  margin: 0;
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.notification-item.is-unread {
+  border-left-color: var(--accent-color);
+}
+
 /* Mobile layout */
 
 @media (max-width: 640px) {
@@ -1096,9 +1123,14 @@ button.chip {
     padding: 0;
     margin-left: auto;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   .nav-signout {
+    display: none;
+  }
+
+  .notifications-nav-label {
     display: none;
   }
 
