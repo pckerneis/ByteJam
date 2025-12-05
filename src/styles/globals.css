@@ -397,6 +397,14 @@ input[type='checkbox']:focus {
   outline-offset: max(2px, 0.15em);
 }
 
+textarea {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  padding: 0;
+  outline-color: var(--accent-color);
+}
+
 button {
   color: var(--text-color);
 }
