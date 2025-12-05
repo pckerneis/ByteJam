@@ -16,6 +16,7 @@ export default function EditPostPage() {
 
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [expression, setExpression] = useState('');
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
@@ -74,7 +75,7 @@ export default function EditPostPage() {
 
       const { data, error } = await supabase
         .from('posts')
-        .select('title,expression,is_draft,sample_rate,mode,profile_id')
+        .select('title,description,expression,is_draft,sample_rate,mode,profile_id')
         .eq('id', id)
         .maybeSingle();
 
@@ -102,6 +103,7 @@ export default function EditPostPage() {
       }
 
       setTitle(data.title ?? '');
+      setDescription(data.description ?? '');
       setExpression(data.expression ?? '');
       setIsDraft(Boolean(data.is_draft));
       setMode(decodeMode(data.mode as any));
@@ -124,6 +126,7 @@ export default function EditPostPage() {
 
     const trimmedTitle = title.trim();
     const trimmedExpr = expression.trim();
+    const trimmedDescription = description.trim();
 
     const result = validateExpression(trimmedExpr);
     if (!result.valid) {
@@ -145,6 +148,7 @@ export default function EditPostPage() {
       .from('posts')
       .update({
         title: trimmedTitle,
+        description: trimmedDescription || null,
         expression: trimmedExpr,
         is_draft: isDraft,
         sample_rate: sampleRate,
@@ -190,6 +194,7 @@ export default function EditPostPage() {
 
   const meta = {
     title,
+    description,
     mode,
     sampleRate,
     isDraft,
@@ -197,6 +202,7 @@ export default function EditPostPage() {
 
   const handleMetaChange = (next: typeof meta) => {
     setTitle(next.title);
+    setDescription(next.description);
     setMode(next.mode);
     setSampleRate(next.sampleRate);
     setIsDraft(next.isDraft);

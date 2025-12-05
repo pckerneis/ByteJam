@@ -16,6 +16,7 @@ export default function ForkPostPage() {
 
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [expression, setExpression] = useState('');
   const [isDraft, setIsDraft] = useState(false);
   const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
@@ -74,7 +75,7 @@ export default function ForkPostPage() {
 
       const { data, error } = await supabase
         .from('posts')
-        .select('title,expression,is_draft,sample_rate,mode,profiles(username)')
+        .select('title,description,expression,is_draft,sample_rate,mode,profiles(username)')
         .eq('id', id)
         .maybeSingle();
 
@@ -99,6 +100,7 @@ export default function ForkPostPage() {
       setOriginalAuthor((data as any).profiles?.username ?? null);
 
       setTitle(baseTitle ?? '');
+      setDescription(data.description ?? '');
       setExpression(data.expression ?? '');
       setIsDraft(Boolean(data.is_draft));
       setMode(decodeMode(data.mode as any));
@@ -121,6 +123,7 @@ export default function ForkPostPage() {
 
     const trimmedTitle = title.trim();
     const trimmedExpr = expression.trim();
+    const trimmedDescription = description.trim();
 
     const result = validateExpression(trimmedExpr);
     if (!result.valid) {
@@ -143,6 +146,7 @@ export default function ForkPostPage() {
       .insert({
         profile_id: (user as any).id,
         title: trimmedTitle,
+        description: trimmedDescription || null,
         expression: trimmedExpr,
         is_draft: isDraft,
         sample_rate: sampleRate,
@@ -164,6 +168,7 @@ export default function ForkPostPage() {
 
   const meta = {
     title,
+    description,
     mode,
     sampleRate,
     isDraft,
@@ -171,6 +176,7 @@ export default function ForkPostPage() {
 
   const handleMetaChange = (next: typeof meta) => {
     setTitle(next.title);
+    setDescription(next.description);
     setMode(next.mode);
     setSampleRate(next.sampleRate);
     setIsDraft(next.isDraft);

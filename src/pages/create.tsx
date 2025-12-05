@@ -23,9 +23,10 @@ const CREATE_DRAFT_STORAGE_KEY = 'bytebeat-cloud-create-draft-v1';
 export default function CreatePage() {
   const router = useRouter();
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [expression, setExpression] = useState('');
   const [isDraft, setIsDraft] = useState(false);
-  const [mode, setMode] = useState<ModeOption>(ModeOption.Float);
+  const [mode, setMode] = useState<ModeOption>(ModeOption.Int);
   const [sampleRate, setSampleRate] = useState<number>(DEFAULT_SAMPLE_RATE);
   const [draftLoaded, setDraftLoaded] = useState(false);
   const { isPlaying, toggle, lastError, stop, updateExpression } = useBytebeatPlayer({
@@ -117,6 +118,7 @@ export default function CreatePage() {
 
       const parsed = JSON.parse(raw) as {
         title?: string;
+        description?: string;
         expression?: string;
         isDraft?: boolean;
         mode?: 'int' | 'float';
@@ -126,6 +128,7 @@ export default function CreatePage() {
       if (!parsed) return;
 
       if (typeof parsed.title === 'string') setTitle(parsed.title);
+      if (typeof parsed.description === 'string') setDescription(parsed.description);
       if (typeof parsed.expression === 'string') setExpression(parsed.expression);
       if (typeof parsed.isDraft === 'boolean') setIsDraft(parsed.isDraft);
 
@@ -151,6 +154,7 @@ export default function CreatePage() {
         CREATE_DRAFT_STORAGE_KEY,
         JSON.stringify({
           title,
+          description,
           expression,
           isDraft,
           mode: modeValue,
@@ -160,13 +164,14 @@ export default function CreatePage() {
     } catch (e) {
       console.error(e);
     }
-  }, [title, expression, isDraft, mode, sampleRate, draftLoaded]);
+  }, [title, description, expression, isDraft, mode, sampleRate, draftLoaded]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const trimmedTitle = title.trim();
     const trimmedExpr = expression.trim();
+    const trimmedDescription = description.trim();
 
     const result = validateExpression(trimmedExpr);
     if (!result.valid) {
@@ -189,6 +194,7 @@ export default function CreatePage() {
       .insert({
         profile_id: (user as any).id,
         title: trimmedTitle,
+        description: trimmedDescription || null,
         expression: trimmedExpr,
         is_draft: isDraft,
         sample_rate: sampleRate,
@@ -208,6 +214,7 @@ export default function CreatePage() {
 
   const meta: PostMetadataModel = {
     title,
+    description,
     mode,
     sampleRate,
     isDraft,
@@ -215,6 +222,7 @@ export default function CreatePage() {
 
   const handleMetaChange = (next: typeof meta) => {
     setTitle(next.title);
+    setDescription(next.description);
     setMode(next.mode);
     setSampleRate(next.sampleRate);
     setIsDraft(next.isDraft);

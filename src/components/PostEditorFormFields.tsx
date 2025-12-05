@@ -77,7 +77,7 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
   const isExpressionTooLong = expressionLength > EXPRESSION_MAX;
   const canSubmit = Boolean(expression.trim()) && !validationIssue && saveStatus !== 'saving';
 
-  const { title, mode, sampleRate, isDraft } = meta;
+  const { title, description, mode, sampleRate, isDraft } = meta;
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const [sampleRateModalOpen, setSampleRateModalOpen] = useState(false);
   const [sampleRateInput, setSampleRateInput] = useState(sampleRate.toString());
@@ -179,6 +179,16 @@ export function PostEditorFormFields(props: PostEditorFormFieldsProps) {
           onChange={(e) => onMetaChange({ ...meta, title: e.target.value })}
           className="post-title-input"
           placeholder="Name your bytebeat expression"
+        />
+      </label>
+
+      <label className="field">
+        <textarea
+          value={description}
+          onChange={(e) => onMetaChange({ ...meta, description: e.target.value })}
+          className="post-description-input"
+          placeholder="Add an optional description"
+          rows={3}
         />
       </label>
 
