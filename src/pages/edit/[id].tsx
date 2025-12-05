@@ -148,7 +148,7 @@ export default function EditPostPage() {
       .from('posts')
       .update({
         title: trimmedTitle,
-        description: trimmedDescription || null,
+        description: trimmedDescription || '',
         expression: trimmedExpr,
         is_draft: isDraft,
         sample_rate: sampleRate,
