@@ -353,8 +353,9 @@ export function useBytebeatPlayer(options?: { enableVisualizer?: boolean }): Byt
         }
         workletConnected = false;
       }
-    } finally {
+      // Ensure global playback state is updated so UI and toggle() stay in sync.
       setGlobalIsPlaying(false);
+    } finally {
     }
   }, []);
 
