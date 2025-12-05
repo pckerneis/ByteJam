@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
@@ -18,6 +19,50 @@ export default function PostDetailPage() {
 
   const { user } = useSupabaseAuth();
 
+  const renderDescriptionWithTags = (description: string) => {
+    const nodes: JSX.Element[] = [];
+    // Match #tags where the tag body is 1–30 valid chars and is NOT followed
+    // by another valid tag char, so sequences longer than 30 are ignored.
+    const regex = /#([A-Za-z0-9_-]{1,30})(?![A-Za-z0-9_-])/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    let i = 0;
+
+    while ((match = regex.exec(description)) !== null) {
+      const fullMatch = match[0]; // e.g. "#Tag"
+      const tagName = match[1];
+      const start = match.index;
+
+      // Add any plain text before this tag.
+      if (start > lastIndex) {
+        nodes.push(
+          <span key={`text-${i}`}>{description.slice(lastIndex, start)}</span>,
+        );
+        i += 1;
+      }
+
+      const normalized = tagName.toLowerCase();
+
+      nodes.push(
+        <Link key={`tag-${i}`} href={`/tags/${normalized}`} className="tag-link">
+          #{tagName}
+        </Link>,
+      );
+      i += 1;
+
+      lastIndex = start + fullMatch.length;
+    }
+
+    // Trailing text after the last tag.
+    if (lastIndex < description.length) {
+      nodes.push(
+        <span key={`text-${i}`}>{description.slice(lastIndex)}</span>,
+      );
+    }
+
+    return nodes;
+  };
+
   useEffect(() => {
     if (!id || typeof id !== 'string') return;
 
@@ -33,7 +78,7 @@ export default function PostDetailPage() {
       const { data, error } = await supabase
         .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
+          'id,title,description,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('id', id)
         .maybeSingle();
@@ -77,7 +122,7 @@ export default function PostDetailPage() {
       const { data: forkRows, error: forkError } = await supabase
         .from('posts_with_meta')
         .select(
-          'id,title,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
+          'id,title,description,expression,is_draft,sample_rate,mode,created_at,profile_id,fork_of_post_id,is_fork,author_username,origin_title,origin_username,favorites_count',
         )
         .eq('fork_of_post_id', id)
         .eq('is_draft', false)
@@ -124,6 +169,12 @@ export default function PostDetailPage() {
         {!loading && !error && posts.length > 0 && (
           <>
             <PostList posts={posts} currentUserId={user ? (user as any).id : undefined} />
+
+            {posts[0]?.description && (
+              <p className="post-description-detail">
+                {renderDescriptionWithTags(posts[0].description)}
+              </p>
+            )}
 
             <h3>Forks</h3>
             {forksError && <p className="error-message">{forksError}</p>}

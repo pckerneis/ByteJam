@@ -1108,6 +1108,10 @@ button.chip {
   padding-top: 2px;
 }
 
+.post-description-detail {
+  color: var(--secondary-text-color);
+}
+
 /* Modal */
 
 .modal-backdrop {

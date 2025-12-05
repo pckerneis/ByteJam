@@ -12,6 +12,7 @@ import { formatRelativeTime } from '../utils/time';
 export interface PostRow {
   id: string;
   title: string;
+  description?: string | null;
   expression: string;
   is_draft?: boolean;
   sample_rate: number;
