@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
 import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
 
@@ -57,52 +58,10 @@ function formatRelativeTime(isoString: string): string {
   return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
 }
 
-async function attachActorUsernames(rows: NotificationRow[]): Promise<NotificationRow[]> {
-  const actorIds = Array.from(new Set(rows.map((r) => r.actor_id))).filter(Boolean);
-  if (actorIds.length === 0) return rows;
-
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id,username')
-    .in('id', actorIds);
-
-  if (error || !data) return rows;
-
-  const usernameById = new Map<string, string | null>();
-  for (const row of data as any[]) {
-    usernameById.set(row.id as string, (row.username as string | null) ?? null);
-  }
-
-  return rows.map((r) => ({
-    ...r,
-    actor_username: usernameById.get(r.actor_id) ?? null,
-  }));
-}
-
-async function attachPostTitles(rows: NotificationRow[]): Promise<NotificationRow[]> {
-  const postIds = Array.from(new Set(rows.map((r) => r.post_id).filter((id): id is string => !!id)));
-  if (postIds.length === 0) return rows;
-
-  const { data, error } = await supabase
-    .from('posts')
-    .select('id,title')
-    .in('id', postIds);
-
-  if (error || !data) return rows;
-
-  const titleById = new Map<string, string | null>();
-  for (const row of data as any[]) {
-    titleById.set(row.id as string, (row.title as string | null) ?? null);
-  }
-
-  return rows.map((r) => ({
-    ...r,
-    post_title: r.post_id ? titleById.get(r.post_id) ?? null : null,
-  }));
-}
 
 export default function NotificationsPage() {
   const { user } = useSupabaseAuth();
+  const router = useRouter();
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -110,6 +69,33 @@ export default function NotificationsPage() {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  const markNotificationReadLocally = (id: number) => {
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+  };
+
+  const markNotificationReadOnServer = async (id: number) => supabase.from('notifications').update({ read: true }).eq('id', id);
+
+  const handleNotificationLinkClick = async (
+    e: MouseEvent<HTMLAnchorElement>,
+    n: NotificationRow,
+    href: string,
+  ) => {
+    if (!n.read) {
+      markNotificationReadLocally(n.id);
+      await markNotificationReadOnServer(n.id);
+    }
+
+    const isPlainLeftClick =
+      e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+    if (!isPlainLeftClick) {
+      return;
+    }
+
+    e.preventDefault();
+    await router.push(href);
+  };
 
   useEffect(() => {
     if (!user) {
@@ -126,8 +112,10 @@ export default function NotificationsPage() {
       const to = from + PAGE_SIZE - 1;
 
       const { data, error } = await supabase
-        .from('notifications')
-        .select('id,event_type,created_at,read,post_id,actor_id')
+        .from('notifications_with_meta')
+        .select(
+          'id,event_type,created_at,read,post_id,actor_id,actor_username,post_title',
+        )
         .order('created_at', { ascending: false })
         .range(from, to);
 
@@ -144,10 +132,7 @@ export default function NotificationsPage() {
         return;
       }
 
-      let rows = (data ?? []) as NotificationRow[];
-
-      rows = await attachActorUsernames(rows);
-      rows = await attachPostTitles(rows);
+      const rows = (data ?? []) as NotificationRow[];
 
       if (pageToLoad === 0) {
         setNotifications(rows);
@@ -161,10 +146,6 @@ export default function NotificationsPage() {
       }
 
       setPage(pageToLoad);
-
-      if (markRead && rows.length > 0) {
-        void supabase.from('notifications').update({ read: true }).eq('read', false);
-      }
 
       setLoadingMore(false);
     };
@@ -199,8 +180,10 @@ export default function NotificationsPage() {
         const to = from + PAGE_SIZE - 1;
 
         const { data, error } = await supabase
-          .from('notifications')
-          .select('id,event_type,created_at,read,post_id,actor_id')
+          .from('notifications_with_meta')
+          .select(
+            'id,event_type,created_at,read,post_id,actor_id,actor_username,post_title',
+          )
           .order('created_at', { ascending: false })
           .range(from, to);
 
@@ -210,10 +193,7 @@ export default function NotificationsPage() {
           return;
         }
 
-        let rows = (data ?? []) as NotificationRow[];
-
-        rows = await attachActorUsernames(rows);
-        rows = await attachPostTitles(rows);
+        const rows = (data ?? []) as NotificationRow[];
 
         setNotifications((prev) => [...prev, ...rows]);
         setPage(nextPage);
@@ -256,7 +236,11 @@ export default function NotificationsPage() {
                   <span className="notification-text">
                     {n.actor_username ? (
                       <>
-                        <Link href={`/u/${n.actor_username}`} className="username">
+                        <Link
+                          href={`/u/${n.actor_username}`}
+                          className="username"
+                          onClick={(e) => void handleNotificationLinkClick(e, n, `/u/${n.actor_username}`)}
+                        >
                           @{n.actor_username}
                         </Link>{' '}
                       </>
@@ -267,7 +251,11 @@ export default function NotificationsPage() {
                     {n.post_id && (
                       <>
                         {' '}
-                        <Link href={`/post/${n.post_id}`} className="post-link">
+                        <Link
+                          href={`/post/${n.post_id}`}
+                          className="post-link"
+                          onClick={(e) => void handleNotificationLinkClick(e, n, `/post/${n.post_id}`)}
+                        >
                           {n.post_title || '(untitled)'}
                         </Link>
                       </>

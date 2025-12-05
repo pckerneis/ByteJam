@@ -213,11 +213,11 @@ export function Layout({ children }: PropsWithChildren) {
               {user && (
                 <NavLink href="/notifications">
                   <span className={'notifications-nav-label'}>Notifications</span>
-                  {notificationsCount && notificationsCount > 0 && (
+                  {notificationsCount && notificationsCount > 0 ? (
                     <span className={'notifications-count'}>
                       {formatNotificationsCount(notificationsCount)}
                     </span>
-                  )}
+                  ) : (<span></span>)}
                 </NavLink>
               )}
               {user && (
