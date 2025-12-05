@@ -55,8 +55,10 @@ There are a few differences with other web implementations:
 **Coming soon**
 
 - [ ] Tags
+- [ ] In-app notifications
 - [ ] Master gain
 - [ ] Filter by tags
+- [ ] Support SR up to 48kHz
 
 **Coming later**
 
