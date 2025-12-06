@@ -39,9 +39,7 @@ export default function PostDetailPage() {
 
       // Add any plain text before this tag.
       if (start > lastIndex) {
-        nodes.push(
-          <span key={`text-${i}`}>{description.slice(lastIndex, start)}</span>,
-        );
+        nodes.push(<span key={`text-${i}`}>{description.slice(lastIndex, start)}</span>);
         i += 1;
       }
 
@@ -59,9 +57,7 @@ export default function PostDetailPage() {
 
     // Trailing text after the last tag.
     if (lastIndex < description.length) {
-      nodes.push(
-        <span key={`text-${i}`}>{description.slice(lastIndex)}</span>,
-      );
+      nodes.push(<span key={`text-${i}`}>{description.slice(lastIndex)}</span>);
     }
 
     return nodes;

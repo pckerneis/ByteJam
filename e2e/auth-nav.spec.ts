@@ -13,8 +13,7 @@ test.beforeEach(async () => {
   await clearProfilesTable();
 });
 
-
-test('navigation for unauthenticated user', async ({page}) => {
+test('navigation for unauthenticated user', async ({ page }) => {
   await clearSupabaseSession(page);
   await page.goto('/');
 
@@ -78,7 +77,9 @@ test('redirection to onboarding for user without username', async ({ page }) => 
   await usernameField.click();
   await usernameField.fill('t@"');
   await saveButton.click();
-  await expect(page.getByText('Only letters, digits, dots and hyphens and underscores are allowed')).toBeVisible();
+  await expect(
+    page.getByText('Only letters, digits, dots and hyphens and underscores are allowed'),
+  ).toBeVisible();
 
   // Username OK but ToS NOK
   await usernameField.click();

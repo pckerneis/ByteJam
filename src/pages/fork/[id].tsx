@@ -216,7 +216,7 @@ export default function ForkPostPage() {
             <a href={`/u/${originalAuthor}`}>@{originalAuthor}</a>
           </p>
         )}
-        {(!originalAuthor) && <p>Fork from unknown post</p>}
+        {!originalAuthor && <p>Fork from unknown post</p>}
         <form className="create-form" onSubmit={handleSubmit}>
           <PostEditorFormFields
             meta={meta}

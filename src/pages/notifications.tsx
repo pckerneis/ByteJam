@@ -59,7 +59,8 @@ export default function NotificationsPage() {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
 
-  const markNotificationReadOnServer = async (id: number) => supabase.from('notifications').update({ read: true }).eq('id', id);
+  const markNotificationReadOnServer = async (id: number) =>
+    supabase.from('notifications').update({ read: true }).eq('id', id);
 
   const handleNotificationLinkClick = async (
     e: MouseEvent<HTMLAnchorElement>,
@@ -74,8 +75,7 @@ export default function NotificationsPage() {
       }
     }
 
-    const isPlainLeftClick =
-      e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+    const isPlainLeftClick = e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 
     if (!isPlainLeftClick) {
       return;
@@ -120,9 +120,7 @@ export default function NotificationsPage() {
 
       const { data, error } = await supabase
         .from('notifications_with_meta')
-        .select(
-          'id,event_type,created_at,read,post_id,actor_id,actor_username,post_title',
-        )
+        .select('id,event_type,created_at,read,post_id,actor_id,actor_username,post_title')
         .order('created_at', { ascending: false })
         .range(from, to);
 
@@ -188,9 +186,7 @@ export default function NotificationsPage() {
 
         const { data, error } = await supabase
           .from('notifications_with_meta')
-          .select(
-            'id,event_type,created_at,read,post_id,actor_id,actor_username,post_title',
-          )
+          .select('id,event_type,created_at,read,post_id,actor_id,actor_username,post_title')
           .order('created_at', { ascending: false })
           .range(from, to);
 
@@ -258,7 +254,9 @@ export default function NotificationsPage() {
                         <Link
                           href={`/u/${n.actor_username}`}
                           className="username"
-                          onClick={(e) => void handleNotificationLinkClick(e, n, `/u/${n.actor_username}`)}
+                          onClick={(e) =>
+                            void handleNotificationLinkClick(e, n, `/u/${n.actor_username}`)
+                          }
                         >
                           @{n.actor_username}
                         </Link>{' '}
@@ -273,7 +271,9 @@ export default function NotificationsPage() {
                         <Link
                           href={`/post/${n.post_id}`}
                           className="post-link"
-                          onClick={(e) => void handleNotificationLinkClick(e, n, `/post/${n.post_id}`)}
+                          onClick={(e) =>
+                            void handleNotificationLinkClick(e, n, `/post/${n.post_id}`)
+                          }
                         >
                           {n.post_title || '(untitled)'}
                         </Link>
@@ -295,4 +295,3 @@ export default function NotificationsPage() {
     </>
   );
 }
-

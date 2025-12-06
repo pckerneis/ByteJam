@@ -1,9 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const url =
-  process.env.E2E_SUPABASE_URL ||
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  'http://127.0.0.1:54321';
+  process.env.E2E_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321';
 
 const serviceRoleKey = process.env.E2E_SUPABASE_SERVICE_ROLE_KEY;
 
@@ -33,10 +31,7 @@ export async function clearProfilesTable() {
   }
 }
 
-export async function createTestUser(params: {
-  email: string;
-  password?: string;
-}) {
+export async function createTestUser(params: { email: string; password?: string }) {
   const { email, password = 'password123' } = params;
 
   const { data, error } = await supabaseAdmin.auth.admin.createUser({

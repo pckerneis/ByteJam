@@ -18,7 +18,10 @@ function getStorageKey(url: string): string {
   return `sb-${projectRef}-auth-token`;
 }
 
-export async function signInAndInjectSession(page: Page, params: { email: string; password: string }) {
+export async function signInAndInjectSession(
+  page: Page,
+  params: { email: string; password: string },
+) {
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error('[e2e] Supabase URL or anon key missing in env.');
   }
