@@ -54,19 +54,43 @@ There are a few differences with other web implementations:
 - [x] In-app notifications
 - [x] Master gain
 - [x] Support SR up to 48kHz
+- [x] Tags
+- [x] Post description
 
-**Coming soon**
+**Working on**
 
-- [ ] Tags
-- [ ] Filter by tags
+- [ ] Extend API
+- [ ] E2E testing
 
 **Coming later**
 
 - [ ] Report posts or users
 - [ ] Moderator tools
 - [ ] Block/unblock users
-- [ ] Post description
 - [ ] Pin posts on profile
 - [ ] Search posts by name
 - [ ] C-compatible badge
 - [ ] Reject silent/too loud posts
+
+## Run locally
+
+## Test locally
+
+Install dependencies and browsers:
+
+```
+npm install
+npx playwright install
+```
+
+Start frontend:
+
+```
+npm run dev
+```
+
+In another terminal, run tests:
+
+```
+npm run test:e2e:headed
+```
