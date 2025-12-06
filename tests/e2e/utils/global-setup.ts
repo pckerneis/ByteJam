@@ -12,6 +12,10 @@ function supabaseStatus() {
 export default async function globalSetup() {
   const status = supabaseStatus();
 
+  process.env.NEXT_PUBLIC_SUPABASE_URL = status.API_URL;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = status.PUBLISHABLE_KEY;
+  process.env.E2E_SUPABASE_SERVICE_ROLE_KEY = status.SERVICE_ROLE_KEY;
+
   if (!status) {
     throw new Error('Supabase must be running before starting e2e tests.');
   }

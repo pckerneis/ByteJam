@@ -39,3 +39,23 @@ export async function createTestUser(params: {
 
   return data.user;
 }
+
+export async function ensureTestUser(params: { email: string; password?: string }) {
+  const { email, password } = params;
+
+  // Try to find an existing user first to avoid duplicates across test runs.
+  const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+    page: 1,
+    perPage: 1000,
+  });
+
+  if (!listError) {
+    const existing = list.users.find((u) => u.email === email);
+    if (existing) {
+      return existing;
+    }
+  }
+
+  // Fall back to creating if not found or listing failed.
+  return createTestUser({ email, password });
+}

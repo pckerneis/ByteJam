@@ -4,6 +4,9 @@ import { execSync } from 'node:child_process';
 const port = 3033;
 const baseURL = `http://127.0.0.1:${port}`;
 
+const AUTH_STORAGE_KEY = process.env.NEXT_PUBLIC_AUTH_STORAGE_KEY || 'e2e-next-public-auth-storage';
+process.env.NEXT_PUBLIC_AUTH_STORAGE_KEY = AUTH_STORAGE_KEY;
+
 function getSupabaseEnv() {
   const out = execSync('supabase status -o json', { encoding: 'utf-8' });
   const status = JSON.parse(out) as {
@@ -16,7 +19,15 @@ function getSupabaseEnv() {
     NEXT_PUBLIC_SUPABASE_URL: status.API_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: status.PUBLISHABLE_KEY,
     SUPABASE_SERVICE_ROLE_KEY: status.SERVICE_ROLE_KEY,
+    NEXT_PUBLIC_AUTH_STORAGE_KEY: AUTH_STORAGE_KEY,
   };
+
+  // Make these available to the Playwright test process as well,
+  // so helpers like auth.ts and supabaseAdmin.ts can read them.
+  process.env.NEXT_PUBLIC_SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  process.env.E2E_SUPABASE_SERVICE_ROLE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+  process.env.NEXT_PUBLIC_AUTH_STORAGE_KEY = env.NEXT_PUBLIC_AUTH_STORAGE_KEY;
 
   return env;
 }
